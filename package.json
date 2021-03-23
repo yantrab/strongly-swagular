@@ -1,0 +1,24 @@
+{
+  "name": "strongly-swagular-starter",
+  "version": "1.0.0",
+  "description": "starter for strongly & swagular",
+  "scripts": {
+    "start:server": "cd ./server && npm start",
+    "start:client": "cd ./client && npm run gen && npm start",
+    "install:server": "cd ./server && npm i",
+    "install:client": "cd ./client && npm i",
+    "install": "npm run install:client & npm run install:server",
+    "test": "jest --coverage"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.8.0",
+    "@typescript-eslint/parser": "^4.8.0",
+    "eslint": "^7.13.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^1.19.1",
+    "typescript": "^4.0.5"
+  }
+}

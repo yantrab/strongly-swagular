@@ -1,0 +1,44 @@
+import { guard, get, body, request, post } from "strongly";
+import { UserService } from "../../services/user/user.service";
+import { MailerService } from "../../services/mailer/mailer.service";
+import { User } from "../../domain/user";
+import { v4 as uuidv4 } from "uuid";
+
+@guard(user => user.role === "admin")
+export class AdminController {
+  constructor(private userService: UserService, private mailer: MailerService) {}
+  @get users() {
+    return this.userService.getUsers({ _isDeleted: undefined });
+  }
+
+  private async addUser(user: User) {
+    const existUser = await this.userService.userRepo.findOne({ email: user.email, _isDeleted: undefined });
+    if (existUser) throw new Error("The user already exist");
+    const result = await this.userService.saveOrUpdateUser(new User(user));
+    const token = uuidv4();
+    this.userService.saveUserToken(user.email, token);
+    this.mailer.sendPermission(user.email, token);
+    return result;
+  }
+
+  @post saveOrUpdateUser(@body user: User): Promise<User> {
+    user = new User(user);
+    if (user.isNew) {
+      return this.addUser(user);
+    }
+
+    return this.userService.saveOrUpdateUser(user);
+  }
+
+  @post deleteUser(@body user: User): Promise<User> {
+    user = new User(user);
+    user._isDeleted = true;
+    return this.userService.saveOrUpdateUser(user);
+  }
+
+  @post unDeleteUser(@body user: User): Promise<User> {
+    user = new User(user);
+    user._isDeleted = undefined;
+    return this.userService.saveOrUpdateUser(user);
+  }
+}
