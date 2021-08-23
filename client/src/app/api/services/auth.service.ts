@@ -60,9 +60,9 @@ export class AuthService extends BaseService {
       body: { 'rePassword': string, 'password': string, 'email': string }
     }
 
-): Observable<void> {
+): Observable<boolean> {
     return this.setPassword$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
+      map((r: StrictHttpResponse<boolean>) => r.body as boolean)
     );
   }
 
@@ -120,18 +120,17 @@ private setPassword$Response(  params: {
       body: { 'rePassword': string, 'password': string, 'email': string }
     }
 
-): Observable<StrictHttpResponse<void>> {
+): Observable<StrictHttpResponse<boolean>> {
 
     const rb = new RequestBuilder(this.rootUrl, AuthService.SetPasswordPath, 'post');
       rb.header('token', params.token, {});
-      rb.body(params.body || {}, '');
     return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*'
+      responseType: 'json',
+      accept: 'application/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+        return (r as HttpResponse<any>).clone({ body: String((r as HttpResponse<any>).body) === 'true' }) as StrictHttpResponse<boolean>;
       })
     );
   }

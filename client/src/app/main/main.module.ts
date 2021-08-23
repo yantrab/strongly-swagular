@@ -10,7 +10,7 @@ import { Guard } from '../guard';
     <div fxLayout="column" fxFlexFill>
       <mat-toolbar>
         <a mat-button>Some page</a>
-        <a mat-button routerLink="admin" *ngIf="user.role === 'admin'">admin</a>
+        <a mat-button routerLink="admin" *ngIf="user?.role === 'admin'">admin</a>
         <span style="flex: 1 1 auto;"></span>
         <span> Hello {{ user?.firstName }} {{ user?.lastName }}</span>
         <a (click)="logout()" mat-button>logout</a>
