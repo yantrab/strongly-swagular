@@ -11,8 +11,8 @@ class AuthComponent {}
     ComponentModule,
     RouterModule.forChild([
       { path: 'login', component: LoginComponent },
-      { path: 'change-password/:token', component: SetPasswordComponent },
-      { path: 'sign-in/:token', component: SetPasswordComponent }
+      { path: 'change-password/:token/:email', component: SetPasswordComponent },
+      { path: 'sign-in/:token/:email', component: SetPasswordComponent }
     ])
   ],
   providers: [],

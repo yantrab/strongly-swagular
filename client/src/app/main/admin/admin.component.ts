@@ -13,7 +13,7 @@ export class AdminComponent implements OnInit {
   });
   usersTableOptions: TableOptions<User> = {
     columns: [
-      { key: 'firstName', title: 'First Name' },
+      { key: 'firstName', title: 'First Name', isFilterable: true, isSortable: false },
       { key: 'lastName', title: 'Last Name' },
       { key: 'phone', title: 'Phone Number' },
       { key: 'email', title: 'Email' },

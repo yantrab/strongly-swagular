@@ -14,12 +14,12 @@ export class MailerService {
   }
 
   sendPermission(to: string, token: string) {
-    const url = this.configService.config.clientUrl + "/auth/sign-in/" + token;
+    const url = `${this.configService.config.clientUrl}/auth/sign-in/${token}/${to}`;
     return this.send({
       from: this.smtp.from,
       to,
       subject: this.smtp.sendPermission.subject,
-      html: this.smtp.sendPermission.html(url)
+      html: this.smtp.sendPermission.html(url, to)
     });
   }
 }

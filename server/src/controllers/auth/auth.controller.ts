@@ -23,6 +23,7 @@ export class AuthController {
     });
     return user;
   }
+
   @post async setPassword(
     @body("email") @email email: string,
     @body("password") @min(6) password: string,
