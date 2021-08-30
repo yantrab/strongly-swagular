@@ -8,8 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 export class AdminComponent implements OnInit {
   users: User[] = [];
   userFormModel = this.api.saveOrUpdateUserFormModel({
-    displayProperties: ['firstName', 'lastName', 'email', 'phone', 'role'],
-    formTitle: 'Add New User'
+    formTitle: 'Add New User',
+    displayProperties: ['firstName', 'lastName', 'email', 'phone', 'role']
   });
   usersTableOptions: TableOptions<User> = {
     columns: [
