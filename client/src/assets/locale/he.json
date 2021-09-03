@@ -1,0 +1,19 @@
+{
+  "loginForm": {
+    "formTitle": "Login Form",
+    "formSaveButtonTitle": "Login",
+    "email": {"label":"Email"},
+    "password": {"label":"Password"}
+  },
+  "setPasswordForm": {
+    "formTitle": "Set new password",
+    "formSaveButtonTitle": "Save",
+    "email": {"label":"Email"},
+    "password": {"label":"Password"},
+    "rePassword": {"label":"Insert Password Again"}
+  },
+  "saveOrUpdateUserForm": {
+    "formTitle": "Add New User",
+    "firstName": "fsdf"
+  }
+}

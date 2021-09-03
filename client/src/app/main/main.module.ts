@@ -3,10 +3,11 @@ import { ComponentModule } from '../components/component.module';
 import { RouterModule } from '@angular/router';
 import { ToolbarComponent } from './toolbar.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { LocaleService } from 'swagular/components';
 @Component({
   selector: 'app-root',
   template: `
-    <div fxLayout="column" fxFlexFill>
+    <div fxLayout="column" fxFlexFill [dir]="localeService.direction">
       <app-toolbar></app-toolbar>
       <div fxFlex style="padding: 1%;">
         <router-outlet
@@ -18,7 +19,9 @@ import { MatMenuModule } from '@angular/material/menu';
     </div>
   `
 })
-class MainComponent {}
+class MainComponent {
+  constructor(public localeService: LocaleService) {}
+}
 
 @NgModule({
   declarations: [MainComponent, ToolbarComponent],
