@@ -1,19 +1,13 @@
 import { Component, NgModule } from '@angular/core';
 import { ComponentModule } from '../components/component.module';
-import { RouterModule, Routes } from '@angular/router';
-import { User } from '../api/models/user';
-import { AuthService } from '../auth/auth.service';
+import { RouterModule } from '@angular/router';
+import { ToolbarComponent } from './toolbar.component';
+import { MatMenuModule } from '@angular/material/menu';
 @Component({
   selector: 'app-root',
   template: `
     <div fxLayout="column" fxFlexFill>
-      <mat-toolbar>
-        <a mat-button>Some page</a>
-        <a mat-button routerLink="admin" *ngIf="user?.role === 'admin'">admin</a>
-        <span style="flex: 1 1 auto;"></span>
-        <span> Hello {{ user?.firstName }} {{ user?.lastName }}</span>
-        <a (click)="logout()" mat-button>logout</a>
-      </mat-toolbar>
+      <app-toolbar></app-toolbar>
       <div fxFlex style="padding: 1%;">
         <router-outlet
           style="flex: 1 1 auto;
@@ -24,28 +18,25 @@ import { AuthService } from '../auth/auth.service';
     </div>
   `
 })
-class MainComponent {
-  user?: User;
-
-  constructor(private authService: AuthService) {
-    authService.user$.subscribe(user => (this.user = user));
-  }
-  logout() {
-    this.authService.logout().subscribe(() => {});
-  }
-}
+class MainComponent {}
 
 @NgModule({
-  declarations: [MainComponent],
+  declarations: [MainComponent, ToolbarComponent],
   imports: [
     ComponentModule,
     RouterModule.forChild([
       {
         path: '',
         component: MainComponent,
-        children: [{ path: 'admin', loadChildren: () => import('src/app/main/admin/admin.module').then(m => m.AdminModule) }]
+        children: [
+          {
+            path: 'admin',
+            loadChildren: () => import('src/app/main/admin/admin.module').then(m => m.AdminModule)
+          }
+        ]
       }
-    ])
+    ]),
+    MatMenuModule
   ]
 })
 export class MainModule {}
