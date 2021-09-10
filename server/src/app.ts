@@ -11,12 +11,12 @@ const start = async () => {
   const mongo = await new MongoClient(url);
   await mongo.connect();
   ServerFactory.create({
-    providers: [{ provide: MongoClient, useValue: mongo }]
+    providers: [{ provide: MongoClient, useValue: mongo }],
+    logger: true
   }).then(app => {
     app.register(fastifyJwt, config.jwt);
     app.register(fastifyCookie);
     app.register(fastifyCors, config.corsOptions);
-
     app.addHook("onRequest", async (request, reply) => {
       try {
         await request.jwtVerify();
