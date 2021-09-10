@@ -1,8 +1,9 @@
-import { body, post, email, min, get, app, reply, user, request, params, uuid, headers } from "strongly";
+import { body, post, email, min, get, app, reply, user, request, params, uuid, headers, put } from "strongly";
 import { UserService } from "../../services/user/user.service";
 import { User } from "../../domain/user";
 import { Unauthorized } from "http-errors";
 import { Controller } from "strongly";
+import { existsSync } from "fs";
 
 @Controller("auth", { description: "User authentication stuff" })
 export class AuthController {
@@ -48,5 +49,14 @@ export class AuthController {
   getUserAuthenticated(@user user, @reply reply): User {
     if (!user) throw new Unauthorized();
     return user;
+  }
+
+  @put("reset/:email")
+  async resetPassword(@params("email") @email email: string) {
+    const user = await this.userService.getUser(email);
+    if (user) return this.userService.sentPermission(email);
+    else {
+      throw "user not exists";
+    }
   }
 }

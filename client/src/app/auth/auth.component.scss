@@ -7,6 +7,14 @@
     .container {
       width: 470px;
       height: 372px;
+      .reset-password{
+        z-index: 10;
+        align-self: flex-end;
+        margin: 5px 72px;
+        color: rebeccapurple;
+        font-size: 10px;
+      }
+
       ::ng-deep {
         mat-card {
           padding-right: 5em;

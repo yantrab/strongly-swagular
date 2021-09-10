@@ -1,12 +1,10 @@
 import { guard, get, body, request, post } from "strongly";
 import { UserService } from "../../services/user/user.service";
-import { MailerService } from "../../services/mailer/mailer.service";
 import { User } from "../../domain/user";
-import { v4 as uuidv4 } from "uuid";
 
 @guard(user => user.role === "admin")
 export class AdminController {
-  constructor(private userService: UserService, private mailer: MailerService) {}
+  constructor(private userService: UserService) {}
   @get users() {
     return this.userService.getUsers({ _isDeleted: undefined });
   }
@@ -15,9 +13,7 @@ export class AdminController {
     const existUser = await this.userService.userRepo.findOne({ email: user.email, _isDeleted: undefined });
     if (existUser) throw new Error("The user already exist");
     const result = await this.userService.saveOrUpdateUser(new User(user));
-    const token = uuidv4();
-    this.userService.saveUserToken(user.email, token);
-    this.mailer.sendPermission(user.email, token);
+    this.userService.sentPermission(user.email);
     return result;
   }
 

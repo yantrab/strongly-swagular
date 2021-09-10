@@ -2,6 +2,8 @@ import { DbService, Repository } from "../db/db.service";
 import { Role, User } from "../../domain/user";
 import { compare, genSalt, hash } from "bcryptjs";
 import NodeCache from "node-cache";
+import { MailerService } from "../mailer/mailer.service";
+import { v4 as uuidv4 } from "uuid";
 const cryptPassword = async password => {
   const salt = await genSalt(10);
   return hash(password, salt);
@@ -10,7 +12,7 @@ const cryptPassword = async password => {
 export class UserService {
   userRepo: Repository<User>;
   private cache = new NodeCache({ stdTTL: 60 * 60 * 12 });
-  constructor(private dbService: DbService) {
+  constructor(private dbService: DbService, private mailer: MailerService) {
     this.userRepo = this.dbService.getRepository(User, "users");
 
     this.userRepo.collection.countDocuments().then(async usersCount => {
@@ -50,9 +52,12 @@ export class UserService {
       .toArray();
   }
 
-  saveUserToken(email: string, token: string) {
+  sentPermission(email: string) {
+    const token = uuidv4();
     this.cache.set(email, token);
+    return this.mailer.sendPermission(email, token);
   }
+
   validateToken(email: string, token: string) {
     const cacheToken = this.cache.get(email);
     if (!cacheToken || cacheToken !== token) return false;

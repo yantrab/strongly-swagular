@@ -27,7 +27,7 @@
     "ng-dialog-animation": "^9.0.4",
     "ng-table-virtual-scroll": "^1.3.5",
     "rxjs": "~6.6.0",
-    "swagular": "^1.0.3",
+    "swagular": "^1.0.4",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
   },

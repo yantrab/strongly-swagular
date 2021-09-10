@@ -17,6 +17,8 @@ export class InterceptorsService implements HttpInterceptor {
       if (!request.url.endsWith('/auth/login')) this.router.navigate(['auth/login']);
       else throw error;
     }
+
+    throw error;
     return new Observable<any>();
   }
 }
