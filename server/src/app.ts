@@ -5,14 +5,21 @@ import fastifyCors from "fastify-cors";
 import { MongoClient } from "mongodb";
 import { ConfigService } from "./services/config/config.service";
 import { MongoMemoryServer } from "mongodb-memory-server";
+import { LogService } from "./services/log.service";
+import { DbService } from "./services/db/db.service";
 const config = new ConfigService().config;
 const start = async () => {
   const url = config.mongoUrl || (await new MongoMemoryServer().getUri());
   const mongo = await new MongoClient(url);
   await mongo.connect();
+  const dbService = new DbService(mongo);
+  const logService = new LogService(dbService);
   ServerFactory.create({
-    providers: [{ provide: MongoClient, useValue: mongo }],
-    logger: true
+    providers: [
+      { provide: DbService, useValue: dbService },
+      { provide: LogService, useValue: logService }
+    ],
+    logger: { stream: logService }
   }).then(app => {
     app.register(fastifyJwt, config.jwt);
     app.register(fastifyCookie);
@@ -36,6 +43,7 @@ const start = async () => {
         process.exit(1);
       }
     });
+    app.options;
   });
 };
 start();

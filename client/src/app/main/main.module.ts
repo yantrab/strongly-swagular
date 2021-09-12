@@ -9,7 +9,7 @@ import { LocaleService } from 'swagular/components';
   template: `
     <div fxLayout="column" fxFlexFill [dir]="localeService.direction">
       <app-toolbar></app-toolbar>
-      <div fxFlex style="padding: 1%;">
+      <div fxFlex>
         <router-outlet
           style="flex: 1 1 auto;
           display: flex;

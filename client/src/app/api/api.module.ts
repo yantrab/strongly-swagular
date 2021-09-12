@@ -3,7 +3,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 import { AdminService } from './services/admin.service';
 import { AuthService } from './services/auth.service';
-
+import { LogService } from './services/log.service';
+import * as models from './models';
+import { SwagularService } from 'swagular';
 /**
  * Module that provides all services and configuration.
  */
@@ -14,6 +16,7 @@ import { AuthService } from './services/auth.service';
   providers: [
     AdminService,
     AuthService,
+    LogService,
     ApiConfiguration
   ],
 })
@@ -32,7 +35,8 @@ export class ApiModule {
 
   constructor(
     @Optional() @SkipSelf() parentModule: ApiModule,
-    @Optional() http: HttpClient
+    @Optional() http: HttpClient,
+    swagularService: SwagularService
   ) {
     if (parentModule) {
       throw new Error('ApiModule is already loaded. Import in your base AppModule only.');
@@ -41,5 +45,10 @@ export class ApiModule {
       throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
       'See also https://github.com/angular/angular/issues/20575');
     }
+    Object.keys(models).forEach(key => {
+      if (key.endsWith('Schema')) {
+         swagularService.addSchema('#/components/schemas/' + key.replace('Schema', ''), (models as any)[key]);
+      }
+  });
   }
 }

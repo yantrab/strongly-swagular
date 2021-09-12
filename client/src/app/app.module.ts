@@ -8,6 +8,10 @@ import { ApiModule } from './api/api.module';
 import { InterceptorsService } from './services/interceptors.service';
 import { SwagularModule, SwagularService } from 'swagular';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { environment } from '../environments/environment';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { LocaleService } from 'swagular/components';
+const config: SocketIoConfig = { url: environment.socketUrl, options: {} };
 
 const isCordovaApp = Object(window).cordova !== undefined;
 
@@ -29,12 +33,14 @@ const routes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes, { useHash: isCordovaApp }),
-    ApiModule.forRoot({ rootUrl: 'http://localhost:3000' }),
-    SwagularModule
+    ApiModule.forRoot({ rootUrl: environment.apiUrl }),
+    SwagularModule,
+    SocketIoModule.forRoot(config)
   ],
 
   providers: [
     SwagularService,
+    LocaleService,
     Guard,
     {
       provide: HTTP_INTERCEPTORS,

@@ -26,8 +26,9 @@
     "@angular/router": "~12.2.2",
     "ng-dialog-animation": "^9.0.4",
     "ng-table-virtual-scroll": "^1.3.5",
+    "ngx-socket-io": "^4.1.0",
     "rxjs": "~6.6.0",
-    "swagular": "^1.0.4",
+    "swagular": "^1.0.15",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
   },

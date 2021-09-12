@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { AdminService } from '../../api/services/admin.service';
-import { User } from '../../api/models/user';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AdminService } from '../../../api/services/admin.service';
+import { User } from '../../../api/models/user';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableOptions, FormComponent } from 'swagular/components';
 import { MatDialog } from '@angular/material/dialog';
-@Component({ selector: 'app-admin', templateUrl: './admin.component.html', styleUrls: ['./admin.component.scss'] })
-export class AdminComponent implements OnInit {
+@Component({ selector: 'app-user', templateUrl: './user.component.html', styleUrls: ['./user.component.scss'] })
+export class UserComponent implements OnInit {
   users: User[] = [];
   userFormModel = this.api.saveOrUpdateUserFormModel({
     formTitle: 'Add New User',
