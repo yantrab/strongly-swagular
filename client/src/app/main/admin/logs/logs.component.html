@@ -1,1 +1,7 @@
-<p>logs works!</p>
+<div fxFlexFill *ngIf="logs" fxLayout="column">
+  <swagular-table style="padding: 50px" fxFlex [dataSource]="logs" [options]="logsTableOptions" >
+    <ng-template appCellDef column="time" let-row="row" >
+      {{row.time | date:'dd/MM/YY HH:mm:s'}}
+    </ng-template>
+  </swagular-table>
+</div>

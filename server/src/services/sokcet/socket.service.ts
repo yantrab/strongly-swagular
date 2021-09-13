@@ -1,11 +1,15 @@
 import { Server, Socket } from "socket.io";
-const io = new Server();
+import { Subject } from "rxjs";
 export class WebSocketService {
+  io = new Server({ cors: { origin: "*" } });
+  registerToLogs = new Subject<Socket>();
   constructor() {
-    io.on("connection", (socket: Socket) => {
-      socket.on("registerToLogs", listener => {});
-      // ...
+    const port = 4001;
+    this.io.on("connection", (socket: Socket) => {
+      socket.on("registerToLogs", token => {
+        socket.join("logs");
+      });
     });
-    io.listen(4001);
+    this.io.listen(port);
   }
 }
