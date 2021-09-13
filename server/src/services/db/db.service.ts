@@ -7,7 +7,7 @@ export class Repository<T extends Entity<T>> {
   constructor(public collection: Collection<Partial<EntityWithoutGetters<T>>>) {}
 
   async saveOrUpdateOne(entity: T): Promise<typeof entity> {
-    if (entity.isNew) {
+    if (!entity._id) {
       await this.collection.insertOne(entity as any);
     } else {
       const itemToUpdate = omit(entity, ["_id"]);

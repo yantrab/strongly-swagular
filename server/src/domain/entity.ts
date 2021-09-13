@@ -6,7 +6,4 @@ export abstract class Entity<T> {
   }
   _id?: string;
   _isDeleted?: boolean;
-  get isNew() {
-    return !this._id;
-  }
 }
