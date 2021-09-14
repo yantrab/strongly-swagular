@@ -1,0 +1,5 @@
+<div fxFlexFill *ngIf="panels && panelsTableOptions" fxLayout="column">
+  <button style="width: 150px;" (click)="openAddPanelDialog()" mat-raised-button color="primary">Create New Panel</button>
+  <mat-slide-toggle [checked]="false" (change)="showDeleted = $event.checked">Show deleted panels</mat-slide-toggle>
+  <swagular-table  style="padding: 50px" fxFlex [dataSource]="panelsToShow" [options]="panelsTableOptions"></swagular-table>
+</div>

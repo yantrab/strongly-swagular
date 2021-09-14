@@ -24,7 +24,7 @@ import { LocaleService } from 'swagular/components';
         <button (click)="changeLang('he')" mat-menu-item>Hebrew</button>
         <button (click)="changeLang('en')" mat-menu-item>English</button>
       </mat-menu>
-      <a mat-button>Some page</a>
+      <a mat-button routerLink="panel">Panels</a>
       <a mat-button routerLink="admin" *ngIf="user?.role === 'admin'">admin</a>
       <span style="flex: 1 1 auto;"></span>
       <span> Hello {{ user?.firstName }} {{ user?.lastName }}</span>

@@ -12,14 +12,14 @@ export class AdminController {
   private async addUser(user: User) {
     const existUser = await this.userService.userRepo.findOne({ email: user.email, _isDeleted: undefined });
     if (existUser) throw new Error("The user already exist");
-    const result = await this.userService.saveOrUpdateUser(new User(user));
+    const result = await this.userService.saveOrUpdateUser(user);
     this.userService.sentPermission(user.email);
     return result;
   }
 
   @post saveOrUpdateUser(@body user: User): Promise<User> {
     user = new User(user);
-    if (user.isNew) {
+    if (!user._id) {
       return this.addUser(user);
     }
 

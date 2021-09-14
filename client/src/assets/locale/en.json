@@ -13,7 +13,47 @@
     "rePassword": {"label":"Insert Password Again"}
   },
   "saveOrUpdateUserForm": {
-    "formTitle": "Add New User",
-    "firstName": "fsdf"
-  }
+    "formTitle": "Add New User"
+  },
+  "addPanelFormModel": {
+    "formTitle": "Add Panel",
+    "panelId": {"label": "iemi", "hint": "the panel uuid"},
+    "id": {"label":"id"},
+    "address": {"label":"address"},
+    "direction": {"label":"Lang"},
+    "phoneNumber": {"label":"Phone Number"},
+    "contactName": {"label":"Contact Name", "hint": "Building committee"},
+    "contactPhone": {"label":"Contact Phone"}
+  },
+  "savePanelFormModel": {
+    "formTitle": "Edit Panel",
+    "address": {"label":"address"},
+    "phoneNumber": {"label":"Phone Number"},
+    "contactName": {"label":"Contact Name", "hint": "Building committee"},
+    "contactPhone": {"label":"Contact Phone"}
+  },
+  "panelsTableOptions": {
+  "columns": [
+    {
+      "key": "panelId",
+      "title": "ID"
+    },
+    {
+      "key": "address",
+      "title": "Address"
+    },
+    {
+      "key": "phoneNumber",
+      "title": "Phone"
+    },
+    {
+      "key": "contactName",
+      "title": "Contact Name"
+    },
+    {
+      "key": "contactPhone",
+      "title": "Contact Phone"
+    }
+  ]
+}
 }
