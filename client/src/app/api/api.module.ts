@@ -14,7 +14,13 @@ import { SwagularService } from 'swagular';
   imports: [HttpClientModule],
   exports: [],
   declarations: [],
-  providers: [AdminService, AuthService, LogService, PanelService, ApiConfiguration]
+  providers: [
+    AdminService,
+    AuthService,
+    LogService,
+    PanelService,
+    ApiConfiguration
+  ],
 })
 export class ApiModule {
   static forRoot(params: ApiConfigurationParams): ModuleWithProviders<ApiModule> {
@@ -26,22 +32,25 @@ export class ApiModule {
           useValue: params
         }
       ]
-    };
+    }
   }
 
-  constructor(@Optional() @SkipSelf() parentModule: ApiModule, @Optional() http: HttpClient, swagularService: SwagularService) {
+  constructor(
+    @Optional() @SkipSelf() parentModule: ApiModule,
+    @Optional() http: HttpClient,
+    swagularService: SwagularService
+  ) {
     if (parentModule) {
       throw new Error('ApiModule is already loaded. Import in your base AppModule only.');
     }
     if (!http) {
-      throw new Error(
-        'You need to import the HttpClientModule in your AppModule! \n' + 'See also https://github.com/angular/angular/issues/20575'
-      );
+      throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
+      'See also https://github.com/angular/angular/issues/20575');
     }
     Object.keys(models).forEach(key => {
       if (key.endsWith('Schema')) {
-        swagularService.addSchema('#/components/schemas/' + key.replace('Schema', ''), (models as any)[key]);
+         swagularService.addSchema('#/components/schemas/' + key.replace('Schema', ''), (models as any)[key]);
       }
-    });
+  });
   }
 }

@@ -7,10 +7,12 @@ import { ConfigService } from "./services/config/config.service";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { LogService } from "./services/log.service";
 import { DbService } from "./services/db/db.service";
+import { FastifyInstance } from "fastify";
 const config = new ConfigService().config;
+export let server: FastifyInstance;
 const start = async () => {
-  const url = config.mongoUrl || (await new MongoMemoryServer().getUri());
-  const mongo = await new MongoClient(url);
+  const url = config.mongoUrl || (await MongoMemoryServer.create()).getUri();
+  const mongo = await new MongoClient(url, { ignoreUndefined: true });
   await mongo.connect();
   const dbService = new DbService(mongo);
   const logService = new LogService(dbService);
@@ -43,7 +45,7 @@ const start = async () => {
         process.exit(1);
       }
     });
-    app.options;
+    server = app;
   });
 };
 start();

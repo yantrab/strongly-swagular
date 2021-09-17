@@ -38,6 +38,8 @@ class AdminComponent {}
     ComponentModule,
     CommonModule,
     RouterModule.forChild([
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
+
       {
         path: '',
         component: AdminComponent,

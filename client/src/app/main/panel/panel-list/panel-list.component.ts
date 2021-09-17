@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormComponent, LocaleService, TableOptions } from 'swagular/components';
 import { MatDialog } from '@angular/material/dialog';
-import { PanelService } from '../../../api/services/panel.service';
+import { PanelService as Api } from '../../../api/services/panel.service';
 import { PanelDetails } from '../../../api/models/panel-details';
+import { PanelService } from '../panel.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -29,7 +30,8 @@ export class PanelListComponent implements OnInit {
   panelsTableOptions?: TableOptions<PanelDetails>;
   showDeleted = false;
   constructor(
-    private api: PanelService,
+    private api: Api,
+    private panelService: PanelService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private localeService: LocaleService,
@@ -42,8 +44,8 @@ export class PanelListComponent implements OnInit {
         rowActions: [
           { icon: 'edit', action: ($event, row) => this.openEditPanelDialog(row) },
           { icon: 'delete', action: ($event, row) => this.deletePanel(row) },
-          { icon: 'manage_accounts', action: ($event, row) => this.router.navigate(['panel/contacts/' + row.panelId]) },
-          { icon: 'settings', action: ($event, row) => this.router.navigate(['panel/settings/' + row.panelId]) }
+          { icon: 'manage_accounts', action: ($event, row) => this.panelService.navigateToContact(row) },
+          { icon: 'settings', action: ($event, row) => this.panelService.navigateToSettings(row) }
         ]
       };
       this.cdr.detectChanges();
@@ -106,10 +108,17 @@ export class PanelListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.api.addNewPanel(result).subscribe(savedPanel => {
-          this.panels = this.panels.concat([savedPanel]);
-          this.snackBar.open('Panel was saved successfully', '', { duration: 2000 });
-        });
+        this.api.addNewPanel(result).subscribe(
+          savedPanel => {
+            this.panels = this.panels.concat([savedPanel]);
+            this.cdr.detectChanges();
+            this.snackBar.open('Panel was saved successfully', '', { duration: 2000 });
+          },
+          error => {
+            console.log(JSON.stringify(error));
+            this.snackBar.open(error.error?.message, '', { duration: 5000 });
+          }
+        );
       }
     });
   }

@@ -1,5 +1,5 @@
 export abstract class Entity<T> {
-  protected constructor(data?) {
+  protected constructor(data?: T) {
     if (data) {
       Object.assign(this, data);
     }

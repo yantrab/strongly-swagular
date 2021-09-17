@@ -6,13 +6,19 @@ import { ComponentModule } from '../../components/component.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SettingsComponent } from './settings/settings.component';
 import { ContactsComponent } from './contacts/contacts.component';
+import { PanelService } from './panel.service';
 
 @Component({
   selector: 'app-admin',
   template: `
     <div fxLayout="column" fxFlexFill>
       <mat-toolbar>
-        <a mat-button routerLink="list">list</a>
+        <div fxFlex="40%">
+          <a mat-button routerLink="list">Panel List</a>
+          <a *ngIf="currentPanel" mat-button [routerLink]="'contacts/' + currentPanel.panelId">Edit Panel Contact</a>
+          <a *ngIf="currentPanel" mat-button [routerLink]="'settings/' + currentPanel.panelId">Edit Panel Settings</a>
+        </div>
+        <div *ngIf="currentPanel">Edit panel id{{ ' ' + currentPanel.panelId + ' ' }} address:{{ ' ' + currentPanel.address + ' ' }}</div>
       </mat-toolbar>
       <div style="padding: 1%;" fxFlex>
         <router-outlet
@@ -31,7 +37,12 @@ import { ContactsComponent } from './contacts/contacts.component';
     `
   ]
 })
-class PanelComponent {}
+class PanelComponent {
+  get currentPanel() {
+    return this.service.currentPanel;
+  }
+  constructor(private service: PanelService) {}
+}
 
 @NgModule({
   declarations: [PanelListComponent, PanelComponent, SettingsComponent, ContactsComponent],
@@ -39,6 +50,7 @@ class PanelComponent {}
     ComponentModule,
     CommonModule,
     RouterModule.forChild([
+      { path: '', redirectTo: 'list', pathMatch: 'full' },
       {
         path: '',
         component: PanelComponent,

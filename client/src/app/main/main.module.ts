@@ -28,6 +28,8 @@ class MainComponent {
   imports: [
     ComponentModule,
     RouterModule.forChild([
+      { path: '', redirectTo: 'panel', pathMatch: 'full' },
+
       {
         path: '',
         component: MainComponent,
