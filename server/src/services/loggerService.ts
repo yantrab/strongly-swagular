@@ -2,7 +2,7 @@ import { DbService, Repository } from "./db/db.service";
 import { v4 as uuidv4 } from "uuid";
 import { CacheService } from "./cache.service";
 import { WebSocketService } from "./sokcet/socket.service";
-export class LogService {
+export class LoggerService {
   logRepo: Repository<any>;
   constructor(
     private dbService: DbService,

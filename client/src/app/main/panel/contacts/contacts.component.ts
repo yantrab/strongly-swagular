@@ -1,11 +1,17 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Contact } from '../../../api/models/contact';
-import { PanelService } from '../../../api/services/panel.service';
+import { Contact, ContactSchema } from '../../../api/models/contact';
+import { PanelService as API, updateContactFormGroupSchema, UpdateContactFormGroupType } from '../../../api/services/panel.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormComponent, LocaleService, TableOptions } from 'swagular/components';
-import { PanelDetails } from '../../../api/models/panel-details';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PanelService } from '../panel.service';
+import { Lang } from '../../../api/models/lang';
+import { Validators } from '@angular/forms';
+import { Contacts } from '../../../api/models/contacts';
+import { Source } from '../../../api/models/source';
+import { ChangeItem } from '../../../api/models/change-item';
+import { SwagularService } from 'swagular';
 
 @Component({
   selector: 'app-contacts',
@@ -14,17 +20,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class ContactsComponent implements OnInit {
   contactsTableOptions?: TableOptions<Contact>;
-  _contacts?: Contact[];
+  columns = ['name1', 'name2', 'tel1', 'tel2', 'tel3', 'tel4', 'tel5', 'tel6', 'code', 'ref', 'apartment'];
   panelId?: number;
-  get contacts() {
-    return this._contacts!;
-  }
-  updateContactFormModel = this.api.updateContactFormModel({
+  updateContactFormModel = this.swagularService.getFormModel<Contact>(ContactSchema, {
     localePath: 'updateContactFormModel',
-    displayProperties: ['name1', 'name2', 'tel1', 'tel2', 'tel3', 'tel4', 'tel5', 'tel6', 'code', 'ref', 'apartment']
+    displayProperties: this.columns as any
   });
+
   constructor(
-    private api: PanelService,
+    private api: API,
+    private swagularService: SwagularService,
+    private panelService: PanelService,
     private route: ActivatedRoute,
     private localeService: LocaleService,
     private cdr: ChangeDetectorRef,
@@ -42,6 +48,17 @@ export class ContactsComponent implements OnInit {
         this.cdr.detectChanges();
       });
     });
+
+    if (this.panelService.currentPanel?.direction === Lang.he) {
+      this.updateContactFormModel.formGroup.controls.name1.setValidators(Validators.maxLength(12));
+      this.updateContactFormModel.formGroup.controls.name2?.setValidators(Validators.maxLength(12));
+    }
+  }
+
+  _contacts?: Contacts;
+
+  get contacts() {
+    return this._contacts!;
   }
 
   openEditContactDialog(contact: Contact): void {
@@ -54,16 +71,42 @@ export class ContactsComponent implements OnInit {
       panelClass: 'admin-form'
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: Contact) => {
       if (result) {
-        const relevant = this.contacts.find(u => u.index === result.index);
-        this.api.updateContact(this.panelId!, result).subscribe(savedPanel => {
-          Object.keys(result).forEach(key => ((relevant as any)[key] = result[key]));
-          this._contacts = [...this.contacts];
+        const keys = Object.keys(result) as Array<keyof Contact>;
+        const relevant = this.contacts.list[result.index];
+        const changes: ChangeItem[] = [];
+        keys.forEach((key: keyof Contact) => {
+          if (relevant[key] !== result[key] || (result[key] && !relevant[key])) {
+            if (!this.contacts.changes.find(c => c.index === result.index && c.key === key && c.previewsValue !== undefined)) {
+              changes.push({ index: result.index, key, previewsValue: relevant[key] as string, source: Source.client });
+            }
+          }
+        });
+        this.contacts.changes.push(...changes);
+        this.api.updateContact(this.panelId!, { contact: result, changes }).subscribe(savedPanel => {
+          keys.forEach(key => ((relevant as any)[key] = result[key]));
+          this.contacts.list = [...this.contacts.list];
           this.snackBar.open('Panel was saved successfully', '', { duration: 2000 });
         });
       }
     });
   }
   ngOnInit(): void {}
+
+  getColor(index: number, key: string) {
+    // console.log(index + property);
+    const source = this.contacts.changes.find(c => c.index === index && c.key === key)?.source;
+    if (source === Source.client) {
+      return '#ecfb9b';
+    }
+    if (source === Source.Panel) {
+      return '#8fff8f';
+    }
+
+    if (source === Source.PanelProgress) {
+      return 'orangered';
+    }
+    return undefined;
+  }
 }
