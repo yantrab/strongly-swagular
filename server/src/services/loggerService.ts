@@ -6,11 +6,11 @@ export class LoggerService {
   logRepo: Repository<any>;
   constructor(
     private dbService: DbService,
-    private readonly cacheService?: CacheService,
-    private readonly webSocketService?: WebSocketService
+    // private readonly cacheService?: CacheService,
+    private readonly webSocketService: WebSocketService
   ) {
-    this.cacheService = this.cacheService || new CacheService();
-    this.webSocketService = this.webSocketService || new WebSocketService();
+    // this.cacheService = this.cacheService || new CacheService();
+    // this.webSocketService = this.webSocketService || new WebSocketService();
     this.logRepo = this.dbService.getRepository({ name: "logs" }, "log");
   }
 
@@ -23,13 +23,13 @@ export class LoggerService {
     return this.logRepo.find();
   }
 
-  async createLogToken(email: string) {
-    const token = uuidv4();
-    this.cacheService?.set("logs_" + email, token, 5);
-    return token;
-  }
-
-  async getLogToken(email: string) {
-    return this.cacheService?.get("logs_" + email);
-  }
+  // async createLogToken(email: string) {
+  //   const token = uuidv4();
+  //   this.cacheService?.set("logs_" + email, token, 5);
+  //   return token;
+  // }
+  //
+  // async getLogToken(email: string) {
+  //   return this.cacheService?.get("logs_" + email);
+  // }
 }

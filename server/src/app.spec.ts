@@ -16,18 +16,18 @@ const host = "localhost"; //'128.199.41.162'; //'178.62.237.25' //'
 class AppSpec {
   panelService: PanelService;
   panel: PanelDetails;
-  static async before() {
-    await app();
-  }
-  async before() {
-    this.panel = { panelId: 1, direction: Lang.en, userId: "1", status: ActionType.idle, phoneNumber: 1 };
-    this.panelService = await inject(PanelService);
-    // @ts-ignore
-    await this.panelService.panelDetailsRepo.collection.deleteMany({});
-    // @ts-ignore
-    await this.panelService.panelContactsRepo.collection.deleteMany({});
-    await this.panelService.addNewPanel(this.panel);
-  }
+  // static async before() {
+  //    await app();
+  // }
+  // async before() {
+  //   this.panel = { panelId: 1, direction: Lang.en, userId: "1", status: ActionType.idle, phoneNumber: 1 };
+  //   this.panelService = await inject(PanelService);
+  //   // @ts-ignore
+  //   await this.panelService.panelDetailsRepo.collection.deleteMany({});
+  //   // @ts-ignore
+  //   await this.panelService.panelContactsRepo.collection.deleteMany({});
+  //   await this.panelService.addNewPanel(this.panel);
+  // }
   write = async (str: string) => {
     return new Promise(resolve => {
       const client = new Socket();
@@ -111,5 +111,15 @@ class AppSpec {
     const p = await this.panelService.getPanelContacts(1);
     expect(p?.list[0].name1).toBe("aaaa    aaaa");
     expect(p?.changes[0]).toStrictEqual({ index: 0, key: "name1", source: 0 });
+  }
+
+  @test
+  async s() {
+    const registerAction = { type: ActionType.status, pId: "1" };
+    const registerActionString = JSON.stringify(registerAction);
+    const registerActionD = { type: ActionType.status, pId: "1", d: 1 };
+    const registerActionStringD = JSON.stringify(registerActionD);
+
+    await this.write(registerActionString);
   }
 }

@@ -35,6 +35,7 @@ export class PanelDetails extends Entity<PanelDetails> {
   panelId: number;
   userId: string;
   status: ActionType;
+  lastConnection?: number;
 }
 
 export class AddPanelDetailsDTO {

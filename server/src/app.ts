@@ -7,17 +7,20 @@ import { ConfigService } from "./services/config/config.service";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { LoggerService } from "./services/loggerService";
 import { DbService } from "./services/db/db.service";
+import { WebSocketService } from "./services/sokcet/socket.service";
 const config = new ConfigService().config;
 export const app = async (path?) => {
   const url = config.mongoUrl || (await MongoMemoryServer.create()).getUri();
   const mongo = await new MongoClient(url, { ignoreUndefined: true });
   await mongo.connect();
   const dbService = new DbService(mongo);
-  const logService = new LoggerService(dbService);
+  const webSocketService = new WebSocketService();
+  const logService = new LoggerService(dbService, webSocketService);
   const app = await ServerFactory.create({
     controllers: path,
     providers: [
       { provide: DbService, useValue: dbService },
+      { provide: WebSocketService, useValue: webSocketService },
       { provide: LoggerService, useValue: logService }
     ],
     logger: { stream: logService }

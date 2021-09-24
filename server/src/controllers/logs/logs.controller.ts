@@ -10,6 +10,6 @@ export class LogController {
   }
 
   @get createLogToken(@user user: User) {
-    return this.logService.createLogToken(user.email);
+    return ""; // this.logService.createLogToken(user.email);
   }
 }

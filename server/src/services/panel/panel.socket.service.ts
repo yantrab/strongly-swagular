@@ -6,6 +6,7 @@ import { ActionType, PanelDetails } from "../../domain/panel/panel.details";
 import { Panel, panelPropertiesSetting } from "../../domain/panel/panel";
 import { Source } from "../../domain/panel/panel.contacts";
 import { cloneDeep } from "lodash";
+import { WebSocketService } from "../sokcet/socket.service";
 
 const SOCKET_TIMEOUT = 1000 * 30;
 
@@ -16,7 +17,10 @@ interface Action {
 }
 
 export class PanelSocketService {
-  constructor(private logger: LoggerService, private panelService: PanelService) {}
+  constructor(private logger: LoggerService, private panelService: PanelService, private readonly webSocketService: WebSocketService) {}
+  sentMsg(id: number, action: string, data: any) {
+    this.webSocketService?.io.to("panel_" + id).emit(action, data);
+  }
 
   listen() {
     const port = 4000;
@@ -65,6 +69,9 @@ export class PanelSocketService {
                 result = await this.getStatus(action as any, panel);
                 break;
             }
+            panel.lastConnection = +new Date();
+            await this.panelService.saveOrUpdatePanel(panel);
+            this.sentMsg(panel.panelId, "panelUpdate", panel);
             let buffer = Buffer.from(result, "utf8");
             for (let i = 0; i < buffer.length; i++) {
               if (buffer[i] < 171 && buffer[i] > 143) {
@@ -74,7 +81,6 @@ export class PanelSocketService {
 
             return socket.write(buffer);
           } catch (e) {
-            //this.sentMsg(action.pId, { from: "server", e }, "log");
             this.logError("err.message " + port + ".", socket.address, e).then();
             socket.write("100");
             socket.end();
@@ -92,26 +98,28 @@ export class PanelSocketService {
       if (action.d && nextChange) {
         if (status === ActionType.writeToPanel) {
           panelDetails.status = ActionType.writeToPanelInProgress;
-          await this.panelService.saveOrUpdatePanel(panelDetails);
         }
         nextChange.previewsValue = undefined;
+        nextChange.source = Source.Panel;
         await this.panelService.setContactsChanges(panelDetails.panelId, panel.contacts.changes);
         nextChange = panel.contacts.changes.find(c => c.previewsValue !== undefined && c.source === Source.client);
       }
 
       if (!nextChange) {
         panelDetails.status = ActionType.idle;
-        await this.panelService.saveOrUpdatePanel(panelDetails);
       } else {
+        nextChange.source = Source.PanelProgress;
+        this.sentMsg(action.pId, "updateContacts", panel.contacts);
         const newValue = panel.contacts.list[nextChange.index][nextChange.key];
         const indexSettings = panelPropertiesSetting.contacts[nextChange.key];
         const index = indexSettings.index + indexSettings.length * nextChange.index;
         return "04" + ("0".repeat(10) + index).slice(-10) + newValue;
       }
+
+      this.sentMsg(action.pId, "updateContacts", panel.contacts);
     } else if (action.d) {
       panelDetails.status = ActionType.idle;
     }
-
     return panelDetails.status.toString();
   }
 
@@ -119,8 +127,6 @@ export class PanelSocketService {
     action.data.start = +action.data.start;
     if (panelDetails.status !== ActionType.readAllFromPanelInProgress) {
       panelDetails.status = ActionType.readAllFromPanelInProgress;
-      // this.sentMsg(action.pId, panel.actionType, "status");
-      await this.panelService.saveOrUpdatePanel(panelDetails);
     }
     const panel = await this.getPanel(panelDetails);
     const oldPanel = cloneDeep(panel);
@@ -154,8 +160,7 @@ export class PanelSocketService {
       });
     });
     await this.panelService.updateContacts(panelDetails.panelId, panel.contacts.list, panel.contacts.changes);
-    // this.sentMsg(action.pId, "", "write");
-
+    this.sentMsg(action.pId, "updateContacts", panel.contacts);
     return "111";
   }
 
