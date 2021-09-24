@@ -5,22 +5,24 @@ enum Lang {
   en = "English"
 }
 export enum ActionType {
-  idle = 0,
+  idle = "000",
   // readAll = 2,
   // writeAllToPanel = 3,
-  writeToPanel = 4,
-  readAllFromPanel = 5,
-  status = 6,
-  nameOrder = 7,
-  powerUp = 8,
+  writeToPanel = "444",
+  readAllFromPanel = "555",
+  status = "666",
+  nameOrder = "777",
+  powerUp = "888",
   // writeAllProgress = 10,
   // readAllProgress = 11,
 
   writeToPanelInProgress = 12,
   readAllFromPanelInProgress = 13,
 
-  writeToPanelCanceled = 14,
-  readAllFromPanelCanceled = 15
+  writeToPanelCanceled = "RRR",
+  readAllFromPanelCanceled = "SSS",
+  nameOrderCanceled = "TTT",
+  powerUpCanceled = "808"
 }
 
 export class PanelDetails extends Entity<PanelDetails> {

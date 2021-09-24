@@ -46,7 +46,7 @@ export class PanelService {
   }
 
   updateContacts(panelId: number, contacts: Contact[], changes?: ChangeItem[]) {
-    return this.panelContactsRepo.collection.updateOne({ panelId }, { $set: { list: contacts } });
+    return this.panelContactsRepo.collection.updateOne({ panelId }, { $set: { list: contacts, changes } });
   }
 
   setContactsChanges(panelId: number, changes: ChangeItem[]) {

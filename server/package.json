@@ -63,13 +63,6 @@
       "node_modules",
       "src"
     ],
-    "transformIgnorePatterns": [],
-    "globals": {
-      "ts-jest": {
-        "compiler": "typescript",
-        "tsconfig": "tsconfig.json"
-      }
-    },
     "detectOpenHandles": true
   }
 }
