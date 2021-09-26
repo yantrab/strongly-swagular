@@ -12,6 +12,7 @@ import { Contacts } from '../../../api/models/contacts';
 import { Source } from '../../../api/models/source';
 import { ChangeItem } from '../../../api/models/change-item';
 import { SwagularService } from 'swagular';
+import { Socket } from 'ngx-socket-io';
 
 @Component({
   selector: 'app-contacts',
@@ -35,15 +36,21 @@ export class ContactsComponent implements OnInit {
     private localeService: LocaleService,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private socket: Socket
   ) {
+    // socket.on('updateContacts', (contacts: Contacts) => {
+    //   this._contacts = contacts;
+    //   this.cdr.detectChanges();
+    // });
+
     this.localeService.getLocaleItem('contactsTableOptions').then(options => {
       this.contactsTableOptions = {
         columns: options.columns,
         rowActions: [{ icon: 'edit', action: ($event, row) => this.openEditContactDialog(row) }]
       };
       this.panelId = route.snapshot.params.panelId;
-      this.api.contacts(this.panelId!).subscribe(contacts => {
+      this.panelService.getContacts(this.panelId!).subscribe(contacts => {
         this._contacts = contacts;
         this.cdr.detectChanges();
       });

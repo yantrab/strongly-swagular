@@ -4,7 +4,7 @@ import { Buffer } from "buffer";
 import { PanelService } from "./panel.service";
 import { ActionType, PanelDetails } from "../../domain/panel/panel.details";
 import { Panel, panelPropertiesSetting } from "../../domain/panel/panel";
-import { Source } from "../../domain/panel/panel.contacts";
+import { ChangeItem, Source } from "../../domain/panel/panel.contacts";
 import { cloneDeep } from "lodash";
 import { WebSocketService } from "../sokcet/socket.service";
 
@@ -93,16 +93,17 @@ export class PanelSocketService {
     const status = panelDetails.status;
     if (status === ActionType.writeToPanel || status === ActionType.writeToPanelInProgress) {
       const panel = await this.getPanel(panelDetails);
-      let nextChange = panel.contacts.changes.find(c => c.previewsValue !== undefined && c.source === Source.client);
+      const getNextChange = () => panel.contacts.changes.find(c => c.previewsValue !== null && c.source === Source.client) as any;
+      let nextChange = getNextChange();
 
       if (action.d && nextChange) {
         if (status === ActionType.writeToPanel) {
           panelDetails.status = ActionType.writeToPanelInProgress;
         }
-        nextChange.previewsValue = undefined;
+        (nextChange as any).previewsValue = null;
         nextChange.source = Source.Panel;
         await this.panelService.setContactsChanges(panelDetails.panelId, panel.contacts.changes);
-        nextChange = panel.contacts.changes.find(c => c.previewsValue !== undefined && c.source === Source.client);
+        nextChange = getNextChange();
       }
 
       if (!nextChange) {
@@ -117,9 +118,13 @@ export class PanelSocketService {
       }
 
       this.sentMsg(action.pId, "updateContacts", panel.contacts);
+      if (!panel.contacts.changes.find(c => c.previewsValue)) {
+        await this.panelService.setContactsChanges(panelDetails.panelId, []);
+      }
     } else if (action.d) {
       panelDetails.status = ActionType.idle;
     }
+
     return panelDetails.status.toString();
   }
 

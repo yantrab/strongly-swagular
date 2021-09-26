@@ -7,6 +7,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SettingsComponent } from './settings/settings.component';
 import { ContactsComponent } from './contacts/contacts.component';
 import { PanelComponent } from './panel.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [PanelListComponent, PanelComponent, SettingsComponent, ContactsComponent],
@@ -25,7 +26,8 @@ import { PanelComponent } from './panel.component';
         ]
       }
     ]),
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatMenuModule
   ]
 })
 export class PanelModule {}

@@ -3,20 +3,25 @@ import { PanelDetails } from '../../api/models/panel-details';
 import { Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
 import { Contacts } from '../../api/models/contacts';
-
+import { PanelService as API } from '../../api/services/panel.service';
+import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class PanelService {
   currentPanel?: PanelDetails;
-  contacts?: Contacts;
-  constructor(private router: Router, private socket: Socket) {
+  contacts: BehaviorSubject<Contacts | undefined> = new BehaviorSubject<Contacts | undefined>(undefined);
+  constructor(private router: Router, private socket: Socket, private api: API) {
     socket.on('panelUpdate', (panel: PanelDetails) => {
       this.currentPanel = panel;
     });
-    socket.on('updateContacts', (contacts: Contacts) => (this.contacts = contacts));
+    socket.on('updateContacts', (contacts: Contacts) => this.contacts.next(contacts));
   }
 
+  getContacts(panelId: number) {
+    this.api.contacts(panelId).subscribe((contacts: Contacts) => this.contacts.next(contacts));
+    return this.contacts;
+  }
   navigateToContact(panel: PanelDetails) {
     this.navigateTo('panel/contacts/', panel);
   }

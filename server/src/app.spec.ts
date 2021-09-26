@@ -120,6 +120,6 @@ class AppSpec {
     const registerActionD = { type: ActionType.status, pId: "1", d: 1 };
     const registerActionStringD = JSON.stringify(registerActionD);
 
-    await this.write(registerActionString);
+    await this.write(registerActionStringD);
   }
 }
