@@ -4,12 +4,13 @@ import { Socket } from 'ngx-socket-io';
 import { ActionType } from '../../api/models/action-type';
 import { PanelService as API } from '../../api/services/panel.service';
 import { PanelDetails } from '../../api/models/panel-details';
+import { saveAs } from 'file-saver';
 
 @Component({
-  selector: 'app-admin',
+  selector: 'app-panel',
   template: `
     <div fxLayout="column" fxFlexFill>
-      <mat-toolbar>
+      <mat-toolbar fxLayoutAlign="space-between">
         <div fxFlex="40%">
           <a mat-button routerLink="list">Panel List</a>
           <a *ngIf="currentPanel" mat-button [routerLink]="'contacts/' + currentPanel.panelId">Edit Panel Contact</a>
@@ -32,6 +33,14 @@ import { PanelDetails } from '../../api/models/panel-details';
                 <mat-icon>pin_end</mat-icon>
                 <span>receive</span>
               </button>
+              <button mat-menu-item [matMenuTriggerFor]="upload">
+                <mat-icon>file_upload</mat-icon>
+                <span>Upload</span>
+              </button>
+              <button mat-menu-item [matMenuTriggerFor]="download">
+                <mat-icon>file_download</mat-icon>
+                <span>Download</span>
+              </button>
             </mat-menu>
             <mat-menu #sent="matMenu">
               <button (click)="changeStatus(status.writeToPanel)" mat-menu-item>
@@ -45,10 +54,21 @@ import { PanelDetails } from '../../api/models/panel-details';
             <mat-menu #receive="matMenu">
               <button (click)="changeStatus(status.readAllFromPanel)" mat-menu-item>Get all from panel</button>
             </mat-menu>
+            <mat-menu #upload="matMenu">
+              <button appFileUpload (fileContent)="uploadDump($event)" mat-menu-item><mat-icon>upload_file</mat-icon>Dump</button>
+              <button appFileUpload (fileContent)="uploadCsv($event)" mat-menu-item><mat-icon>attach_file</mat-icon>Excel</button>
+            </mat-menu>
+            <mat-menu #download="matMenu">
+              <button (click)="downloadDump()" mat-menu-item><mat-icon>download_file</mat-icon>Dump</button>
+              <button (click)="downloadCsv()" mat-menu-item><mat-icon>download_file</mat-icon>Excel</button>
+            </mat-menu>
           </div>
-          <app-progress *ngIf="currentPanel.status != status.idle" [doneCount]="doneCount" [initialCount]="initialCount"></app-progress>
-          <button mat-button *ngIf="doneCount === initialCount && this.showProgressBar" (click)="this.showProgressBar = false">
-            close
+          <app-progress *ngIf="this.showProgressBar" [doneCount]="doneCount" [initialCount]="initialCount"></app-progress>
+          <button mat-button *ngIf="doneCount === initialCount && this.showProgressBar" (click)="this.service.showProgressBar = false">
+            <mat-icon>download_done</mat-icon>
+          </button>
+          <button mat-button *ngIf="doneCount !== initialCount && this.showProgressBar" (click)="cancelAction()">
+            <mat-icon>cancel</mat-icon> Cancel
           </button>
         </div>
       </mat-toolbar>
@@ -66,14 +86,17 @@ import { PanelDetails } from '../../api/models/panel-details';
 export class PanelComponent {
   lastConnect = 0;
   status = ActionType;
-  showProgressBar = false;
-  constructor(private service: PanelService, private socket: Socket, private api: API) {
+  constructor(public service: PanelService, private socket: Socket, private api: API) {
     setInterval(() => this.lastConnect++, 1000);
     this.socket.on('panelUpdate', () => (this.lastConnect = 0));
   }
 
   get isConnected() {
     return this.lastConnect < 7;
+  }
+
+  get showProgressBar(): boolean {
+    return this.service.showProgressBar!;
   }
 
   get currentPanel(): PanelDetails {
@@ -88,8 +111,34 @@ export class PanelComponent {
     return this.service.contacts.value?.changes.length;
   }
   changeStatus(status: ActionType) {
-    this.showProgressBar = true;
+    this.service.showProgressBar = true;
     this.currentPanel.status = status;
     this.api.savePanel(this.currentPanel).subscribe(() => {});
+  }
+
+  cancelAction() {
+    this.currentPanel.status = ActionType.idle;
+    this.api.savePanel(this.currentPanel).subscribe(() => {
+      this.service.showProgressBar = false;
+    });
+  }
+
+  uploadDump(dump: any) {
+    this.service.reDump(dump);
+  }
+
+  async downloadDump() {
+    this.api.dump(this.currentPanel).subscribe(dump => {
+      const blob = new Blob([dump], { type: 'text/plain;charset=utf-8' });
+      saveAs(blob, 'dump.txt');
+    });
+  }
+
+  uploadCsv(file: any) {
+    this.service.uploadCsv(file);
+  }
+
+  downloadCsv() {
+    this.service.downloadCsv();
   }
 }

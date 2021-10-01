@@ -5,9 +5,9 @@ const phonePattern = /^[0-9f\-*#]*$/g;
 
 export class Contact {
   index: number;
-  @max(13) name1: string;
+  @max(13) name1?: string;
   @max(13) name2?: string;
-  @max(panelPropertiesSetting.contacts.tel1.length) @pattern(phonePattern) tel1: string;
+  @max(panelPropertiesSetting.contacts.tel1.length) @pattern(phonePattern) tel1?: string;
   @max(panelPropertiesSetting.contacts.tel2.length) @pattern(phonePattern) tel2?: string;
   @max(panelPropertiesSetting.contacts.tel3.length) @pattern(phonePattern) tel3?: string;
   @max(panelPropertiesSetting.contacts.tel4.length) @pattern(phonePattern) tel4?: string;

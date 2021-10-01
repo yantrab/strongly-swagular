@@ -1,4 +1,4 @@
-import { body, get, guard, params, post, user } from "strongly";
+import { body, get, guard, params, post, user, query } from "strongly";
 import { PanelService } from "../../services/panel/panel.service";
 import { Role, User } from "../../domain/user";
 import { AddPanelDetailsDTO, PanelDetails } from "../../domain/panel/panel.details";
@@ -35,5 +35,17 @@ export class PanelController {
     @body("changes") changes: ChangeItem[]
   ) {
     return this.service.updateContact(panelId, contact, changes);
+  }
+
+  @get dump(@query panel: PanelDetails) {
+    return this.service.dump(panel);
+  }
+
+  @post reDump(@body("panel") panel: PanelDetails, @body("dump") dump: string) {
+    return this.service.reDump(panel, dump.slice(1));
+  }
+
+  @post updateContacts(@body("panelId") panelId: number, @body("contacts") contacts: Contact[], @body("changes") changes?: ChangeItem[]) {
+    return this.service.updateContacts(panelId, contacts, changes);
   }
 }

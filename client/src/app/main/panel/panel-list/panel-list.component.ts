@@ -15,20 +15,17 @@ import { Router } from '@angular/router';
 })
 export class PanelListComponent implements OnInit {
   panels: PanelDetails[] = [];
-  get panelsToShow() {
-    return this.showDeleted ? this.panels : this.panels.filter(p => !p._isDeleted);
-  }
   addPanelFormModel = this.api.addNewPanelFormModel({
     localePath: 'addPanelFormModel',
     displayProperties: ['panelId', 'id', 'address', 'phoneNumber', 'contactName', 'contactPhone', 'direction']
   });
-
   updatePanelFormModel = this.api.savePanelFormModel({
     localePath: 'savePanelFormModel',
     displayProperties: ['address', 'phoneNumber', 'contactName', 'contactPhone']
   });
   panelsTableOptions?: TableOptions<PanelDetails>;
   showDeleted = false;
+
   constructor(
     private api: Api,
     private panelService: PanelService,
@@ -54,6 +51,10 @@ export class PanelListComponent implements OnInit {
       this.panels = panels;
       this.cdr.detectChanges();
     });
+  }
+
+  get panelsToShow() {
+    return this.showDeleted ? this.panels : this.panels.filter(p => !p._isDeleted);
   }
 
   ngOnInit(): void {}
@@ -113,6 +114,7 @@ export class PanelListComponent implements OnInit {
             this.panels = this.panels.concat([savedPanel]);
             this.cdr.detectChanges();
             this.snackBar.open('Panel was saved successfully', '', { duration: 2000 });
+            this.panelService.navigateToContact(savedPanel);
           },
           error => {
             console.log(JSON.stringify(error));

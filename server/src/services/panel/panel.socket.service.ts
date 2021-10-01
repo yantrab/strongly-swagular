@@ -54,7 +54,7 @@ export class PanelSocketService {
           try {
             timeOut.refresh();
             const action = this.buildAction(msg);
-            const panel = await this.panelService.getPanel(action.pId);
+            const panel = await this.panelService.getPanelDetails(action.pId);
             if (!panel) return socket.write("999");
             let result;
             switch (action.type) {
@@ -92,7 +92,7 @@ export class PanelSocketService {
   private async getStatus(action: Action & { d }, panelDetails: PanelDetails): Promise<string> {
     const status = panelDetails.status;
     if (status === ActionType.writeToPanel || status === ActionType.writeToPanelInProgress) {
-      const panel = await this.getPanel(panelDetails);
+      const panel = await this.panelService.getPanel(panelDetails);
       const getNextChange = () => panel.contacts.changes.find(c => c.previewsValue !== null && c.source === Source.client) as any;
       let nextChange = getNextChange();
 
@@ -133,7 +133,7 @@ export class PanelSocketService {
     if (panelDetails.status !== ActionType.readAllFromPanelInProgress) {
       panelDetails.status = ActionType.readAllFromPanelInProgress;
     }
-    const panel = await this.getPanel(panelDetails);
+    const panel = await this.panelService.getPanel(panelDetails);
     const oldPanel = cloneDeep(panel);
     const dump = panel.dump().split("");
     const start = action.data.start;
@@ -198,11 +198,5 @@ export class PanelSocketService {
   private logInfo(msg, hostname?, args?) {
     const log = { msg, ...args, time: +new Date(), level: 31 };
     return this.logger.write(JSON.stringify(log));
-  }
-
-  private async getPanel(panelDetails: PanelDetails) {
-    const contacts = await this.panelService.getPanelContacts(panelDetails.panelId);
-    if (!contacts) throw "contacts missing for panel " + panelDetails.panelId;
-    return new Panel({ contacts: contacts, details: panelDetails });
   }
 }

@@ -11,6 +11,7 @@ import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { environment } from '../environments/environment';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { LocaleService } from 'swagular/components';
+import { ExcelService } from './services/excel.service';
 const config: SocketIoConfig = { url: environment.socketUrl, options: {} };
 
 const isCordovaApp = Object(window).cordova !== undefined;
@@ -47,7 +48,8 @@ const routes: Routes = [
       useClass: InterceptorsService,
       multi: true
     },
-    NgDialogAnimationService
+    NgDialogAnimationService,
+    ExcelService
   ],
   bootstrap: [AppComponent]
 })

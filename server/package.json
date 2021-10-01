@@ -20,7 +20,7 @@
     "nodemailer": "^6.4.17",
     "rxjs": "^7.3.0",
     "socket.io": "^4.2.0",
-    "strongly": "^1.0.75",
+    "strongly": "^1.0.76",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

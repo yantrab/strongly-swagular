@@ -8,6 +8,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { ContactsComponent } from './contacts/contacts.component';
 import { PanelComponent } from './panel.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { AppModule } from '../../app.module';
 
 @NgModule({
   declarations: [PanelListComponent, PanelComponent, SettingsComponent, ContactsComponent],

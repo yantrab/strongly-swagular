@@ -3,6 +3,9 @@ import { DbService, Repository } from "../db/db.service";
 import { ChangeItem, Contact, Contacts } from "../../domain/panel/panel.contacts";
 import { dumps } from "../../domain/panel/initial-damps";
 import { Panel } from "../../domain/panel/panel";
+import { cloneDeep, pad } from "lodash";
+import { Source } from "../../../../client/src/app/api/models/source";
+import { getContactsChanges } from "../../../../shared/panel";
 
 export class PanelService {
   private panelDetailsRepo: Repository<PanelDetails>;
@@ -18,8 +21,14 @@ export class PanelService {
     return this.panelDetailsRepo.find(userId ? { userId } : {});
   }
 
-  async getPanel(panelId: number) {
+  async getPanelDetails(panelId: number) {
     return this.panelDetailsRepo.findOne({ panelId: panelId });
+  }
+
+  async getPanel(panelDetails: PanelDetails) {
+    const contacts = await this.getPanelContacts(panelDetails.panelId);
+    if (!contacts) throw "contacts missing for panel " + panelDetails.panelId;
+    return new Panel({ contacts: contacts, details: panelDetails });
   }
 
   saveOrUpdatePanel(panel: PanelDetails) {
@@ -51,5 +60,19 @@ export class PanelService {
 
   setContactsChanges(panelId: number, changes: ChangeItem[]) {
     return this.panelContactsRepo.collection.updateOne({ panelId }, { $set: { changes } });
+  }
+
+  async dump(panelDetails: PanelDetails) {
+    return (await this.getPanel(panelDetails)).dump();
+  }
+
+  async reDump(panelDetails: PanelDetails, dump: string) {
+    const panel = await this.getPanel(panelDetails);
+    const oldPanel = cloneDeep(panel);
+    panel.reDump(dump);
+    panel.contacts.changes = panel.contacts.changes || [];
+    panel.contacts.changes = panel.contacts.changes.concat(getContactsChanges(panel.contacts.list, oldPanel.contacts.list, Source.client));
+    await this.updateContacts(panelDetails.panelId, panel.contacts.list, panel.contacts.changes);
+    return { contacts: panel.contacts };
   }
 }
