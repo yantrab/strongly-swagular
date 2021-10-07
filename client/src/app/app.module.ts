@@ -33,7 +33,7 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes, { useHash: isCordovaApp }),
+    RouterModule.forRoot(routes, { useHash: isCordovaApp, onSameUrlNavigation: 'reload' }),
     ApiModule.forRoot({ rootUrl: environment.apiUrl }),
     SwagularModule,
     SocketIoModule.forRoot(config)

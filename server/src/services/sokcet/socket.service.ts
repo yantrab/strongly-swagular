@@ -2,6 +2,7 @@ import { Server, Socket } from "socket.io";
 import { Subject } from "rxjs";
 export class WebSocketService {
   io = new Server({ cors: { origin: "*" } });
+  rooms: { [id: string]: string } = {};
   constructor() {
     const port = 4001;
     this.io.on("connection", (socket: Socket) => {
@@ -12,7 +13,13 @@ export class WebSocketService {
         socket.leave("logs");
       });
       socket.on("registerToPanel", panelId => {
-        socket.join("panel_" + panelId);
+        const name = "panel_" + panelId;
+        const lastRoom = this.rooms[socket.id];
+        if (lastRoom) {
+          socket.leave(lastRoom);
+        }
+        socket.join(name);
+        this.rooms[socket.id] = name;
       });
       socket.on("unRegisterToPanel", panelId => {
         socket.leave("panel_" + panelId);

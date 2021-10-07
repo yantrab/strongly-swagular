@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Contact, ContactSchema } from '../../../api/models/contact';
-import { PanelService as API, updateContactFormGroupSchema, UpdateContactFormGroupType } from '../../../api/services/panel.service';
+import { PanelService as API } from '../../../api/services/panel.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormComponent, LocaleService, TableOptions } from 'swagular/components';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,7 +12,6 @@ import { Contacts } from '../../../api/models/contacts';
 import { Source } from '../../../api/models/source';
 import { ChangeItem } from '../../../api/models/change-item';
 import { SwagularService } from 'swagular';
-import { Socket } from 'ngx-socket-io';
 
 @Component({
   selector: 'app-contacts',
@@ -36,14 +35,8 @@ export class ContactsComponent implements OnInit {
     private localeService: LocaleService,
     private cdr: ChangeDetectorRef,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar,
-    private socket: Socket
+    private snackBar: MatSnackBar
   ) {
-    // socket.on('updateContacts', (contacts: Contacts) => {
-    //   this._contacts = contacts;
-    //   this.cdr.detectChanges();
-    // });
-
     this.localeService.getLocaleItem('contactsTableOptions').then(options => {
       this.contactsTableOptions = {
         columns: options.columns,
@@ -57,7 +50,7 @@ export class ContactsComponent implements OnInit {
     });
 
     if (this.panelService.currentPanel?.direction === Lang.he) {
-      this.updateContactFormModel.formGroup.controls.name1.setValidators(Validators.maxLength(12));
+      this.updateContactFormModel.formGroup.controls.name1?.setValidators(Validators.maxLength(12));
       this.updateContactFormModel.formGroup.controls.name2?.setValidators(Validators.maxLength(12));
     }
   }
@@ -70,7 +63,6 @@ export class ContactsComponent implements OnInit {
 
   openEditContactDialog(contact: Contact): void {
     this.updateContactFormModel.formGroup.reset(contact);
-    // this.updateContactFormModel.formGroup.patchValue(contact);
     const dialogRef = this.dialog.open(FormComponent, {
       width: '80%',
       maxWidth: '540px',

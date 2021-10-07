@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormComponent, LocaleService, TableOptions } from 'swagular/components';
+
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { PanelService as Api } from '../../../api/services/panel.service';
 import { PanelDetails } from '../../../api/models/panel-details';
 import { PanelService } from '../panel.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-panel',
@@ -32,8 +33,7 @@ export class PanelListComponent implements OnInit {
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private localeService: LocaleService,
-    private cdr: ChangeDetectorRef,
-    private router: Router
+    private cdr: ChangeDetectorRef
   ) {
     this.localeService.getLocaleItem('panelsTableOptions').then(options => {
       this.panelsTableOptions = {
@@ -45,11 +45,11 @@ export class PanelListComponent implements OnInit {
           { icon: 'settings', action: ($event, row) => this.panelService.navigateToSettings(row) }
         ]
       };
-      this.cdr.detectChanges();
-    });
-    api.list().subscribe(panels => {
-      this.panels = panels;
-      this.cdr.detectChanges();
+      this.panelService.panelList.subscribe(panels => {
+        if (!panels) return;
+        this.panels = panels;
+        this.cdr.detectChanges();
+      });
     });
   }
 
@@ -109,18 +109,7 @@ export class PanelListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.api.addNewPanel(result).subscribe(
-          savedPanel => {
-            this.panels = this.panels.concat([savedPanel]);
-            this.cdr.detectChanges();
-            this.snackBar.open('Panel was saved successfully', '', { duration: 2000 });
-            this.panelService.navigateToContact(savedPanel);
-          },
-          error => {
-            console.log(JSON.stringify(error));
-            this.snackBar.open(error.error?.message, '', { duration: 5000 });
-          }
-        );
+        this.panelService.addPanel(result);
       }
     });
   }

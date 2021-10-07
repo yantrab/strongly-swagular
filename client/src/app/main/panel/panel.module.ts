@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { PanelListComponent } from './panel-list/panel-list.component';
 import { RouterModule } from '@angular/router';
 import { ComponentModule } from '../../components/component.module';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SettingsComponent } from './settings/settings.component';
 import { ContactsComponent } from './contacts/contacts.component';
 import { PanelComponent } from './panel.component';
 import { MatMenuModule } from '@angular/material/menu';
-import { AppModule } from '../../app.module';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { PanelService } from './panel.service';
 
 @NgModule({
   declarations: [PanelListComponent, PanelComponent, SettingsComponent, ContactsComponent],
@@ -28,7 +29,9 @@ import { AppModule } from '../../app.module';
       }
     ]),
     MatSlideToggleModule,
-    MatMenuModule
-  ]
+    MatMenuModule,
+    MatSnackBarModule
+  ],
+  providers: [PanelService]
 })
 export class PanelModule {}

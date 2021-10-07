@@ -5,6 +5,7 @@ import { ActionType } from '../../api/models/action-type';
 import { PanelService as API } from '../../api/services/panel.service';
 import { PanelDetails } from '../../api/models/panel-details';
 import { saveAs } from 'file-saver';
+import { round } from 'lodash';
 
 @Component({
   selector: 'app-panel',
@@ -87,8 +88,9 @@ export class PanelComponent {
   lastConnect = 0;
   status = ActionType;
   constructor(public service: PanelService, private socket: Socket, private api: API) {
-    setInterval(() => this.lastConnect++, 1000);
-    this.socket.on('panelUpdate', () => (this.lastConnect = 0));
+    setInterval(() => {
+      this.lastConnect = round((+new Date() - (this.currentPanel?.lastConnection || 0)) / 1000);
+    }, 1000);
   }
 
   get isConnected() {
