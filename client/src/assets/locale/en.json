@@ -176,5 +176,27 @@
     "apartment": {
       "label": "Apartment"
     }
+  },
+  "mainToolVar": {
+    "language": "language",
+    "logout": "logout",
+    "hebrew": "Hebrew",
+    "english": "English"
+  },
+  "panelToolBar": {
+    "list": "Panel List",
+    "editContact": "Edit Panel Contact",
+    "editSettings": "Edit Panel Settings",
+    "sent": "sent",
+    "receive": "receive",
+    "upload": "Upload",
+    "download": "Download",
+    "sentChangesTo": "Sent changes to the panel",
+    "nameOrder": "Name Order",
+    "powerUp": "powerUp",
+    "getAll": "Get all from panel",
+    "dump": "Dump",
+    "excel": "Excel",
+    "cancel": "Cancel"
   }
 }

@@ -6,16 +6,18 @@ import { PanelService as API } from '../../api/services/panel.service';
 import { PanelDetails } from '../../api/models/panel-details';
 import { saveAs } from 'file-saver';
 import { round } from 'lodash';
+import { IPanelToolBar, IRootObject } from '../../../../../shared/locale.interface';
+import { LocaleService } from 'swagular/components';
 
 @Component({
   selector: 'app-panel',
   template: `
-    <div fxLayout="column" fxFlexFill>
+    <div fxLayout="column" fxFlexFill *ngIf="locale">
       <mat-toolbar fxLayoutAlign="space-between">
         <div fxFlex="40%">
-          <a mat-button routerLink="list">Panel List</a>
-          <a *ngIf="currentPanel" mat-button [routerLink]="'contacts/' + currentPanel.panelId">Edit Panel Contact</a>
-          <a *ngIf="currentPanel" mat-button [routerLink]="'settings/' + currentPanel.panelId">Edit Panel Settings</a>
+          <a mat-button routerLink="list">{{ locale.list }}</a>
+          <a *ngIf="currentPanel" mat-button [routerLink]="'contacts/' + currentPanel.panelId">{{ locale.editContact }}</a>
+          <a *ngIf="currentPanel" mat-button [routerLink]="'settings/' + currentPanel.panelId">{{ locale.editSettings }}</a>
         </div>
         <div *ngIf="currentPanel" fxLayout="row">
           <span> Edit panel id{{ ' ' + currentPanel.panelId + ' ' }} address:{{ ' ' + currentPanel.address + ' ' }} </span>
@@ -28,40 +30,44 @@ import { round } from 'lodash';
             <mat-menu #menu>
               <button mat-menu-item [matMenuTriggerFor]="sent">
                 <mat-icon>pin_invoke</mat-icon>
-                <span>sent</span>
+                <span>{{ locale.sent }}</span>
               </button>
               <button mat-menu-item [matMenuTriggerFor]="receive">
                 <mat-icon>pin_end</mat-icon>
-                <span>receive</span>
+                <span>{{ locale.receive }}</span>
               </button>
               <button mat-menu-item [matMenuTriggerFor]="upload">
                 <mat-icon>file_upload</mat-icon>
-                <span>Upload</span>
+                <span>{{ locale.upload }}</span>
               </button>
               <button mat-menu-item [matMenuTriggerFor]="download">
                 <mat-icon>file_download</mat-icon>
-                <span>Download</span>
+                <span>{{ locale.download }}</span>
               </button>
             </mat-menu>
             <mat-menu #sent="matMenu">
               <button (click)="changeStatus(status.writeToPanel)" mat-menu-item>
-                <mat-icon>call_made</mat-icon> Sent changes to the panel
+                <mat-icon>call_made</mat-icon> {{ locale.sentChangesTo }}
               </button>
-              <button (click)="changeStatus(status.nameOrder)" mat-menu-item><mat-icon>sort</mat-icon> Sent changes to the panel</button>
+              <button (click)="changeStatus(status.nameOrder)" mat-menu-item><mat-icon>sort</mat-icon> {{ locale.nameOrder }}</button>
               <button (click)="changeStatus(status.powerUp)" mat-menu-item>
-                <mat-icon>power_settings_new</mat-icon> Sent changes to the panel
+                <mat-icon>power_settings_new</mat-icon> {{ locale.powerUp }}
               </button>
             </mat-menu>
             <mat-menu #receive="matMenu">
-              <button (click)="changeStatus(status.readAllFromPanel)" mat-menu-item>Get all from panel</button>
+              <button (click)="changeStatus(status.readAllFromPanel)" mat-menu-item>{{ locale.getAll }}</button>
             </mat-menu>
             <mat-menu #upload="matMenu">
-              <button appFileUpload (fileContent)="uploadDump($event)" mat-menu-item><mat-icon>upload_file</mat-icon>Dump</button>
-              <button appFileUpload (fileContent)="uploadCsv($event)" mat-menu-item><mat-icon>attach_file</mat-icon>Excel</button>
+              <button appFileUpload (fileContent)="uploadDump($event)" mat-menu-item>
+                <mat-icon>upload_file</mat-icon> {{ locale.dump }}
+              </button>
+              <button appFileUpload (fileContent)="uploadCsv($event)" mat-menu-item>
+                <mat-icon>attach_file</mat-icon> {{ locale.excel }}
+              </button>
             </mat-menu>
             <mat-menu #download="matMenu">
-              <button (click)="downloadDump()" mat-menu-item><mat-icon>download_file</mat-icon>Dump</button>
-              <button (click)="downloadCsv()" mat-menu-item><mat-icon>download_file</mat-icon>Excel</button>
+              <button (click)="downloadDump()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.dump }}</button>
+              <button (click)="downloadCsv()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.excel }}</button>
             </mat-menu>
           </div>
           <app-progress *ngIf="this.showProgressBar" [doneCount]="doneCount" [initialCount]="initialCount"></app-progress>
@@ -69,7 +75,7 @@ import { round } from 'lodash';
             <mat-icon>download_done</mat-icon>
           </button>
           <button mat-button *ngIf="doneCount !== initialCount && this.showProgressBar" (click)="cancelAction()">
-            <mat-icon>cancel</mat-icon> Cancel
+            <mat-icon>cancel</mat-icon> {{ locale.cancel }}
           </button>
         </div>
       </mat-toolbar>
@@ -87,7 +93,10 @@ import { round } from 'lodash';
 export class PanelComponent {
   lastConnect = 0;
   status = ActionType;
-  constructor(public service: PanelService, private socket: Socket, private api: API) {
+  locale?: IPanelToolBar;
+  constructor(public service: PanelService, private socket: Socket, private api: API, public localeService: LocaleService) {
+    this.localeService.locale.subscribe((locale: IRootObject | undefined) => (this.locale = locale?.panelToolBar));
+
     setInterval(() => {
       this.lastConnect = round((+new Date() - (this.currentPanel?.lastConnection || 0)) / 1000);
     }, 1000);
