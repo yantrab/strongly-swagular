@@ -13,62 +13,61 @@ import { LocaleService } from 'swagular/components';
   selector: 'app-panel',
   template: `
     <div fxLayout="column" fxFlexFill *ngIf="locale">
-      <mat-toolbar fxLayoutAlign="space-between">
+      <mat-toolbar *ngIf="currentPanel">
         <div fxFlex="40%">
-          <a mat-button routerLink="list">{{ locale.list }}</a>
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu>
+            <button mat-menu-item [matMenuTriggerFor]="sent">
+              <mat-icon>pin_invoke</mat-icon>
+              <span>{{ locale.sent }}</span>
+            </button>
+            <button mat-menu-item [matMenuTriggerFor]="receive">
+              <mat-icon>pin_end</mat-icon>
+              <span>{{ locale.receive }}</span>
+            </button>
+            <button mat-menu-item [matMenuTriggerFor]="upload">
+              <mat-icon>file_upload</mat-icon>
+              <span>{{ locale.upload }}</span>
+            </button>
+            <button mat-menu-item [matMenuTriggerFor]="download">
+              <mat-icon>file_download</mat-icon>
+              <span>{{ locale.download }}</span>
+            </button>
+          </mat-menu>
+          <mat-menu #sent="matMenu">
+            <button (click)="changeStatus(status.writeToPanel)" mat-menu-item>
+              <mat-icon>call_made</mat-icon> {{ locale.sentChangesTo }}
+            </button>
+            <button (click)="changeStatus(status.nameOrder)" mat-menu-item><mat-icon>sort</mat-icon> {{ locale.nameOrder }}</button>
+            <button (click)="changeStatus(status.powerUp)" mat-menu-item>
+              <mat-icon>power_settings_new</mat-icon> {{ locale.powerUp }}
+            </button>
+          </mat-menu>
+          <mat-menu #receive="matMenu">
+            <button (click)="changeStatus(status.readAllFromPanel)" mat-menu-item>{{ locale.getAll }}</button>
+          </mat-menu>
+          <mat-menu #upload="matMenu">
+            <button appFileUpload (fileContent)="uploadDump($event)" mat-menu-item>
+              <mat-icon>upload_file</mat-icon> {{ locale.dump }}
+            </button>
+            <button appFileUpload (fileContent)="uploadCsv($event)" mat-menu-item>
+              <mat-icon>attach_file</mat-icon> {{ locale.excel }}
+            </button>
+          </mat-menu>
+          <mat-menu #download="matMenu">
+            <button (click)="downloadDump()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.dump }}</button>
+            <button (click)="downloadCsv()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.excel }}</button>
+          </mat-menu>
           <a *ngIf="currentPanel" mat-button [routerLink]="'contacts/' + currentPanel.panelId">{{ locale.editContact }}</a>
           <a *ngIf="currentPanel" mat-button [routerLink]="'settings/' + currentPanel.panelId">{{ locale.editSettings }}</a>
         </div>
         <div *ngIf="currentPanel" fxLayout="row">
-          <span> Edit panel id{{ ' ' + currentPanel.panelId + ' ' }} address:{{ ' ' + currentPanel.address + ' ' }} </span>
+          <span> panel id{{ ' ' + currentPanel.panelId + ' ' }} {{ ' ' + (currentPanel.address || '') + ' ' }} </span>
           <div fxLayoutAlign="center center" fxLayout="row">
             <span fxFlex="30px" *ngIf="lastConnect < 30"> {{ lastConnect }}</span>
             <div class="circle" [class.connect]="isConnected" [class.disconnect]="!isConnected"></div>
-            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu>
-              <button mat-menu-item [matMenuTriggerFor]="sent">
-                <mat-icon>pin_invoke</mat-icon>
-                <span>{{ locale.sent }}</span>
-              </button>
-              <button mat-menu-item [matMenuTriggerFor]="receive">
-                <mat-icon>pin_end</mat-icon>
-                <span>{{ locale.receive }}</span>
-              </button>
-              <button mat-menu-item [matMenuTriggerFor]="upload">
-                <mat-icon>file_upload</mat-icon>
-                <span>{{ locale.upload }}</span>
-              </button>
-              <button mat-menu-item [matMenuTriggerFor]="download">
-                <mat-icon>file_download</mat-icon>
-                <span>{{ locale.download }}</span>
-              </button>
-            </mat-menu>
-            <mat-menu #sent="matMenu">
-              <button (click)="changeStatus(status.writeToPanel)" mat-menu-item>
-                <mat-icon>call_made</mat-icon> {{ locale.sentChangesTo }}
-              </button>
-              <button (click)="changeStatus(status.nameOrder)" mat-menu-item><mat-icon>sort</mat-icon> {{ locale.nameOrder }}</button>
-              <button (click)="changeStatus(status.powerUp)" mat-menu-item>
-                <mat-icon>power_settings_new</mat-icon> {{ locale.powerUp }}
-              </button>
-            </mat-menu>
-            <mat-menu #receive="matMenu">
-              <button (click)="changeStatus(status.readAllFromPanel)" mat-menu-item>{{ locale.getAll }}</button>
-            </mat-menu>
-            <mat-menu #upload="matMenu">
-              <button appFileUpload (fileContent)="uploadDump($event)" mat-menu-item>
-                <mat-icon>upload_file</mat-icon> {{ locale.dump }}
-              </button>
-              <button appFileUpload (fileContent)="uploadCsv($event)" mat-menu-item>
-                <mat-icon>attach_file</mat-icon> {{ locale.excel }}
-              </button>
-            </mat-menu>
-            <mat-menu #download="matMenu">
-              <button (click)="downloadDump()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.dump }}</button>
-              <button (click)="downloadCsv()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.excel }}</button>
-            </mat-menu>
           </div>
           <app-progress *ngIf="this.showProgressBar" [doneCount]="doneCount" [initialCount]="initialCount"></app-progress>
           <button mat-button *ngIf="doneCount === initialCount && this.showProgressBar" (click)="this.service.showProgressBar = false">

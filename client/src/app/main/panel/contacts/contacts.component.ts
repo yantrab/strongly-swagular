@@ -40,7 +40,7 @@ export class ContactsComponent implements OnInit {
     this.localeService.getLocaleItem('contactsTableOptions').then(options => {
       this.contactsTableOptions = {
         columns: options.columns,
-        rowActions: [{ icon: 'edit', action: ($event, row) => this.openEditContactDialog(row) }]
+        actions: { rowClick: row => this.openEditContactDialog(row) }
       };
       this.panelId = route.snapshot.params.panelId;
       this.panelService.getContacts(this.panelId!).subscribe(contacts => {

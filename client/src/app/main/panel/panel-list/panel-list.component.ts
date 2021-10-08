@@ -43,7 +43,8 @@ export class PanelListComponent implements OnInit {
           { icon: 'delete', action: ($event, row) => this.deletePanel(row) },
           { icon: 'manage_accounts', action: ($event, row) => this.panelService.navigateToContact(row) },
           { icon: 'settings', action: ($event, row) => this.panelService.navigateToSettings(row) }
-        ]
+        ],
+        actions: { rowClick: row => this.panelService.navigateToContact(row) }
       };
       this.panelService.panelList.subscribe(panels => {
         if (!panels) return;
