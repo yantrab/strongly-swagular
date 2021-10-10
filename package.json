@@ -9,7 +9,14 @@
     "install:server": "cd ./server && npm i",
     "install:client": "cd ./client && npm i",
     "install": "npm run install:client & npm run install:server",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "git": "git reset --hard HEAD&&git pull",
+    "pm2-serve-static": "tsc serve-static && pm2 start serve-static.js",
+    "build-client-prod": "cd client&&npm run build:prod",
+    "build-client-dev": "cd client&&npm run build:dev",
+
+    "deploy-prod": "npm run git&&npm i&&npm run build-client-prod&& npm run serve-static &&npm run pm2-start-server",
+    "deploy-dev": "npm run git&&npm i&&npm run build-client-dev&& npm run serve-static &&npm run pm2-start-server"
   },
   "author": "",
   "license": "MIT",
