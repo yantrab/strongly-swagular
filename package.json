@@ -14,9 +14,9 @@
     "pm2-serve-static": "cd server && tsc serve-static && pm2 start  serve-static.js",
     "build-client-prod": "cd client && npm run gen && cd ../ && npm run gen-locale &&npm run build:prod",
     "build-client-dev": "cd client && npm run gen && cd ../ && npm run gen-locale &&npm run build:dev",
-    "pm2-start-server": "cd server && pm2 start --name server npm --  start",
-    "deploy-prod": "npm run git&&npm i&&npm run build-client-prod&& npm run serve-static &&npm run pm2-start-server",
-    "deploy-dev": "npm run git&&npm i&&npm run build-client-dev&& npm run serve-static &&npm run pm2-start-server"
+    "pm2-start-server": "pm2 delete server 2> /dev/null && cd server && pm2 start --name server npm --  start",
+    "deploy-prod": "npm run git&&npm i && pm2 restart server&&npm run build-client-prod&& pm2 restart serve-static",
+    "deploy-dev": "npm run git&&npm i && pm2 restart server&&npm run build-client-dev&& pm2 restart serve-static"
   },
   "author": "",
   "license": "MIT",
