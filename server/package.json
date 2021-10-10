@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node ./src/start.ts",
+    "serve-static": "ts-node ./serve-static.ts",
     "test": "jest --coverage"
   },
   "author": "",

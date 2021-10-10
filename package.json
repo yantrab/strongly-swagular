@@ -11,7 +11,7 @@
     "install": "npm run install:client & npm run install:server",
     "test": "jest --coverage",
     "git": "git reset --hard HEAD&&git pull",
-    "pm2-serve-static": "tsc serve-static && pm2 start serve-static.js",
+    "pm2-serve-static": "cd server && tsc serve-static && pm2 start  serve-static.js",
     "build-client-prod": "cd client && npm run gen && cd ../ && npm run gen-locale &&npm run build:prod",
     "build-client-dev": "cd client && npm run gen && cd ../ && npm run gen-locale &&npm run build:dev",
     "pm2-start-server": "cd server && pm2 start --name server npm --  start",
