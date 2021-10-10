@@ -1,10 +1,9 @@
 import { ActionType, PanelDetails } from "../../domain/panel/panel.details";
 import { DbService, Repository } from "../db/db.service";
-import { ChangeItem, Contact, Contacts } from "../../domain/panel/panel.contacts";
+import { ChangeItem, Contact, Contacts, Source } from "../../domain/panel/panel.contacts";
 import { dumps } from "../../domain/panel/initial-damps";
 import { Panel } from "../../domain/panel/panel";
-import { cloneDeep, pad } from "lodash";
-import { Source } from "../../../../client/src/app/api/models/source";
+import { cloneDeep } from "lodash";
 import { getContactsChanges } from "../../../../shared/panel";
 
 export class PanelService {
