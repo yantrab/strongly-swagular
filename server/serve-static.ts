@@ -25,7 +25,7 @@ const cache = {};
 
 fastify.get("*", (_, reply) => {
   try {
-    const filePath = extname(_.raw.url!) ? "../client/dist" + _.raw.url : "../client/dist/index.html";
+    const filePath = extname(_.raw.url!) ? "../client/dist" + _.raw.url : "../client/dist/app/index.html";
     const ext = extname(filePath).toLowerCase();
     const contentType = mimeTypes[ext] || "application/octet-stream";
     if (!cache[filePath]) {

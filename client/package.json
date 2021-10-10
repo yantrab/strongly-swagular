@@ -10,8 +10,8 @@
     "e2e": "ng e2e",
     "gen": "ng-openapi-gen --input http://localhost:3000/api-doc/json --templates node_modules/swagular/templates",
     "lint-api": "eslint src/app/api/** --fix",
-    "build:prod": "ng build --prod",
-    "build:dev": "ng build  -c dev"
+    "build:prod": "rm -rf dist && ng build -c prod && cd dist/app && gzip *.js",
+    "build:dev": "rm -rf dist && ng build -c dev && cd dist/app && gzip *.js"
   },
   "private": true,
   "dependencies": {
