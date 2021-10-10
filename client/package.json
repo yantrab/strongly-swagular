@@ -9,7 +9,9 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "gen": "ng-openapi-gen --input http://localhost:3000/api-doc/json --templates node_modules/swagular/templates",
-    "lint-api": "eslint src/app/api/** --fix"
+    "lint-api": "eslint src/app/api/** --fix",
+    "build:prod": "ng build --prod",
+    "build:dev": "ng build  -c dev"
   },
   "private": true,
   "dependencies": {
@@ -24,12 +26,14 @@
     "@angular/platform-browser": "~12.2.2",
     "@angular/platform-browser-dynamic": "~12.2.2",
     "@angular/router": "~12.2.2",
+    "file-saver": "^2.0.5",
     "ng-dialog-animation": "^9.0.4",
     "ng-table-virtual-scroll": "^1.3.5",
     "ngx-socket-io": "^4.1.0",
     "rxjs": "~6.6.0",
-    "swagular": "^1.0.15",
+    "swagular": "^1.0.27",
     "tslib": "^2.0.0",
+    "xlsx": "^0.17.2",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
@@ -41,6 +45,7 @@
     "@angular-eslint/template-parser": "1.0.0",
     "@angular/cli": "~12.2.2",
     "@angular/compiler-cli": "~12.2.2",
+    "@types/file-saver": "^2.0.3",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.11.1",
     "@typescript-eslint/eslint-plugin": "4.3.0",

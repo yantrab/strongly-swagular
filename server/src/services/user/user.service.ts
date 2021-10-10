@@ -49,7 +49,7 @@ export class UserService {
     return this.userRepo.collection
       .find<User>(query || {})
       .project({ password: 0 })
-      .toArray();
+      .toArray() as Promise<User[]>;
   }
 
   sentPermission(email: string) {

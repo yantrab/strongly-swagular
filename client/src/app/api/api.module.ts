@@ -4,6 +4,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 import { AdminService } from './services/admin.service';
 import { AuthService } from './services/auth.service';
 import { LogService } from './services/log.service';
+import { PanelService } from './services/panel.service';
 import * as models from './models';
 import { SwagularService } from 'swagular';
 /**
@@ -17,6 +18,7 @@ import { SwagularService } from 'swagular';
     AdminService,
     AuthService,
     LogService,
+    PanelService,
     ApiConfiguration
   ],
 })

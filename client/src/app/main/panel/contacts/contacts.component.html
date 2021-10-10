@@ -1,0 +1,9 @@
+<div *ngIf="contacts?.list"  fxFlexFill fxLayout="column">
+<swagular-table  [dataSource]="contacts.list" [options]="contactsTableOptions" fxFlex>
+  <ng-container *ngFor="let column of columns;">
+    <ng-template [column]="column" appCellDef let-row="row" >
+      <div [style.background-color]="getColor(row.index, column)"> {{row[column]}} </div>
+    </ng-template>
+  </ng-container>
+</swagular-table>
+</div>

@@ -3,10 +3,13 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class InterceptorsService implements HttpInterceptor {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router //, private snackBar: MatSnackBar
+  ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(error => this.handleError(error, request)));
@@ -17,6 +20,7 @@ export class InterceptorsService implements HttpInterceptor {
       if (!request.url.endsWith('/auth/login')) this.router.navigate(['auth/login']);
       else throw error;
     }
+    //this.snackBar.open(error.message, '', { duration: 2000 });
 
     throw error;
     return new Observable<any>();

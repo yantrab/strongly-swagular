@@ -2,18 +2,204 @@
   "loginForm": {
     "formTitle": "Login Form",
     "formSaveButtonTitle": "Login",
-    "email": {"label":"Email"},
-    "password": {"label":"Password"}
+    "email": {
+      "label": "Email"
+    },
+    "password": {
+      "label": "Password"
+    }
   },
   "setPasswordForm": {
     "formTitle": "Set new password",
     "formSaveButtonTitle": "Save",
-    "email": {"label":"Email"},
-    "password": {"label":"Password"},
-    "rePassword": {"label":"Insert Password Again"}
+    "email": {
+      "label": "Email"
+    },
+    "password": {
+      "label": "Password"
+    },
+    "rePassword": {
+      "label": "Insert Password Again"
+    }
   },
   "saveOrUpdateUserForm": {
-    "formTitle": "Add New User",
-    "firstName": "fsdf"
+    "formTitle": "Add New User"
+  },
+  "addPanelFormModel": {
+    "formTitle": "Add Panel",
+    "panelId": {
+      "label": "iemi",
+      "hint": "the panel uuid"
+    },
+    "id": {
+      "label": "id"
+    },
+    "address": {
+      "label": "address"
+    },
+    "direction": {
+      "label": "Lang"
+    },
+    "phoneNumber": {
+      "label": "Phone Number"
+    },
+    "contactName": {
+      "label": "Contact Name",
+      "hint": "Building committee"
+    },
+    "contactPhone": {
+      "label": "Contact Phone"
+    }
+  },
+  "savePanelFormModel": {
+    "formTitle": "Edit Panel",
+    "address": {
+      "label": "address"
+    },
+    "phoneNumber": {
+      "label": "Phone Number"
+    },
+    "contactName": {
+      "label": "Contact Name",
+      "hint": "Building committee"
+    },
+    "contactPhone": {
+      "label": "Contact Phone"
+    }
+  },
+  "panelsTableOptions": {
+    "columns": [
+      {
+        "key": "panelId",
+        "title": "ID"
+      },
+      {
+        "key": "address",
+        "title": "Address"
+      },
+      {
+        "key": "phoneNumber",
+        "title": "Phone"
+      },
+      {
+        "key": "contactName",
+        "title": "Contact Name"
+      },
+      {
+        "key": "contactPhone",
+        "title": "Contact Phone"
+      }
+    ]
+  },
+
+  "contactsTableOptions": {
+    "columns": [
+      {
+        "key": "name1",
+        "title": "Name 1"
+      },
+      {
+        "key": "name2",
+        "title": "Name 2"
+      },
+      {
+        "key": "tel1",
+        "title": "Phone 1"
+      },
+      {
+        "key": "tel2",
+        "title": "Phone 2"
+      },
+      {
+        "key": "tel3",
+        "title": "Phone 3"
+      },
+      {
+        "key": "tel4",
+        "title": "Phone 4"
+      },
+      {
+        "key": "tel5",
+        "title": "Phone 5"
+      },
+      {
+        "key": "tel6",
+        "title": "Phone 6"
+      },
+      {
+        "key": "code",
+        "title": "Code"
+      },
+      {
+        "key": "ref",
+        "title": "Ref"
+      },
+      {
+        "key": "apartment",
+        "title": "Apartment"
+      }
+    ]
+  },
+
+  "updateContactFormModel": {
+    "formTitle": "Edit Panel Contact",
+    "name1": {
+      "label": "Name 1"
+    },
+    "name2": {
+      "label": "Name 2"
+    },
+    "tel1": {
+      "label": "Phone 1"
+    },
+    "tel2": {
+      "label": "Phone 2"
+    },
+    "tel3": {
+      "label": "Phone 3"
+    },
+    "tel4": {
+      "label": "Phone 4"
+    },
+    "tel5": {
+      "label": "Phone 5"
+    },
+    "tel6": {
+      "label": "Phone 6"
+    },
+    "code": {
+      "label": "Code"
+    },
+    "ref": {
+      "label": "ref"
+    },
+    "apartment": {
+      "label": "Apartment"
+    }
+  },
+  "mainToolVar": {
+    "language": "שפה",
+    "logout": "יציאה",
+    "hebrew": "עברית",
+    "english": "אנגלית"
+  },
+  "panelToolBar": {
+    "list": "רשימת פנלים",
+    "editContact": "עריכת אנשי קשר",
+    "editSettings": "עריכת הגדרות",
+    "sent": "שלח",
+    "receive": "קבל",
+    "upload": "העלה",
+    "download": "הורד",
+    "sentChangesTo": "שלח שינויים",
+    "nameOrder": "סידור שמות",
+    "powerUp": "הדלקה מחדש",
+    "getAll": "קבל הכל מהפנל",
+    "dump": "Dump",
+    "excel": "Excel",
+    "cancel": "Cancel",
+    "444" : "מתחבר...",
+    "12" : "שולח...",
+    "notConnected": "לא מחובר"
   }
 }

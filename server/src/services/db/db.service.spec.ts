@@ -26,6 +26,7 @@ class DbServiceSpec {
 
     result = await userRepo.find({ firstName: "yo", lastName: "baba" });
     expect(result.length).toBe(1);
+    // @ts-ignore
     savedUser._id = savedUser?._id.toHexString() as any;
     savedUser.lastName = "last";
     await userRepo.saveOrUpdateOne(savedUser);

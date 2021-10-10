@@ -28,14 +28,14 @@ class MainComponent {
   imports: [
     ComponentModule,
     RouterModule.forChild([
+      { path: '', redirectTo: 'panel', pathMatch: 'full' },
+
       {
         path: '',
         component: MainComponent,
         children: [
-          {
-            path: 'admin',
-            loadChildren: () => import('src/app/main/admin/admin.module').then(m => m.AdminModule)
-          }
+          { path: 'admin', loadChildren: () => import('src/app/main/admin/admin.module').then(m => m.AdminModule) },
+          { path: 'panel', loadChildren: () => import('src/app/main/panel/panel.module').then(m => m.PanelModule) }
         ]
       }
     ]),

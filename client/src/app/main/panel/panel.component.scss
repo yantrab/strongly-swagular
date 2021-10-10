@@ -1,0 +1,44 @@
+
+
+@keyframes flickerAnimation {
+  0%   { opacity:0.5; }
+  50%  { opacity:0; }
+  100% { opacity:0.5; }
+}
+@-o-keyframes flickerAnimation{
+  0%   { opacity:0.5; }
+  50%  { opacity:0; }
+  100% { opacity:0.5; }
+}
+@-moz-keyframes flickerAnimation{
+  0%   { opacity:0.5; }
+  50%  { opacity:0; }
+  100% { opacity:0.5; }
+}
+@-webkit-keyframes flickerAnimation{
+  0%   { opacity:0.5; }
+  50%  { opacity:0; }
+  100% { opacity:0.5; }
+}
+.connected-indicator{
+  align-items: center;
+  font-size: 12px;
+  .circle {
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    opacity: .40;
+    margin: 0 5px;
+    &.connect{
+      background-color: green;
+      -webkit-animation: flickerAnimation 1s infinite;
+      -moz-animation: flickerAnimation 1s infinite;
+      -o-animation: flickerAnimation 1s infinite;
+      animation: flickerAnimation 1s infinite;
+    }
+    &.disconnect{
+      background-color: red;
+    }
+  }
+}
+
