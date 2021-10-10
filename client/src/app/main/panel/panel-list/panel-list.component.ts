@@ -89,11 +89,11 @@ export class PanelListComponent implements OnInit {
       if (
         id &&
         panelId &&
-        +panelId
+        panelId
           .toString()
           .split('')
           .map((l: any) => (10 - +l) % 10)
-          .join() !== id
+          .join('') !== id.toString()
       ) {
         // this.addPanelFormModel.formGroup.controls.id.setErrors(['Something wrong!']);
         return ['Something wrong'];

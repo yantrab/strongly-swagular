@@ -51,7 +51,8 @@ export class PanelService {
           map(event => this.getLeafRoute(this.router.routerState.root)?.snapshot.params)
         )
         .subscribe(params => {
-          if (params?.panelId) this.setSelectedPanel(panels.find(p => p.panelId === +params?.panelId)!);
+          if (params?.panelId && +params?.panelId !== this.currentPanel?.panelId)
+            this.setSelectedPanel(panels.find(p => p.panelId === +params?.panelId)!);
         });
     });
   }

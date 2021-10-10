@@ -197,6 +197,9 @@
     "getAll": "קבל הכל מהפנל",
     "dump": "Dump",
     "excel": "Excel",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "000" : "מתחבר...",
+    "444" : "שולח..."
+
   }
 }

@@ -31,7 +31,12 @@ export const generateInterfaces = (sourceFolder: string, dest: string) => {
 
     // generate interfaces
     mkdirSync(dirname(dest), { recursive: true });
-    writeFileSync(dest, json2ts(all[0]).replace(/interface/g, "export interface"));
+    writeFileSync(
+      dest,
+      json2ts(all[0])
+        .replace(/interface/g, "export interface")
+        .replace("000", "'000'")
+    );
   });
 };
-generateInterfaces("client/src/assets/locale", "shared/locale.interface.ts");
+generateInterfaces("client/src/assets/locale", "client/src/app/api/locale.interface.ts");

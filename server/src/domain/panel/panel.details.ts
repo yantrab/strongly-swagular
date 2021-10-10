@@ -41,7 +41,7 @@ export class PanelDetails extends Entity<PanelDetails> {
 export class AddPanelDetailsDTO {
   id: number;
   phoneNumber: number;
-  address?: string;
+  address: string;
   contactName?: string;
   contactPhone?: number;
 

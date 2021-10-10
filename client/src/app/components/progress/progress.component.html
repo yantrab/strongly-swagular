@@ -1,8 +1,21 @@
-<div id="container">
-  <input id="water" type="checkbox"/>
-  <label for="water">
-    <div [style.width]="width + '%'" id="fill" ></div>
-  </label>
-  <span>{{status}}</span>
-  <span id="progress">{{width}}%</span>
+<div (mouseout)="mouseover=false" (mouseover)="mouseover=true" class="progress-pie-chart">
+  <div class="ppc-progress">
+         <div [ngStyle]="{'transform': 'rotate(' + 360*pst/100 +'deg)' }" class="ppc-progress-fill"></div>
+  </div>
+  <div class="ppc-percents">
+     <div class="pcc-percents-wrapper">
+        <span *ngIf="!mouseover && doneCount !== initialCount">{{pst}}%</span>
+       <button (click)="hideProgressBar()" *ngIf="doneCount === initialCount" mat-button>
+         <mat-icon>download_done</mat-icon>
+       </button>
+       <button (click)="cancelAction()" *ngIf="doneCount !== initialCount && mouseover" mat-button>
+         <mat-icon>cancel</mat-icon>
+       </button>
+     </div>
+  </div>
 </div>
+<div class="status">
+  <span>{{status}}</span>
+
+</div>
+

@@ -197,6 +197,8 @@
     "getAll": "Get all from panel",
     "dump": "Dump",
     "excel": "Excel",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "000" : "connecting...",
+    "444": "in progress..."
   }
 }

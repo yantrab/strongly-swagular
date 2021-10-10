@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { User } from '../api/models/user';
 import { AuthService } from '../auth/auth.service';
 import { LocaleService } from 'swagular/components';
-import { IMainToolVar, IRootObject } from '../../../../shared/locale.interface';
+import { IMainToolVar, IRootObject } from '../api/locale.interface';
 
 @Component({
   selector: 'app-toolbar',

@@ -6,7 +6,7 @@ import { PanelService as API } from '../../api/services/panel.service';
 import { PanelDetails } from '../../api/models/panel-details';
 import { saveAs } from 'file-saver';
 import { round } from 'lodash';
-import { IPanelToolBar, IRootObject } from '../../../../../shared/locale.interface';
+import { IPanelToolBar, IRootObject } from '../../api/locale.interface';
 import { LocaleService } from 'swagular/components';
 
 @Component({
@@ -64,18 +64,19 @@ import { LocaleService } from 'swagular/components';
           <a *ngIf="currentPanel" mat-button [routerLink]="'settings/' + currentPanel.panelId">{{ locale.editSettings }}</a>
         </div>
         <div *ngIf="currentPanel" fxLayout="row">
-          <span> panel id{{ ' ' + currentPanel.panelId + ' ' }} {{ ' ' + (currentPanel.address || '') + ' ' }} </span>
+          <span> {{ ' ' + (currentPanel.address || '') + ' ' }} </span>
           <div fxLayoutAlign="center center" fxLayout="row">
             <span fxFlex="30px" *ngIf="lastConnect < 30"> {{ lastConnect }}</span>
             <div class="circle" [class.connect]="isConnected" [class.disconnect]="!isConnected"></div>
           </div>
-          <app-progress *ngIf="this.showProgressBar" [doneCount]="doneCount" [initialCount]="initialCount"></app-progress>
-          <button mat-button *ngIf="doneCount === initialCount && this.showProgressBar" (click)="this.service.showProgressBar = false">
-            <mat-icon>download_done</mat-icon>
-          </button>
-          <button mat-button *ngIf="doneCount !== initialCount && this.showProgressBar" (click)="cancelAction()">
-            <mat-icon>cancel</mat-icon> {{ locale.cancel }}
-          </button>
+          <app-progress
+            *ngIf="this.showProgressBar && initialCount"
+            [status]="statusText"
+            [doneCount]="doneCount"
+            [initialCount]="initialCount"
+            (cancel)="cancelAction()"
+            (done)="service.showProgressBar = false"
+          ></app-progress>
         </div>
       </mat-toolbar>
       <div style="padding: 1%;" fxFlex>
@@ -109,12 +110,16 @@ export class PanelComponent {
     return this.service.showProgressBar!;
   }
 
+  get statusText(): string | undefined {
+    return this.locale?.[this.currentPanel.status.toString() as keyof IPanelToolBar];
+  }
+
   get currentPanel(): PanelDetails {
     return this.service.currentPanel!;
   }
 
   get doneCount() {
-    return this.service.contacts.value?.changes.filter(c => c.previewsValue === null).length;
+    return this.service.contacts.value?.changes.filter(c => c.previewsValue === null).length || 0;
   }
 
   get initialCount() {
