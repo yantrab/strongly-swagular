@@ -10,8 +10,10 @@
     "e2e": "ng e2e",
     "gen": "ng-openapi-gen --input http://localhost:3000/api-doc/json --templates node_modules/swagular/templates",
     "lint-api": "eslint src/app/api/** --fix",
-    "build:prod": "rm -rf dist && ng build -c prod && cd dist/app && gzip *.js",
-    "build:dev": "rm -rf dist && ng build -c dev && cd dist/app && gzip *.js"
+    "push-to-dev": "scp -r dist yaniv@178.62.237.25:~/tador/strongly-swagular/client",
+    "push-to-prod": "scp -r dist yaniv@128.199.41.162:~/tador/strongly-swagular/client",
+    "build:prod": "ng build -c production && cd dist/app && gzip *.js && gzip *.css && npm run push-to-prod",
+    "build:dev": "ng build -c dev && cd dist/app && gzip *.js && gzip *.css && npm run push-to-dev"
   },
   "private": true,
   "dependencies": {
