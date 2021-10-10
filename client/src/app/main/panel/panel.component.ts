@@ -13,8 +13,8 @@ import { LocaleService } from 'swagular/components';
   selector: 'app-panel',
   template: `
     <div fxLayout="column" fxFlexFill *ngIf="locale">
-      <mat-toolbar *ngIf="currentPanel">
-        <div fxFlex="40%">
+      <mat-toolbar *ngIf="currentPanel" fxLayoutAlign="space-between center">
+        <div fxFlex="30%">
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -60,23 +60,27 @@ import { LocaleService } from 'swagular/components';
             <button (click)="downloadDump()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.dump }}</button>
             <button (click)="downloadCsv()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.excel }}</button>
           </mat-menu>
-          <a *ngIf="currentPanel" mat-button [routerLink]="'contacts/' + currentPanel.panelId">{{ locale.editContact }}</a>
-          <a *ngIf="currentPanel" mat-button [routerLink]="'settings/' + currentPanel.panelId">{{ locale.editSettings }}</a>
+          <a mat-button [routerLink]="'contacts/' + currentPanel.panelId">{{ locale.editContact }}</a>
+          <a mat-button [routerLink]="'settings/' + currentPanel.panelId">{{ locale.editSettings }}</a>
         </div>
-        <div *ngIf="currentPanel" fxLayout="row">
+        <div fxLayout="row" fxFlex="25%">
           <span> {{ ' ' + (currentPanel.address || '') + ' ' }} </span>
-          <div fxLayoutAlign="center center" fxLayout="row">
-            <span fxFlex="30px" *ngIf="lastConnect < 30"> {{ lastConnect }}</span>
-            <div class="circle" [class.connect]="isConnected" [class.disconnect]="!isConnected"></div>
-          </div>
-          <app-progress
-            *ngIf="this.showProgressBar && initialCount"
-            [status]="statusText"
-            [doneCount]="doneCount"
-            [initialCount]="initialCount"
-            (cancel)="cancelAction()"
-            (done)="service.showProgressBar = false"
-          ></app-progress>
+          <!--          <div fxLayoutAlign="center center" fxLayout="row">-->
+          <!--            <span fxFlex="30px" *ngIf="lastConnect < 30"> {{ lastConnect }}</span>-->
+          <!--          </div>-->
+        </div>
+
+        <app-progress
+          *ngIf="this.showProgressBar && initialCount"
+          [status]="statusText"
+          [doneCount]="doneCount"
+          [initialCount]="initialCount"
+          (cancel)="cancelAction()"
+          (done)="service.showProgressBar = false"
+        ></app-progress>
+        <div fxLayout="row" class="connected-indicator">
+          <span *ngIf="!isConnected"> {{ locale.notConnected }}</span>
+          <div class="circle" [class.connect]="isConnected" [class.disconnect]="!isConnected"></div>
         </div>
       </mat-toolbar>
       <div style="padding: 1%;" fxFlex>

@@ -198,7 +198,8 @@
     "dump": "Dump",
     "excel": "Excel",
     "cancel": "Cancel",
-    "000" : "connecting...",
-    "444": "in progress..."
+    "444" : "connecting...",
+    "12": "in progress...",
+    "notConnected": "not connected"
   }
 }

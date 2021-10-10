@@ -1,4 +1,4 @@
-<div (mouseout)="mouseover=false" (mouseover)="mouseover=true" class="progress-pie-chart">
+<div (mouseout)="mouseover=false" (mouseover)="mouseover=true"  [class.gt-50]="pst > 50" class="progress-pie-chart">
   <div class="ppc-progress">
          <div [ngStyle]="{'transform': 'rotate(' + 360*pst/100 +'deg)' }" class="ppc-progress-fill"></div>
   </div>
