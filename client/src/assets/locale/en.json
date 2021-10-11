@@ -204,11 +204,30 @@
     "12": "in progress...",
     "notConnected": "not connected"
   },
-  "UserFormModel": {
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "email": "Email",
-    "phone": "Phone number",
-    "role": "Role"
+  "userFormModel": {
+    "firstName": {
+      "label": "First Name"
+    },
+    "lastName": {
+      "label": "Last Name"
+    },
+    "email": {
+      "label": "Email"
+    },
+    "phone": {
+      "label": "Phone number"
+    },
+    "role": {
+      "label": "Role"
+    }
+  },
+  "userTableOptions": {
+    "columns": [
+      { "key": "firstName", "title": "First Name", "isFilterable": true, "isSortable": false },
+      { "key": "lastName", "title": "Last Name" },
+      { "key": "phone", "title": "Phone Number" },
+      { "key": "email", "title": "Email" },
+      { "key": "role", "title": "Role" }
+    ]
   }
 }

@@ -2,37 +2,41 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AdminService } from '../../../api/services/admin.service';
 import { User } from '../../../api/models/user';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TableOptions, FormComponent } from 'swagular/components';
+import { TableOptions, FormComponent, LocaleService } from 'swagular/components';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { IRootObject } from '../../../api/locale.interface';
 @Component({ selector: 'app-user', templateUrl: './user.component.html', styleUrls: ['./user.component.scss'] })
 export class UserComponent implements OnInit {
   users: User[] = [];
   userFormModel = this.api.saveOrUpdateUserFormModel({
     formTitle: 'Add New User',
     displayProperties: ['firstName', 'lastName', 'email', 'phone', 'role'],
-    localePath: 'UserFormModel'
+    localePath: 'userFormModel'
   });
-  usersTableOptions: TableOptions<User> = {
-    columns: [
-      { key: 'firstName', title: 'First Name', isFilterable: true, isSortable: false },
-      { key: 'lastName', title: 'Last Name' },
-      { key: 'phone', title: 'Phone Number' },
-      { key: 'email', title: 'Email' },
-      { key: 'role', title: 'Role' }
-    ],
-    rowActions: [
-      {
-        icon: 'edit',
-        action: ($event, row) => this.openEditUserDialog(row)
-      },
-      {
-        icon: 'delete',
-        action: ($event, row) => this.deleteUser(row)
-      }
-    ]
-  };
-  constructor(private api: AdminService, private dialog: NgDialogAnimationService, private snackBar: MatSnackBar) {
+  usersTableOptions?: TableOptions<User>;
+  constructor(
+    private api: AdminService,
+    private dialog: NgDialogAnimationService,
+    private snackBar: MatSnackBar,
+    private localeService: LocaleService
+  ) {
     api.users().subscribe(users => (this.users = users));
+    localeService.locale.subscribe((locale: IRootObject | undefined) => {
+      if (!locale) return;
+      this.usersTableOptions = {
+        columns: locale.userTableOptions.columns as any,
+        rowActions: [
+          {
+            icon: 'edit',
+            action: ($event, row) => this.openEditUserDialog(row)
+          },
+          {
+            icon: 'delete',
+            action: ($event, row) => this.deleteUser(row)
+          }
+        ]
+      };
+    });
   }
 
   ngOnInit(): void {}

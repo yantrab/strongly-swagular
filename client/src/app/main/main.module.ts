@@ -7,7 +7,7 @@ import { LocaleService } from 'swagular/components';
 @Component({
   selector: 'app-root',
   template: `
-    <div fxLayout="column" fxFlexFill [dir]="localeService.direction">
+    <div fxLayout="column" fxFlexFill [dir]="localeService.direction" *ngIf="show">
       <app-toolbar></app-toolbar>
       <div fxFlex>
         <router-outlet
@@ -20,7 +20,15 @@ import { LocaleService } from 'swagular/components';
   `
 })
 class MainComponent {
-  constructor(public localeService: LocaleService) {}
+  show = true;
+  constructor(public localeService: LocaleService) {
+    localeService.locale.subscribe(() => {
+      this.show = false;
+      setTimeout(() => {
+        this.show = true;
+      });
+    });
+  }
 }
 
 @NgModule({

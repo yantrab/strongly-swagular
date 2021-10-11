@@ -4,11 +4,12 @@ import { UserComponent } from './user/user.component';
 import { RouterModule } from '@angular/router';
 import { ComponentModule } from '../../components/component.module';
 import { LogsComponent } from './logs/logs.component';
+import { LocaleService } from 'swagular/components';
 
 @Component({
   selector: 'app-admin',
   template: `
-    <div fxLayout="column" fxFlexFill>
+    <div fxLayout="column" fxFlexFill *ngIf="show">
       <mat-toolbar>
         <a mat-button routerLink="users">Users</a>
         <a mat-button routerLink="logs">logs</a>
@@ -30,7 +31,17 @@ import { LogsComponent } from './logs/logs.component';
     `
   ]
 })
-class AdminComponent {}
+class AdminComponent {
+  show = true;
+  constructor(public localeService: LocaleService) {
+    localeService.locale.subscribe(() => {
+      this.show = false;
+      setTimeout(() => {
+        this.show = true;
+      });
+    });
+  }
+}
 
 @NgModule({
   declarations: [UserComponent, AdminComponent, LogsComponent],

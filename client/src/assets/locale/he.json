@@ -204,11 +204,30 @@
     "12" : "שולח...",
     "notConnected": "לא מחובר"
   },
-  "UserFormModel": {
-    "firstName": "שם פרטי",
-    "lastName": "שם משפחה",
-    "email": "אמייל",
-    "phone": "טלפון",
-    "role": "תפקיד"
+  "userFormModel": {
+    "firstName":  {
+      "label":"שם פרטי"
+    },
+    "lastName": {
+      "label": "שם משפחה"
+    },
+    "email":{
+      "label":  "אמייל"
+    },
+    "phone": {
+      "label": "טלפון"
+    },
+    "role": {
+      "label": "תפקיד"
+    }
+  },
+  "userTableOptions": {
+    "columns": [
+      { "key": "firstName", "title": "שם פרטי" },
+      { "key": "lastName", "title": "שם משפחה" },
+      { "key": "phone", "title": "טלפון" },
+      { "key": "email", "title": "אמייל" },
+      { "key": "role", "title": "תפקיד" }
+    ]
   }
 }
