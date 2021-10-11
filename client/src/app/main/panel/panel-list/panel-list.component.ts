@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormComponent, LocaleService, TableOptions } from 'swagular/components';
 
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { PanelService as Api } from '../../../api/services/panel.service';
 import { PanelDetails } from '../../../api/models/panel-details';
 import { PanelService } from '../panel.service';
-
+import { NgDialogAnimationService } from 'ng-dialog-animation';
 @Component({
   selector: 'app-panel',
   templateUrl: './panel-list.component.html',
@@ -30,7 +29,7 @@ export class PanelListComponent implements OnInit {
   constructor(
     private api: Api,
     private panelService: PanelService,
-    private dialog: MatDialog,
+    private dialog: NgDialogAnimationService,
     private snackBar: MatSnackBar,
     private localeService: LocaleService,
     private cdr: ChangeDetectorRef
@@ -66,7 +65,7 @@ export class PanelListComponent implements OnInit {
       width: '80%',
       maxWidth: '540px',
       data: this.updatePanelFormModel,
-      panelClass: 'admin-form'
+      panelClass: 'contact-form'
     });
 
     dialogRef.afterClosed().subscribe(result => {

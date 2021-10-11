@@ -1,32 +1,32 @@
 {
   "loginForm": {
-    "formTitle": "Login Form",
-    "formSaveButtonTitle": "Login",
+    "formTitle": "כניסה",
+    "formSaveButtonTitle": "היכנס",
     "email": {
-      "label": "Email"
+      "label": "אמייל"
     },
     "password": {
-      "label": "Password"
+      "label": "ססמה"
     }
   },
   "setPasswordForm": {
-    "formTitle": "Set new password",
-    "formSaveButtonTitle": "Save",
+    "formTitle": "החלפת ססמה",
+    "formSaveButtonTitle": "שמור",
     "email": {
-      "label": "Email"
+      "label": "אמייל"
     },
     "password": {
-      "label": "Password"
+      "label": "ססמה"
     },
     "rePassword": {
-      "label": "Insert Password Again"
+      "label": "הכנס ססמה שנית"
     }
   },
   "saveOrUpdateUserForm": {
-    "formTitle": "Add New User"
+    "formTitle": "הוספת משתמש"
   },
   "addPanelFormModel": {
-    "formTitle": "Add Panel",
+    "formTitle": "הוספת פנל",
     "panelId": {
       "label": "iemi",
       "hint": "the panel uuid"
@@ -35,59 +35,59 @@
       "label": "id"
     },
     "address": {
-      "label": "address"
+      "label": "כתובת"
     },
     "direction": {
-      "label": "Lang"
+      "label": "שפה"
     },
     "phoneNumber": {
-      "label": "Phone Number"
+      "label": "מספר טלפון"
     },
     "contactName": {
-      "label": "Contact Name",
-      "hint": "Building committee"
+      "label": "שם איש קשר",
+      "hint": "וועד בית למשל"
     },
     "contactPhone": {
-      "label": "Contact Phone"
+      "label": "טלפון איש קשר"
     }
   },
   "savePanelFormModel": {
-    "formTitle": "Edit Panel",
+    "formTitle": "עריכת פנל",
     "address": {
-      "label": "address"
+      "label": "כתובת"
     },
     "phoneNumber": {
-      "label": "Phone Number"
+      "label": "טלפון"
     },
     "contactName": {
-      "label": "Contact Name",
-      "hint": "Building committee"
+      "label": "שם איש קשר",
+      "hint": "וועד בית למשל"
     },
     "contactPhone": {
-      "label": "Contact Phone"
+      "label": "טלפון איש קשר"
     }
   },
   "panelsTableOptions": {
     "columns": [
       {
         "key": "panelId",
-        "title": "ID"
+        "title": "מספר פנל"
       },
       {
         "key": "address",
-        "title": "Address"
+        "title": "כתובת"
       },
       {
         "key": "phoneNumber",
-        "title": "Phone"
+        "title": "טלפון"
       },
       {
         "key": "contactName",
-        "title": "Contact Name"
+        "title": "איש קשר"
       },
       {
         "key": "contactPhone",
-        "title": "Contact Phone"
+        "title": "טלפון איש קשר"
       }
     ]
   },
@@ -96,39 +96,39 @@
     "columns": [
       {
         "key": "name1",
-        "title": "Name 1"
+        "title": "שם 1"
       },
       {
         "key": "name2",
-        "title": "Name 2"
+        "title": "שם 2"
       },
       {
         "key": "tel1",
-        "title": "Phone 1"
+        "title": "טל' 1"
       },
       {
         "key": "tel2",
-        "title": "Phone 2"
+        "title": "טל' 2"
       },
       {
         "key": "tel3",
-        "title": "Phone 3"
+        "title": "טל' 3"
       },
       {
         "key": "tel4",
-        "title": "Phone 4"
+        "title":"טל' 4"
       },
       {
         "key": "tel5",
-        "title": "Phone 5"
+        "title": "טל' 5"
       },
       {
         "key": "tel6",
-        "title": "Phone 6"
+        "title": "טל' 6"
       },
       {
         "key": "code",
-        "title": "Code"
+        "title": "קוד"
       },
       {
         "key": "ref",
@@ -142,30 +142,30 @@
   },
 
   "updateContactFormModel": {
-    "formTitle": "Edit Panel Contact",
+    "formTitle": "עריכת איש קשר",
     "name1": {
-      "label": "Name 1"
+      "label": "שם 1"
     },
     "name2": {
-      "label": "Name 2"
+      "label": "שם 2"
     },
     "tel1": {
-      "label": "Phone 1"
+      "label": "טל' 1"
     },
     "tel2": {
-      "label": "Phone 2"
+      "label": "טל'21"
     },
     "tel3": {
-      "label": "Phone 3"
+      "label": "טל' 3"
     },
     "tel4": {
-      "label": "Phone 4"
+      "label": "טל' 4"
     },
     "tel5": {
-      "label": "Phone 5"
+      "label": "טל' 5"
     },
     "tel6": {
-      "label": "Phone 6"
+      "label": "טל' 61"
     },
     "code": {
       "label": "Code"
@@ -177,7 +177,9 @@
       "label": "Apartment"
     }
   },
-  "mainToolVar": {
+  "mainToolBar": {
+    "admin": "מסך ניהול",
+    "panels": "רשימת פנלים",
     "language": "שפה",
     "logout": "יציאה",
     "hebrew": "עברית",

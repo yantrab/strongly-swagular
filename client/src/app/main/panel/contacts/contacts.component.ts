@@ -1,9 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Contact, ContactSchema } from '../../../api/models/contact';
 import { PanelService as API } from '../../../api/services/panel.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormComponent, LocaleService, TableOptions } from 'swagular/components';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PanelService } from '../panel.service';
 import { Lang } from '../../../api/models/lang';
@@ -12,11 +11,12 @@ import { Contacts } from '../../../api/models/contacts';
 import { Source } from '../../../api/models/source';
 import { ChangeItem } from '../../../api/models/change-item';
 import { SwagularService } from 'swagular';
-
+import { NgDialogAnimationService } from 'ng-dialog-animation';
 @Component({
   selector: 'app-contacts',
   templateUrl: './contacts.component.html',
-  styleUrls: ['./contacts.component.scss']
+  styleUrls: ['./contacts.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContactsComponent implements OnInit {
   contactsTableOptions?: TableOptions<Contact>;
@@ -34,7 +34,7 @@ export class ContactsComponent implements OnInit {
     private route: ActivatedRoute,
     private localeService: LocaleService,
     private cdr: ChangeDetectorRef,
-    private dialog: MatDialog,
+    private dialog: NgDialogAnimationService,
     private snackBar: MatSnackBar
   ) {
     this.localeService.getLocaleItem('contactsTableOptions').then(options => {
@@ -67,7 +67,7 @@ export class ContactsComponent implements OnInit {
       width: '80%',
       maxWidth: '540px',
       data: this.updateContactFormModel,
-      panelClass: 'admin-form'
+      panelClass: 'contact-form'
     });
 
     dialogRef.afterClosed().subscribe((result: Contact) => {

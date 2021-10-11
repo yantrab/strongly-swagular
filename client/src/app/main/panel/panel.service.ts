@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PanelDetails } from '../../api/models/panel-details';
-import { ActivatedRoute, ActivationStart, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
 import { Contacts } from '../../api/models/contacts';
 import { PanelService as API } from '../../api/services/panel.service';

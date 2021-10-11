@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PanelService } from './panel.service';
 import { Socket } from 'ngx-socket-io';
 import { ActionType } from '../../api/models/action-type';
@@ -71,7 +71,7 @@ import { LocaleService } from 'swagular/components';
         </div>
 
         <app-progress
-          *ngIf="this.showProgressBar && initialCount"
+          *ngIf="showProgressBar && initialCount"
           [status]="statusText"
           [doneCount]="doneCount"
           [initialCount]="initialCount"
@@ -92,7 +92,8 @@ import { LocaleService } from 'swagular/components';
       </div>
     </div>
   `,
-  styleUrls: ['panel.component.scss']
+  styleUrls: ['panel.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PanelComponent {
   lastConnect = 0;
@@ -127,7 +128,18 @@ export class PanelComponent {
   }
 
   get initialCount() {
-    return this.service.contacts.value?.changes.length;
+    switch (this.currentPanel.status.toString()) {
+      case ActionType.nameOrder:
+      case ActionType.powerUp:
+        return 1;
+      case ActionType.readAllFromPanel:
+      case ActionType.readAllFromPanelInProgress:
+        return 40;
+      case ActionType.writeToPanel:
+      case ActionType.writeToPanelInProgress:
+        return this.service.contacts.value?.changes.length;
+    }
+    return 0;
   }
   changeStatus(status: ActionType) {
     this.service.showProgressBar = true;

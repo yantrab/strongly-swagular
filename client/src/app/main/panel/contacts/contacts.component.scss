@@ -3,4 +3,12 @@
     padding-left: 10px !important;
     padding-right: 10px !important;
   }
+
+}
+::ng-deep  .contact-form {
+  overflow: auto;
+  ::ng-deep swagular-input {
+    width: 48%;
+  }
+
 }

@@ -177,7 +177,9 @@
       "label": "Apartment"
     }
   },
-  "mainToolVar": {
+  "mainToolBar": {
+    "admin": "admin",
+    "panels": "panels",
     "language": "language",
     "logout": "logout",
     "hebrew": "Hebrew",

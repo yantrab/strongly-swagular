@@ -26,10 +26,10 @@ export enum ActionType {
 }
 
 export class PanelDetails extends Entity<PanelDetails> {
-  phoneNumber: number;
+  phoneNumber: string;
   address?: string;
   contactName?: string;
-  contactPhone?: number;
+  contactPhone?: string;
 
   direction: Lang;
   panelId: number;
@@ -40,10 +40,10 @@ export class PanelDetails extends Entity<PanelDetails> {
 
 export class AddPanelDetailsDTO {
   id: number;
-  phoneNumber: number;
+  phoneNumber: string;
   address: string;
   contactName?: string;
-  contactPhone?: number;
+  contactPhone?: string;
 
   direction: Lang;
   panelId: number;

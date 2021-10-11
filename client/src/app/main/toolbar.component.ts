@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { User } from '../api/models/user';
 import { AuthService } from '../auth/auth.service';
 import { LocaleService } from 'swagular/components';
-import { IMainToolVar, IRootObject } from '../api/locale.interface';
+import { IMainToolBar, IRootObject } from '../api/locale.interface';
 
 @Component({
   selector: 'app-toolbar',
@@ -25,8 +25,8 @@ import { IMainToolVar, IRootObject } from '../api/locale.interface';
         <button (click)="changeLang('he')" mat-menu-item>{{ locale.hebrew }}</button>
         <button (click)="changeLang('en')" mat-menu-item>{{ locale.english }}</button>
       </mat-menu>
-      <a mat-button routerLink="panel">Panels</a>
-      <a mat-button routerLink="admin" *ngIf="user?.role === 'admin'">admin</a>
+      <a mat-button routerLink="panel">{{ locale.panels }}</a>
+      <a mat-button routerLink="admin" *ngIf="user?.role === 'admin'">{{ locale.admin }}</a>
       <span style="flex: 1 1 auto;"></span>
       <span> Hello {{ user?.firstName }} {{ user?.lastName }}</span>
     </mat-toolbar>
@@ -34,10 +34,10 @@ import { IMainToolVar, IRootObject } from '../api/locale.interface';
 })
 export class ToolbarComponent {
   user?: User;
-  locale?: IMainToolVar;
+  locale?: IMainToolBar;
   constructor(private authService: AuthService, public localeService: LocaleService) {
     authService.user$.subscribe(user => (this.user = user));
-    this.localeService.locale.subscribe((locale: IRootObject | undefined) => (this.locale = locale?.mainToolVar));
+    this.localeService.locale.subscribe((locale: IRootObject | undefined) => (this.locale = locale?.mainToolBar));
   }
 
   logout() {

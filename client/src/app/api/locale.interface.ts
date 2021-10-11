@@ -7,7 +7,7 @@ export interface IRootObject {
     panelsTableOptions: IPanelsTableOptions;
     contactsTableOptions: IContactsTableOptions;
     updateContactFormModel: IUpdateContactFormModel;
-    mainToolVar: IMainToolVar;
+    mainToolBar: IMainToolBar;
     panelToolBar: IPanelToolBar;
 }
 export interface ILoginForm {
@@ -132,7 +132,9 @@ export interface IRef {
 export interface IApartment {
     label: string;
 }
-export interface IMainToolVar {
+export interface IMainToolBar {
+    admin: string;
+    panels: string;
     language: string;
     logout: string;
     hebrew: string;

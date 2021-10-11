@@ -5,13 +5,13 @@ export interface PanelDetails {
   '_isDeleted'?: boolean;
   address?: string;
   contactName?: string;
-  contactPhone?: number;
+  contactPhone?: string;
   direction: Lang;
   lastConnection?: number;
   panelId: number;
-  phoneNumber: number;
+  phoneNumber: string;
   status: ActionType;
   userId: string;
 }
 
-export const PanelDetailsSchema  = {"type":"object","properties":{"phoneNumber":{"type":"number"},"address":{"type":"string"},"contactName":{"type":"string"},"contactPhone":{"type":"number"},"direction":{"$ref":"#/components/schemas/Lang"},"panelId":{"type":"number"},"userId":{"type":"string"},"status":{"$ref":"#/components/schemas/ActionType"},"lastConnection":{"type":"number"},"_id":{"type":"string"},"_isDeleted":{"type":"boolean"}},"required":["phoneNumber","direction","panelId","userId","status"]}
+export const PanelDetailsSchema  = {"type":"object","properties":{"phoneNumber":{"type":"string"},"address":{"type":"string"},"contactName":{"type":"string"},"contactPhone":{"type":"string"},"direction":{"$ref":"#/components/schemas/Lang"},"panelId":{"type":"number"},"userId":{"type":"string"},"status":{"$ref":"#/components/schemas/ActionType"},"lastConnection":{"type":"number"},"_id":{"type":"string"},"_isDeleted":{"type":"boolean"}},"required":["phoneNumber","direction","panelId","userId","status"]}

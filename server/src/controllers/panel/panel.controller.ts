@@ -16,7 +16,7 @@ export class PanelController {
   }
 
   @post addNewPanel(@body panel: AddPanelDetailsDTO, @user user: User) {
-    const toSave = omit(panel, ["id"]) as PanelDetails;
+    const toSave = (omit(panel, ["id"]) as unknown) as PanelDetails;
     toSave.userId = user._id!;
     return this.service.addNewPanel(toSave);
   }
