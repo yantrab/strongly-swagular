@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService, SetPasswordFormGroupType } from '../api/services/auth.service';
 import { FormModel } from 'swagular/models';
 import { ActivatedRoute } from '@angular/router';
+import { LocaleService } from 'swagular/components';
 
 @Component({ selector: 'app-login', templateUrl: './auth.component.html', styleUrls: ['./auth.component.scss'] })
 export class SetPasswordComponent {
@@ -10,7 +11,7 @@ export class SetPasswordComponent {
   token?: string;
   email?: string;
 
-  constructor(private service: AuthService, private activatedRoute: ActivatedRoute) {
+  constructor(private service: AuthService, private activatedRoute: ActivatedRoute, public localeService: LocaleService) {
     this.activatedRoute.params.subscribe(params => {
       this.token = params.token;
       this.model = this.service.setPasswordFormModel(

@@ -203,5 +203,12 @@
     "444" : "connecting...",
     "12": "in progress...",
     "notConnected": "not connected"
+  },
+  "UserFormModel": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone number",
+    "role": "Role"
   }
 }

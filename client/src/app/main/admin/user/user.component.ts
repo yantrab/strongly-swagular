@@ -3,13 +3,14 @@ import { AdminService } from '../../../api/services/admin.service';
 import { User } from '../../../api/models/user';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableOptions, FormComponent } from 'swagular/components';
-import { MatDialog } from '@angular/material/dialog';
+import { NgDialogAnimationService } from 'ng-dialog-animation';
 @Component({ selector: 'app-user', templateUrl: './user.component.html', styleUrls: ['./user.component.scss'] })
 export class UserComponent implements OnInit {
   users: User[] = [];
   userFormModel = this.api.saveOrUpdateUserFormModel({
     formTitle: 'Add New User',
-    displayProperties: ['firstName', 'lastName', 'email', 'phone', 'role']
+    displayProperties: ['firstName', 'lastName', 'email', 'phone', 'role'],
+    localePath: 'UserFormModel'
   });
   usersTableOptions: TableOptions<User> = {
     columns: [
@@ -30,7 +31,7 @@ export class UserComponent implements OnInit {
       }
     ]
   };
-  constructor(private api: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar) {
+  constructor(private api: AdminService, private dialog: NgDialogAnimationService, private snackBar: MatSnackBar) {
     api.users().subscribe(users => (this.users = users));
   }
 

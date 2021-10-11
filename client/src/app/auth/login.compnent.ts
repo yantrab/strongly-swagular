@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../api/services/auth.service';
 import { Router } from '@angular/router';
+import { LocaleService } from 'swagular/components';
 
 @Component({
   selector: 'app-login',
   template: `
-    <div class="main">
+    <div class="main" [dir]="localeService.direction">
       <div class="container center" fxLayout="column">
         <swagular-form class="container" [model]="model" (submit)="login()"></swagular-form>
         <a class="reset-password" (click)="resetPassword()" role="button">Reset password</a>
@@ -18,7 +19,7 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   loginError?: string;
   model = this.service.loginFormModel({ localePath: 'loginForm', fields: [{ key: 'email' }, { key: 'password', type: 'password' }] });
-  constructor(private service: AuthService, private router: Router) {}
+  constructor(private service: AuthService, private router: Router, public localeService: LocaleService) {}
   resetPassword() {
     if (!this.model.formGroup.controls.email.invalid)
       this.service.resetPassword(this.model.formGroup.value.email).subscribe(
