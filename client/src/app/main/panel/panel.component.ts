@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { PanelService } from './panel.service';
 import { Socket } from 'ngx-socket-io';
 import { ActionType } from '../../api/models/action-type';
@@ -99,16 +99,29 @@ export class PanelComponent {
   lastConnect = 0;
   status = ActionType;
   locale?: IPanelToolBar;
-  constructor(public service: PanelService, private socket: Socket, private api: API, public localeService: LocaleService) {
-    this.localeService.locale.subscribe((locale: IRootObject | undefined) => (this.locale = locale?.panelToolBar));
-
+  constructor(
+    public service: PanelService,
+    private socket: Socket,
+    private api: API,
+    public localeService: LocaleService,
+    private cd: ChangeDetectorRef
+  ) {
+    this.localeService.locale.subscribe((locale: IRootObject | undefined) => {
+      if (!locale) {
+        return;
+      }
+      this.locale = locale.panelToolBar;
+      this.cd.markForCheck();
+    });
+    this.service.contacts.subscribe(() => this.cd.markForCheck());
     setInterval(() => {
       this.lastConnect = round((+new Date() - (this.currentPanel?.lastConnection || 0)) / 1000);
+      this.cd.markForCheck();
     }, 1000);
   }
 
   get isConnected() {
-    return this.lastConnect < 7;
+    return this.lastConnect && this.lastConnect < 10;
   }
 
   get showProgressBar(): boolean {
@@ -144,13 +157,16 @@ export class PanelComponent {
   changeStatus(status: ActionType) {
     this.service.showProgressBar = true;
     this.currentPanel.status = status;
-    this.api.savePanel(this.currentPanel).subscribe(() => {});
+    this.api.savePanel(this.currentPanel).subscribe(() => {
+      this.cd.markForCheck();
+    });
   }
 
   cancelAction() {
     this.currentPanel.status = ActionType.idle;
     this.api.savePanel(this.currentPanel).subscribe(() => {
       this.service.showProgressBar = false;
+      this.cd.markForCheck();
     });
   }
 

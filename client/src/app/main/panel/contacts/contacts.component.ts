@@ -45,7 +45,7 @@ export class ContactsComponent implements OnInit {
       this.panelId = route.snapshot.params.panelId;
       this.panelService.getContacts(this.panelId!).subscribe(contacts => {
         this._contacts = contacts;
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       });
     });
 
@@ -87,6 +87,7 @@ export class ContactsComponent implements OnInit {
           keys.forEach(key => ((relevant as any)[key] = result[key]));
           this.contacts.list = [...this.contacts.list];
           this.snackBar.open('Panel was saved successfully', '', { duration: 2000 });
+          this.cdr.markForCheck();
         });
       }
     });

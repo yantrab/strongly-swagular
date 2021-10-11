@@ -75,6 +75,7 @@ export class PanelListComponent implements OnInit {
           Object.keys(result).forEach(key => ((relevant as any)[key] = result[key]));
           this.panels = [...this.panels];
           this.snackBar.open('Panel was saved successfully', '', { duration: 2000 });
+          this.cdr.markForCheck();
         });
       }
     });

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { User } from '../api/models/user';
 import { AuthService } from '../auth/auth.service';
 import { LocaleService } from 'swagular/components';
 import { IMainToolBar, IRootObject } from '../api/locale.interface';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-toolbar',
@@ -30,14 +31,18 @@ import { IMainToolBar, IRootObject } from '../api/locale.interface';
       <span style="flex: 1 1 auto;"></span>
       <span> Hello {{ user?.firstName }} {{ user?.lastName }}</span>
     </mat-toolbar>
-  `
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToolbarComponent {
   user?: User;
   locale?: IMainToolBar;
-  constructor(private authService: AuthService, public localeService: LocaleService) {
+  constructor(private authService: AuthService, public localeService: LocaleService, private cd: ChangeDetectorRef) {
     authService.user$.subscribe(user => (this.user = user));
-    this.localeService.locale.subscribe((locale: IRootObject | undefined) => (this.locale = locale?.mainToolBar));
+    this.localeService.locale.subscribe((locale: IRootObject | undefined) => {
+      this.locale = locale?.mainToolBar;
+      this.cd.markForCheck();
+    });
   }
 
   logout() {

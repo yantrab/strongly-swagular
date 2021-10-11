@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { PanelDetails } from '../../api/models/panel-details';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
