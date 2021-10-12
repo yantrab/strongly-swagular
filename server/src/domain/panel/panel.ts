@@ -98,7 +98,7 @@ export class Panel extends Entity<Panel> {
       }
       contacts.push(contact);
     }
-    this.contacts = { list: contacts, changes: [], panelId: this.details.panelId };
+    this.contacts = { list: contacts, changes: this.contacts?.changes || [], panelId: this.details.panelId };
     return this;
   }
 

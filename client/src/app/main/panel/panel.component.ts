@@ -147,7 +147,7 @@ export class PanelComponent {
         return 1;
       case ActionType.readAllFromPanel:
       case ActionType.readAllFromPanelInProgress:
-        return 40;
+        return 11 * 49;
       case ActionType.writeToPanel:
       case ActionType.writeToPanelInProgress:
         return this.service.contacts.value?.changes.length;
@@ -163,6 +163,16 @@ export class PanelComponent {
   }
 
   cancelAction() {
+    switch (this.currentPanel.status) {
+      case ActionType.readAllFromPanelInProgress:
+        this.currentPanel.status = ActionType.readAllFromPanelCanceled;
+        break;
+      case ActionType.writeToPanelInProgress:
+        this.currentPanel.status = ActionType.writeToPanelCanceled;
+        break;
+      default:
+        this.currentPanel.status = ActionType.idle;
+    }
     this.currentPanel.status = ActionType.idle;
     this.api.savePanel(this.currentPanel).subscribe(() => {
       this.service.showProgressBar = false;

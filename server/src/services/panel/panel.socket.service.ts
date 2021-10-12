@@ -3,8 +3,8 @@ import { LoggerService } from "../loggerService";
 import { Buffer } from "buffer";
 import { PanelService } from "./panel.service";
 import { ActionType, PanelDetails } from "../../domain/panel/panel.details";
-import { Panel, panelPropertiesSetting } from "../../domain/panel/panel";
-import { ChangeItem, Source } from "../../domain/panel/panel.contacts";
+import { panelPropertiesSetting } from "../../domain/panel/panel";
+import { Source } from "../../domain/panel/panel.contacts";
 import { cloneDeep } from "lodash";
 import { WebSocketService } from "../sokcet/socket.service";
 
@@ -50,8 +50,9 @@ export class PanelSocketService {
         socket.on("error", err => {
           this.logError("err.message " + port + ".", socket.address, err).then();
         });
-        socket.on("data", async msg => {
+        socket.on("data", async (msg: Buffer) => {
           try {
+            const msgString = msg.toString();
             timeOut.refresh();
             const action = this.buildAction(msg);
             const panel = await this.panelService.getPanelDetails(action.pId);
@@ -59,8 +60,8 @@ export class PanelSocketService {
             let result;
             switch (action.type) {
               case ActionType.readAllFromPanel:
-                if (panel.status === ActionType.readAllFromPanelCanceled) {
-                  result = panel.status.toString();
+                if (panel.status === ActionType.readAllFromPanelCanceled || panel.status === ActionType.idle) {
+                  result = ActionType.readAllFromPanelCanceled.toString();
                 } else {
                   result = await this.updateFromPanel(panel, action);
                 }
@@ -78,7 +79,8 @@ export class PanelSocketService {
                 buffer = Buffer.concat([buffer.slice(0, i - 1), new Buffer([buffer[i] + 16]), buffer.slice(i + 1, buffer.length + 1)]);
               }
             }
-
+            const resultString = buffer.toString();
+            this.logInfo("panel answered", host, { panel: msgString, server: resultString }).then();
             return socket.write(buffer);
           } catch (e) {
             this.logError("err.message " + port + ".", socket.address, e).then();
@@ -140,7 +142,7 @@ export class PanelSocketService {
     const length = action.data.data.length;
     const world = action.data.data
       .split("")
-      .map(a => (a.charCodeAt(0) > 176 ? " " : a))
+      .map(a => ((a.charCodeAt(0) > 176 && a.charCodeAt(0) < 1489) || a.charCodeAt(0) > 1514 ? " " : a))
       .join("");
     for (let i = start; i < start + length; i++) {
       dump[i] = "^";
@@ -159,9 +161,9 @@ export class PanelSocketService {
 
     panel.contacts.list.forEach((c, i) => {
       Object.keys(c).forEach(key => {
-        if (c[key] !== oldPanel.contacts.list[i][key]) {
-          panel.contacts.changes.push({ source: Source.Panel, index: i, key });
-        }
+        //if (c[key] !== oldPanel.contacts.list[i][key]) {
+        panel.contacts.changes.push({ source: Source.Panel, index: i, key, previewsValue: null } as any);
+        //}
       });
     });
     await this.panelService.updateContacts(panelDetails.panelId, panel.contacts.list, panel.contacts.changes);
