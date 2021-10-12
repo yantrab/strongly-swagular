@@ -121,7 +121,7 @@ export class PanelComponent {
   }
 
   get isConnected() {
-    return this.lastConnect && this.lastConnect < 10;
+    return this.lastConnect && this.lastConnect < 15;
   }
 
   get showProgressBar(): boolean {
@@ -137,7 +137,17 @@ export class PanelComponent {
   }
 
   get doneCount() {
-    return this.service.contacts.value?.changes.filter(c => c.previewsValue === null).length || 0;
+    switch (this.currentPanel.status.toString()) {
+      case ActionType.nameOrder:
+      case ActionType.powerUp:
+      case ActionType.readAllFromPanel:
+      case ActionType.readAllFromPanelInProgress:
+        return this.currentPanel.msgCount || 0;
+      case ActionType.writeToPanel:
+      case ActionType.writeToPanelInProgress:
+        return this.service.contacts.value?.changes.filter(c => c.previewsValue === null).length || 0;
+    }
+    return 0;
   }
 
   get initialCount() {
@@ -147,13 +157,14 @@ export class PanelComponent {
         return 1;
       case ActionType.readAllFromPanel:
       case ActionType.readAllFromPanelInProgress:
-        return 11 * 49;
+        return 70;
       case ActionType.writeToPanel:
       case ActionType.writeToPanelInProgress:
         return this.service.contacts.value?.changes.length;
     }
     return 0;
   }
+
   changeStatus(status: ActionType) {
     this.service.showProgressBar = true;
     this.currentPanel.status = status;

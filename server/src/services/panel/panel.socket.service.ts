@@ -133,8 +133,10 @@ export class PanelSocketService {
   private async updateFromPanel(panelDetails: PanelDetails, action: Action) {
     action.data.start = +action.data.start;
     if (panelDetails.status !== ActionType.readAllFromPanelInProgress) {
+      panelDetails.msgCount = 0;
       panelDetails.status = ActionType.readAllFromPanelInProgress;
     }
+    panelDetails.msgCount!++;
     const panel = await this.panelService.getPanel(panelDetails);
     const oldPanel = cloneDeep(panel);
     const dump = panel.dump().split("");
@@ -142,7 +144,7 @@ export class PanelSocketService {
     const length = action.data.data.length;
     const world = action.data.data
       .split("")
-      .map(a => ((a.charCodeAt(0) > 176 && a.charCodeAt(0) < 1489) || a.charCodeAt(0) > 1514 ? " " : a))
+      .map(a => ((a.charCodeAt(0) > 176 && a.charCodeAt(0) < 1488) || a.charCodeAt(0) > 1514 ? " " : a))
       .join("");
     for (let i = start; i < start + length; i++) {
       dump[i] = "^";
@@ -161,9 +163,9 @@ export class PanelSocketService {
 
     panel.contacts.list.forEach((c, i) => {
       Object.keys(c).forEach(key => {
-        //if (c[key] !== oldPanel.contacts.list[i][key]) {
-        panel.contacts.changes.push({ source: Source.Panel, index: i, key, previewsValue: null } as any);
-        //}
+        if (c[key] !== oldPanel.contacts.list[i][key]) {
+          panel.contacts.changes.push({ source: Source.Panel, index: i, key, previewsValue: null } as any);
+        }
       });
     });
     await this.panelService.updateContacts(panelDetails.panelId, panel.contacts.list, panel.contacts.changes);
