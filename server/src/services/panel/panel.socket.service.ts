@@ -124,6 +124,9 @@ export class PanelSocketService {
         await this.panelService.setContactsChanges(panelDetails.panelId, []);
       }
     } else if (action.d) {
+      if (panelDetails.status === ActionType.writeToPanelInProgress) {
+        await this.panelService.setContactsChanges(panelDetails.panelId, []);
+      }
       panelDetails.status = ActionType.idle;
     }
 
