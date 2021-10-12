@@ -19,8 +19,8 @@ export class LoggerService {
     return this.logRepo.collection.insertOne(JSON.parse(log));
   }
 
-  async getLogs() {
-    return this.logRepo.find();
+  async getLogs(query = {}) {
+    return this.logRepo.find(query);
   }
 
   // async createLogToken(email: string) {

@@ -80,7 +80,7 @@ export class PanelSocketService {
               }
             }
             const resultString = buffer.toString();
-            this.logInfo("panel answered", host, { panel: msgString, server: resultString }).then();
+            this.logInfo("panel answered", host, { req: msgString, res: resultString, ...action }).then();
             return socket.write(buffer);
           } catch (e) {
             this.logError("err.message " + port + ".", socket.address, e).then();
@@ -167,7 +167,7 @@ export class PanelSocketService {
     panel.contacts.list.forEach((c, i) => {
       Object.keys(c).forEach(key => {
         if (c[key] !== oldPanel.contacts.list[i][key]) {
-          panel.contacts.changes.push({ source: Source.Panel, index: i, key, previewsValue: null } as any);
+          panel.contacts.changes.push({ source: Source.Panel, index: i, key } as any);
         }
       });
     });

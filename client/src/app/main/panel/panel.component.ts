@@ -62,6 +62,7 @@ import { LocaleService } from 'swagular/components';
           </mat-menu>
           <a mat-button [routerLink]="'contacts/' + currentPanel.panelId">{{ locale.editContact }}</a>
           <a mat-button [routerLink]="'settings/' + currentPanel.panelId">{{ locale.editSettings }}</a>
+          <a mat-button [routerLink]="'logs/' + currentPanel.panelId">{{ locale.logs }}</a>
         </div>
         <div fxLayout="row" fxFlex="25%">
           <span> {{ ' ' + (currentPanel.address || '') + ' ' }} </span>
@@ -184,7 +185,6 @@ export class PanelComponent {
       default:
         this.currentPanel.status = ActionType.idle;
     }
-    this.currentPanel.status = ActionType.idle;
     this.api.savePanel(this.currentPanel).subscribe(() => {
       this.service.showProgressBar = false;
       this.cd.markForCheck();

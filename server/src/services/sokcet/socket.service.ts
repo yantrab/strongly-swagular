@@ -1,5 +1,4 @@
 import { Server, Socket } from "socket.io";
-import { Subject } from "rxjs";
 export class WebSocketService {
   io = new Server({ cors: { origin: "*" } });
   rooms: { [id: string]: string } = {};

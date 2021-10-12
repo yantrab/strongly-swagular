@@ -10,9 +10,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PanelService } from './panel.service';
+import { PanelLogsComponent } from './panel-logs/panel-logs.component';
 
 @NgModule({
-  declarations: [PanelListComponent, PanelComponent, SettingsComponent, ContactsComponent],
+  declarations: [PanelListComponent, PanelComponent, SettingsComponent, ContactsComponent, PanelLogsComponent],
   imports: [
     ComponentModule,
     CommonModule,
@@ -24,7 +25,8 @@ import { PanelService } from './panel.service';
         children: [
           { path: 'list', component: PanelListComponent },
           { path: 'contacts/:panelId', component: ContactsComponent },
-          { path: 'settings/:panelId', component: SettingsComponent }
+          { path: 'settings/:panelId', component: SettingsComponent },
+          { path: 'logs/:panelId', component: PanelLogsComponent }
         ]
       }
     ]),

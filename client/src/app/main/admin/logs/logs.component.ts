@@ -1,15 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LogService } from '../../../api/services/log.service';
 import { TableOptions } from 'swagular/components';
 import { orderBy } from 'lodash';
 import { Socket } from 'ngx-socket-io';
 
 @Component({
-  selector: 'app-logs',
-  templateUrl: './logs.component.html',
-  styleUrls: ['./logs.component.scss']
+  selector: 'app-panels-logs',
+  template: `
+    <div fxFlexFill *ngIf="logs" fxLayout="column">
+      <swagular-table style="padding: 50px" fxFlex [dataSource]="logs" [options]="logsTableOptions">
+        <ng-template appCellDef column="time" let-row="row">
+          {{ row.time | date: 'dd/MM/YY HH:mm:ss' }}
+        </ng-template>
+      </swagular-table>
+    </div>
+  `
 })
-export class LogsComponent implements OnInit {
+export class LogsComponent {
   logs: any;
   logsTableOptions: TableOptions<any> = {
     columns: [
@@ -17,7 +24,7 @@ export class LogsComponent implements OnInit {
       { key: 'hostname', title: 'Hostname' },
       { key: 'level', title: 'Level' },
       { key: 'msg', title: 'Massage' },
-      { key: 'pid', title: '23592' },
+      { key: 'pid', title: 'ID' },
       { key: 'url', title: 'url' },
       { key: 'method', title: 'method' },
       { key: 'statusCode', title: 'Status Code' }
@@ -39,6 +46,4 @@ export class LogsComponent implements OnInit {
       });
     });
   }
-
-  ngOnInit(): void {}
 }

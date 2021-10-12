@@ -186,6 +186,7 @@
     "english": "English"
   },
   "panelToolBar": {
+    "logs": "logs",
     "list": "Panel List",
     "editContact": "Edit Panel Contact",
     "editSettings": "Edit Panel Settings",

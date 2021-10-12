@@ -11,6 +11,7 @@ import { FormModel } from 'swagular/models';
 import { AddPanelDetailsDto, AddPanelDetailsDtoSchema } from '../models/add-panel-details-dto';import { ChangeItem, ChangeItemSchema } from '../models/change-item';import { Contact, ContactSchema } from '../models/contact';import { Contacts, ContactsSchema } from '../models/contacts';import { PanelDetails, PanelDetailsSchema } from '../models/panel-details';
 
   
+  
     export declare type AddNewPanelFormGroupType = AddPanelDetailsDto
     export const addNewPanelFormGroupSchema = AddPanelDetailsDtoSchema;
 
@@ -33,6 +34,10 @@ import { AddPanelDetailsDto, AddPanelDetailsDtoSchema } from '../models/add-pane
   providedIn: 'root',
 })
 export class PanelService extends BaseService {
+    /**
+     * Path part for operation logs_1
+     */
+    static readonly Logs_1Path = '/panel/{id}/logs';
     /**
      * Path part for operation list
      */
@@ -68,6 +73,26 @@ export class PanelService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient, private swagularService: SwagularService) {
     super(config, http);
   }
+  logs_1(      id: number,
+
+
+
+): Observable<Array<any>> {
+const rb = new RequestBuilder(this.rootUrl, PanelService.Logs_1Path, 'get');
+
+  rb.path('id', id, {});
+
+
+return this.http.request(rb.build({
+responseType: 'json',
+accept: 'application/json'
+})).pipe(
+filter((r: any) => r instanceof HttpResponse),
+map(r => r.body as Array<any>)
+);
+
+  }
+
   list(
 ): Observable<Array<PanelDetails>> {
 const rb = new RequestBuilder(this.rootUrl, PanelService.ListPath, 'get');
@@ -232,6 +257,7 @@ map(r => r.body as void)
 
   }
 
+  
   
      addNewPanelFormGroup(value?:AddNewPanelFormGroupType) {
     return this.swagularService.getFormGroup<AddNewPanelFormGroupType>(addNewPanelFormGroupSchema, value);

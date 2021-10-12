@@ -1,187 +1,188 @@
 export interface IRootObject {
-    loginForm: ILoginForm;
-    setPasswordForm: ISetPasswordForm;
-    saveOrUpdateUserForm: ISaveOrUpdateUserForm;
-    addPanelFormModel: IAddPanelFormModel;
-    savePanelFormModel: ISavePanelFormModel;
-    panelsTableOptions: IPanelsTableOptions;
-    contactsTableOptions: IContactsTableOptions;
-    updateContactFormModel: IUpdateContactFormModel;
-    mainToolBar: IMainToolBar;
-    panelToolBar: IPanelToolBar;
-    userFormModel: IUserFormModel;
-    userTableOptions: IUserTableOptions;
+  loginForm: ILoginForm;
+  setPasswordForm: ISetPasswordForm;
+  saveOrUpdateUserForm: ISaveOrUpdateUserForm;
+  addPanelFormModel: IAddPanelFormModel;
+  savePanelFormModel: ISavePanelFormModel;
+  panelsTableOptions: IPanelsTableOptions;
+  contactsTableOptions: IContactsTableOptions;
+  updateContactFormModel: IUpdateContactFormModel;
+  mainToolBar: IMainToolBar;
+  panelToolBar: IPanelToolBar;
+  userFormModel: IUserFormModel;
+  userTableOptions: IUserTableOptions;
 }
 export interface ILoginForm {
-    formTitle: string;
-    formSaveButtonTitle: string;
-    email: IEmail;
-    password: IPassword;
+  formTitle: string;
+  formSaveButtonTitle: string;
+  email: IEmail;
+  password: IPassword;
 }
 export interface IEmail {
-    label: string;
+  label: string;
 }
 export interface IPassword {
-    label: string;
+  label: string;
 }
 export interface ISetPasswordForm {
-    formTitle: string;
-    formSaveButtonTitle: string;
-    email: IEmail;
-    password: IPassword;
-    rePassword: IRePassword;
+  formTitle: string;
+  formSaveButtonTitle: string;
+  email: IEmail;
+  password: IPassword;
+  rePassword: IRePassword;
 }
 export interface IRePassword {
-    label: string;
+  label: string;
 }
 export interface ISaveOrUpdateUserForm {
-    formTitle: string;
+  formTitle: string;
 }
 export interface IAddPanelFormModel {
-    formTitle: string;
-    panelId: IPanelId;
-    id: IId;
-    address: IAddress;
-    direction: IDirection;
-    phoneNumber: IPhoneNumber;
-    contactName: IContactName;
-    contactPhone: IContactPhone;
+  formTitle: string;
+  panelId: IPanelId;
+  id: IId;
+  address: IAddress;
+  direction: IDirection;
+  phoneNumber: IPhoneNumber;
+  contactName: IContactName;
+  contactPhone: IContactPhone;
 }
 export interface IPanelId {
-    label: string;
-    hint: string;
+  label: string;
+  hint: string;
 }
 export interface IId {
-    label: string;
+  label: string;
 }
 export interface IAddress {
-    label: string;
+  label: string;
 }
 export interface IDirection {
-    label: string;
+  label: string;
 }
 export interface IPhoneNumber {
-    label: string;
+  label: string;
 }
 export interface IContactName {
-    label: string;
-    hint: string;
+  label: string;
+  hint: string;
 }
 export interface IContactPhone {
-    label: string;
+  label: string;
 }
 export interface ISavePanelFormModel {
-    formTitle: string;
-    address: IAddress;
-    phoneNumber: IPhoneNumber;
-    contactName: IContactName;
-    contactPhone: IContactPhone;
+  formTitle: string;
+  address: IAddress;
+  phoneNumber: IPhoneNumber;
+  contactName: IContactName;
+  contactPhone: IContactPhone;
 }
 export interface IPanelsTableOptions {
-    columns: IColumnsItem[];
+  columns: IColumnsItem[];
 }
 export interface IColumnsItem {
-    key: string;
-    title: string;
-    isFilterable?: boolean;
-    isSortable?: boolean;
+  key: string;
+  title: string;
+  isFilterable?: boolean;
+  isSortable?: boolean;
 }
 export interface IContactsTableOptions {
-    columns: IColumnsItem[];
+  columns: IColumnsItem[];
 }
 export interface IUpdateContactFormModel {
-    formTitle: string;
-    name1: IName1;
-    name2: IName2;
-    tel1: ITel1;
-    tel2: ITel2;
-    tel3: ITel3;
-    tel4: ITel4;
-    tel5: ITel5;
-    tel6: ITel6;
-    code: ICode;
-    ref: IRef;
-    apartment: IApartment;
+  formTitle: string;
+  name1: IName1;
+  name2: IName2;
+  tel1: ITel1;
+  tel2: ITel2;
+  tel3: ITel3;
+  tel4: ITel4;
+  tel5: ITel5;
+  tel6: ITel6;
+  code: ICode;
+  ref: IRef;
+  apartment: IApartment;
 }
 export interface IName1 {
-    label: string;
+  label: string;
 }
 export interface IName2 {
-    label: string;
+  label: string;
 }
 export interface ITel1 {
-    label: string;
+  label: string;
 }
 export interface ITel2 {
-    label: string;
+  label: string;
 }
 export interface ITel3 {
-    label: string;
+  label: string;
 }
 export interface ITel4 {
-    label: string;
+  label: string;
 }
 export interface ITel5 {
-    label: string;
+  label: string;
 }
 export interface ITel6 {
-    label: string;
+  label: string;
 }
 export interface ICode {
-    label: string;
+  label: string;
 }
 export interface IRef {
-    label: string;
+  label: string;
 }
 export interface IApartment {
-    label: string;
+  label: string;
 }
 export interface IMainToolBar {
-    admin: string;
-    panels: string;
-    language: string;
-    logout: string;
-    hebrew: string;
-    english: string;
+  admin: string;
+  panels: string;
+  language: string;
+  logout: string;
+  hebrew: string;
+  english: string;
 }
 export interface IPanelToolBar {
-    list: string;
-    editContact: string;
-    editSettings: string;
-    sent: string;
-    receive: string;
-    upload: string;
-    download: string;
-    sentChangesTo: string;
-    nameOrder: string;
-    powerUp: string;
-    getAll: string;
-    dump: string;
-    excel: string;
-    cancel: string;
-    444: string;
-    12: string;
-    notConnected: string;
+  list: string;
+  editContact: string;
+  editSettings: string;
+  logs: string;
+  sent: string;
+  receive: string;
+  upload: string;
+  download: string;
+  sentChangesTo: string;
+  nameOrder: string;
+  powerUp: string;
+  getAll: string;
+  dump: string;
+  excel: string;
+  cancel: string;
+  444: string;
+  12: string;
+  notConnected: string;
 }
 export interface IUserFormModel {
-    firstName: IFirstName;
-    lastName: ILastName;
-    email: IEmail;
-    phone: IPhone;
-    role: IRole;
+  firstName: IFirstName;
+  lastName: ILastName;
+  email: IEmail;
+  phone: IPhone;
+  role: IRole;
 }
 export interface IFirstName {
-    label: string;
+  label: string;
 }
 export interface ILastName {
-    label: string;
+  label: string;
 }
 export interface IPhone {
-    label: string;
+  label: string;
 }
 export interface IRole {
-    label: string;
+  label: string;
 }
 export interface IUserTableOptions {
-    columns: IColumnsItem[];
+  columns: IColumnsItem[];
 }

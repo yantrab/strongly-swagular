@@ -5,12 +5,19 @@ import { AddPanelDetailsDTO, PanelDetails } from "../../domain/panel/panel.detai
 import { omit } from "lodash";
 import { ChangeItem, Contact } from "../../domain/panel/panel.contacts";
 import { PanelSocketService } from "../../services/panel/panel.socket.service";
+import { LogService } from "../../../../client/src/app/api/services/log.service";
+import { LoggerService } from "../../services/loggerService";
 
 @guard(user => !!user)
 export class PanelController {
-  constructor(private service: PanelService, private panelSocketService: PanelSocketService) {
+  constructor(private service: PanelService, private panelSocketService: PanelSocketService, private logService: LoggerService) {
     panelSocketService.listen();
   }
+
+  @get(":id/logs") logs(@params("id") id: number) {
+    return this.logService.getLogs({ pId: id });
+  }
+
   @get("list") list(@user user: User) {
     return this.service.getPanelList(user.role === Role.admin ? undefined : user._id);
   }
