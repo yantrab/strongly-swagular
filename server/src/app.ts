@@ -36,9 +36,9 @@ export const app = async (path?) => {
         path: "/",
         secure: true,
         httpOnly: true,
-        sameSite: false,
+        sameSite: "None",
         maxAge: 3600
-      });
+      } as any);
     } catch (err) {}
   });
 
