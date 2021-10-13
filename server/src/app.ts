@@ -36,7 +36,7 @@ export const app = async (path?) => {
         path: "/",
         secure: false,
         httpOnly: true,
-        sameSite: false,
+        sameSite: "none",
         maxAge: 3600
       });
     } catch (err) {}
