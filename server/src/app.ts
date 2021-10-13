@@ -34,11 +34,11 @@ export const app = async (path?) => {
       await request.jwtVerify();
       reply.setCookie("token", request.cookies.token, {
         path: "/",
-        secure: true,
+        secure: false,
         httpOnly: true,
-        sameSite: "None",
+        sameSite: false,
         maxAge: 3600
-      } as any);
+      });
     } catch (err) {}
   });
 

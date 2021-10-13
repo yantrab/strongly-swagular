@@ -13,7 +13,13 @@
     "push-to-dev": "ssh  yaniv@178.62.237.25 'rm -rf ~/tador/strongly-swagular/client/dist' && scp -r dist yaniv@178.62.237.25:~/tador/strongly-swagular/client/",
     "push-to-prod": "scp -r dist yaniv@128.199.41.162:~/tador/strongly-swagular/client",
     "build:prod": "ng build -c prod && cd dist/app && gzip *.js && gzip *.css && cd ../../ && npm run push-to-prod",
-    "build:dev": "ng build -c dev && cd dist/app && cd ../../ && npm run push-to-dev"
+    "build:dev": "ng build -c dev && cd dist/app && cd ../../ && npm run push-to-dev",
+    "cordova:init": "cordova create CordovaMobileApp com.yantrab.app CordovaMobileApp",
+    "cordova:run:browser": "cd CordovaMobileApp&&cordova run browser --port=4200",
+    "cordova:add:browser": "cd CordovaMobileApp&&cordova platform add browser",
+    "cordova:add:android": "cd CordovaMobileApp&&cordova platform add android",
+    "cordova:run:android": "cd CordovaMobileApp&&cordova run android",
+    "build:dev:cordova": "ng build -c dev  --base-href . --output-path ./CordovaMobileApp/www/"
   },
   "private": true,
   "dependencies": {
