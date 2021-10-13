@@ -34,9 +34,9 @@ export const app = async (path?) => {
       await request.jwtVerify();
       reply.setCookie("token", request.cookies.token, {
         path: "/",
-        secure: false,
+        secure: true,
         httpOnly: true,
-        sameSite: "none",
+        sameSite: false,
         maxAge: 3600
       });
     } catch (err) {}
