@@ -80,22 +80,22 @@ export class PanelService {
   }
 
   uploadCsv(file: any) {
-    this.localeService.getLocaleItem('contactsTableOptions.columns').then(columns => {
-      const contacts = cloneDeep(this.contacts.value!);
-      contacts.changes = contacts.changes || [];
-      contacts.list = this.excelService.readFile<Contact>(file, columns);
-      contacts.changes = contacts.changes.concat(getContactsChanges(contacts.list, this.contacts.value!.list, Source.client));
-      this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId);
+    return new Promise(res => {
+      this.localeService.getLocaleItem('contactsTableOptions.columns').then(columns => {
+        const contacts = cloneDeep(this.contacts.value!);
+        contacts.changes = contacts.changes || [];
+        contacts.list = this.excelService.readFile<Contact>(file, columns);
+        contacts.changes = contacts.changes.concat(getContactsChanges(contacts.list, this.contacts.value!.list, Source.client));
+        this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId).subscribe(() => this.contacts.next(contacts));
+      });
     });
   }
   updateContacts(changes: Array<ChangeItem>, list: Array<Contact>, panelId: number) {
-    return this.api
-      .updateContacts({
-        contacts: list,
-        changes,
-        panelId
-      })
-      .subscribe(() => {});
+    return this.api.updateContacts({
+      contacts: list,
+      changes,
+      panelId
+    });
   }
 
   downloadCsv() {
