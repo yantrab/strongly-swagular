@@ -12,6 +12,7 @@ import { AddPanelDetailsDto, AddPanelDetailsDtoSchema } from '../models/add-pane
 
   
   
+  
     export declare type AddNewPanelFormGroupType = AddPanelDetailsDto
     export const addNewPanelFormGroupSchema = AddPanelDetailsDtoSchema;
 
@@ -34,6 +35,10 @@ import { AddPanelDetailsDto, AddPanelDetailsDtoSchema } from '../models/add-pane
   providedIn: 'root',
 })
 export class PanelService extends BaseService {
+    /**
+     * Path part for operation reset
+     */
+    static readonly ResetPath = '/panel/{id}/reset';
     /**
      * Path part for operation logs_1
      */
@@ -73,6 +78,26 @@ export class PanelService extends BaseService {
   constructor(config: ApiConfiguration, http: HttpClient, private swagularService: SwagularService) {
     super(config, http);
   }
+  reset(      id: number,
+
+
+
+): Observable<{ 'contacts': Contacts }> {
+const rb = new RequestBuilder(this.rootUrl, PanelService.ResetPath, 'put');
+
+  rb.path('id', id, {});
+
+
+return this.http.request(rb.build({
+responseType: 'json',
+accept: 'application/json'
+})).pipe(
+filter((r: any) => r instanceof HttpResponse),
+map(r => r.body as { 'contacts': Contacts })
+);
+
+  }
+
   logs_1(      id: number,
 
 
@@ -177,7 +202,7 @@ map(r => r.body as Contacts)
 : { 'changes': Array<ChangeItem>, 'contact': Contact }
 
 
-): Observable<void> {
+): Observable<any> {
 const rb = new RequestBuilder(this.rootUrl, PanelService.UpdateContactPath, 'post');
 
   rb.path('id', id, {});
@@ -186,11 +211,11 @@ const rb = new RequestBuilder(this.rootUrl, PanelService.UpdateContactPath, 'pos
 , 'application/json');
 
 return this.http.request(rb.build({
-responseType: 'text',
-accept: '*/*'
+responseType: 'json',
+accept: 'application/json'
 })).pipe(
 filter((r: any) => r instanceof HttpResponse),
-map(r => r.body as void)
+map(r => r.body as any)
 );
 
   }
@@ -240,7 +265,7 @@ map(r => r.body as { 'contacts': Contacts })
        body 
 : { 'changes': Array<ChangeItem>, 'contacts': Array<Contact>, 'panelId': number }
 
-): Observable<void> {
+): Observable<any> {
 const rb = new RequestBuilder(this.rootUrl, PanelService.UpdateContactsPath, 'post');
 
 
@@ -248,15 +273,16 @@ const rb = new RequestBuilder(this.rootUrl, PanelService.UpdateContactsPath, 'po
 , 'application/json');
 
 return this.http.request(rb.build({
-responseType: 'text',
-accept: '*/*'
+responseType: 'json',
+accept: 'application/json'
 })).pipe(
 filter((r: any) => r instanceof HttpResponse),
-map(r => r.body as void)
+map(r => r.body as any)
 );
 
   }
 
+  
   
   
      addNewPanelFormGroup(value?:AddNewPanelFormGroupType) {

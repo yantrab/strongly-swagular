@@ -47,7 +47,7 @@ export class UserService {
 
   getUsers(query?: Partial<User>) {
     return this.userRepo.collection
-      .find<User>(query || {})
+      .find<User>(query || {}, {})
       .project({ password: 0 })
       .toArray() as Promise<User[]>;
   }

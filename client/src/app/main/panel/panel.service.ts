@@ -15,6 +15,7 @@ import { cloneDeep } from 'lodash';
 import { filter, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddPanelDetailsDto } from '../../api/models/add-panel-details-dto';
+import { ChangeItem } from '../../api/models/change-item';
 
 @Injectable({
   providedIn: 'root'
@@ -84,16 +85,17 @@ export class PanelService {
       contacts.changes = contacts.changes || [];
       contacts.list = this.excelService.readFile<Contact>(file, columns);
       contacts.changes = contacts.changes.concat(getContactsChanges(contacts.list, this.contacts.value!.list, Source.client));
-      this.api
-        .updateContacts({
-          contacts: contacts.list,
-          changes: contacts.changes,
-          panelId: this.currentPanel!.panelId
-        })
-        .subscribe(() => {
-          this.contacts.next(contacts);
-        });
+      this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId);
     });
+  }
+  updateContacts(changes: Array<ChangeItem>, list: Array<Contact>, panelId: number) {
+    return this.api
+      .updateContacts({
+        contacts: list,
+        changes,
+        panelId
+      })
+      .subscribe(() => {});
   }
 
   downloadCsv() {
@@ -120,6 +122,12 @@ export class PanelService {
         this.snackBar.open(error.error?.message, '', { duration: 5000 });
       }
     );
+  }
+
+  reset() {
+    this.api.reset(this.currentPanel?.panelId!).subscribe(value => {
+      this.contacts.next(value.contacts);
+    });
   }
 
   private getLeafRoute(route: ActivatedRoute): ActivatedRoute | undefined {

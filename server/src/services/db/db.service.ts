@@ -18,7 +18,7 @@ export class Repository<T extends Entity<T>> {
   }
 
   find(query?: Partial<EntityWithoutGetters<T>>): Promise<T[]> {
-    return this.collection.find<T>(query || {}).toArray();
+    return this.collection.find<T>(query || {}, {}).toArray();
   }
 
   findOne(query?: Partial<EntityWithoutGetters<T>>): Promise<T | null> {

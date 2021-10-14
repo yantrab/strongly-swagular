@@ -130,8 +130,8 @@ class AppSpec {
 
   @test
   async s() {
-    // const command = "!00000000000000102551555bbaabbbbb";
-    // const result = await this.write(command);
+    const command = "!00000000000000102551555bbaabbbbb";
+    const result = await this.write(command);
 
     const registerAction = { type: ActionType.status, pId: "1" };
     const registerActionString = JSON.stringify(registerAction);

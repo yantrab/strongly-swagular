@@ -3,7 +3,7 @@ import { DbService, Repository } from "../db/db.service";
 import { ChangeItem, Contact, Contacts, Source } from "../../domain/panel/panel.contacts";
 import { dumps } from "../../domain/panel/initial-damps";
 import { Panel } from "../../domain/panel/panel";
-import { cloneDeep } from "lodash";
+import { assignWith, cloneDeep } from "lodash";
 import { getContactsChanges } from "../../../../shared/panel";
 
 export class PanelService {
@@ -73,5 +73,13 @@ export class PanelService {
     panel.contacts.changes = panel.contacts.changes.concat(getContactsChanges(panel.contacts.list, oldPanel.contacts.list, Source.client));
     await this.updateContacts(panelDetails.panelId, panel.contacts.list, panel.contacts.changes);
     return { contacts: panel.contacts };
+  }
+
+  async reset(id: number) {
+    const panel = (await this.getPanelDetails(id))!;
+    const initialPanel = new Panel({ details: panel }).reDump(dumps.MP[panel.direction]);
+    await this.panelContactsRepo.collection.deleteOne({ panelId: id });
+    await this.panelContactsRepo.saveOrUpdateOne({ panelId: panel.panelId, list: initialPanel.contacts.list, changes: [] });
+    return { contacts: initialPanel.contacts };
   }
 }

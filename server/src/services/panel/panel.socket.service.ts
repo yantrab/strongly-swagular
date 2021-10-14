@@ -80,7 +80,14 @@ export class PanelSocketService {
               }
             }
             const resultString = buffer.toString();
-            this.logInfo("panel answered", host, { req: msgString, res: resultString, ...action }).then();
+            this.logInfo("panel answered", host, {
+              req: msgString,
+              buffer: msg,
+              res: resultString,
+              pId: action.pId,
+              type: ActionType[action.type],
+              data: JSON.stringify(action.data || {})
+            }).then();
             return socket.write(buffer);
           } catch (e) {
             this.logError("err.message " + port + ".", socket.address, e).then();

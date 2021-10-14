@@ -1,4 +1,4 @@
-import { body, get, guard, params, post, user, query } from "strongly";
+import { body, get, guard, params, post, user, query, put } from "strongly";
 import { PanelService } from "../../services/panel/panel.service";
 import { Role, User } from "../../domain/user";
 import { AddPanelDetailsDTO, PanelDetails } from "../../domain/panel/panel.details";
@@ -13,7 +13,9 @@ export class PanelController {
   constructor(private service: PanelService, private panelSocketService: PanelSocketService, private logService: LoggerService) {
     panelSocketService.listen();
   }
-
+  @put(":id/reset") reset(@params("id") id: number) {
+    return this.service.reset(id);
+  }
   @get(":id/logs") logs(@params("id") id: number) {
     return this.logService.getLogs({ pId: id });
   }

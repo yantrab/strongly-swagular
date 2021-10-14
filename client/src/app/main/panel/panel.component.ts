@@ -8,6 +8,7 @@ import { saveAs } from 'file-saver';
 import { round } from 'lodash';
 import { IPanelToolBar, IRootObject } from '../../api/locale.interface';
 import { LocaleService } from 'swagular/components';
+import { Source } from '../../api/models/source';
 
 @Component({
   selector: 'app-panel',
@@ -47,6 +48,7 @@ import { LocaleService } from 'swagular/components';
           </mat-menu>
           <mat-menu #receive="matMenu">
             <button (click)="changeStatus(status.readAllFromPanel)" mat-menu-item>{{ locale.getAll }}</button>
+            <button (click)="reset()" mat-menu-item>{{ locale.reset }}</button>
           </mat-menu>
           <mat-menu #upload="matMenu">
             <button appFileUpload (fileContent)="uploadDump($event)" mat-menu-item>
@@ -184,6 +186,9 @@ export class PanelComponent {
         break;
       default:
         this.currentPanel.status = ActionType.idle;
+        const contacts = this.service.contacts.value!;
+        contacts.changes = contacts.changes.filter(c => c.source === Source.client);
+        this.service.updateContacts(contacts.changes, contacts.list, this.currentPanel.panelId);
     }
     this.api.savePanel(this.currentPanel).subscribe(() => {
       this.service.showProgressBar = false;
@@ -208,5 +213,8 @@ export class PanelComponent {
 
   downloadCsv() {
     this.service.downloadCsv();
+  }
+  reset() {
+    this.service.reset();
   }
 }
