@@ -11,6 +11,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PanelService } from './panel.service';
 import { PanelLogsComponent } from './panel-logs/panel-logs.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [PanelListComponent, PanelComponent, SettingsComponent, ContactsComponent, PanelLogsComponent],
@@ -32,7 +33,8 @@ import { PanelLogsComponent } from './panel-logs/panel-logs.component';
     ]),
     MatSlideToggleModule,
     MatMenuModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatExpansionModule
   ],
   providers: [PanelService]
 })

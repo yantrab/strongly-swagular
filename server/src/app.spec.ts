@@ -1,12 +1,12 @@
 import { suite, test } from "@testdeck/jest";
 import "reflect-metadata";
-import { app } from "./app";
 import { PanelService } from "./services/panel/panel.service";
-import { inject } from "strongly";
 import { Lang } from "../../client/src/app/api/models/lang";
 import { ActionType, PanelDetails } from "./domain/panel/panel.details";
 import { Socket } from "net";
 import { Source } from "./domain/panel/panel.contacts";
+import { Panel } from "./domain/panel/panel";
+import { dumps } from "./domain/panel/initial-damps";
 
 const port = 4000;
 const pId = "1"; //'861311009983668'; //'1'//
@@ -128,6 +128,20 @@ class AppSpec {
     expect(await this.write(registerActionStringD)).toBe(ActionType.idle);
   }
 
+  @test
+  dumpRedump() {
+    const initialPanel = new Panel({
+      details: { panelId: 1, userId: "", direction: Lang.he, status: ActionType.idle, phoneNumber: "1" }
+    }).reDump(dumps.MP[Lang.he]);
+    const dump = initialPanel.dump();
+    const expe = dumps.MP.Hebrew;
+    const gap = Math.floor(dump.length / 1000);
+    expect(dump).toEqual(expe);
+    for (let i = 0; i < dump.length; i += gap) {
+      console.log(i);
+      expect(dump.slice(i, i + gap)).toEqual(expe.slice(i, i + gap));
+    }
+  }
   @test
   async s() {
     const command = "!00000000000000102551555bbaabbbbb";

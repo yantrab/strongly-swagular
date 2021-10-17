@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { PanelDetails } from '../../api/models/panel-details';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
@@ -16,6 +16,7 @@ import { filter, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddPanelDetailsDto } from '../../api/models/add-panel-details-dto';
 import { ChangeItem } from '../../api/models/change-item';
+import { Settings } from 'src/app/api/models/settings';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ import { ChangeItem } from '../../api/models/change-item';
 export class PanelService {
   currentPanel?: PanelDetails;
   contacts = new BehaviorSubject<Contacts | undefined>(undefined);
+  settings = new BehaviorSubject<Settings | undefined>(undefined);
   panelList = new BehaviorSubject<PanelDetails[] | undefined>(undefined);
   showProgressBar = false;
   constructor(
@@ -38,6 +40,7 @@ export class PanelService {
       this.currentPanel = panel;
     });
     socket.on('updateContacts', (contacts: Contacts) => this.contacts.next(contacts));
+    socket.on('updateSettings', (settings: Settings) => this.settings.next(settings));
     //this.router.onSameUrlNavigation = 'reload';
     api.list().subscribe(panels => {
       this.panelList.next(panels);
@@ -65,6 +68,13 @@ export class PanelService {
     return this.contacts;
   }
 
+  getSettings(panelId: number) {
+    this.api.settings(panelId).subscribe((settings: Settings) => {
+      this.settings.next(settings);
+    });
+    return this.settings;
+  }
+
   navigateToContact(panel: PanelDetails) {
     this.navigateTo('panel/contacts/', panel);
   }
@@ -76,6 +86,7 @@ export class PanelService {
   reDump(dump: string) {
     this.api.reDump({ dump: '_' + dump, panel: this.currentPanel! }).subscribe(result => {
       this.contacts.next(result.contacts);
+      this.settings.next(result.settings);
     });
   }
 
@@ -127,6 +138,7 @@ export class PanelService {
   reset() {
     this.api.reset(this.currentPanel?.panelId!).subscribe(value => {
       this.contacts.next(value.contacts);
+      this.settings.next(value.settings);
     });
   }
 

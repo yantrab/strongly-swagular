@@ -1,1 +1,37 @@
-<p>settings works!</p>
+<mat-accordion fxFlex>
+  <mat-expansion-panel >
+    <mat-expansion-panel-header>
+     General Settings
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <swagular-form (submit)="save(generalSettingsFormModel.formGroup, 'general')" [model]="generalSettingsFormModel"></swagular-form>
+    </ng-template>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel >
+    <mat-expansion-panel-header>
+      Yes No Questions
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <swagular-form (submit)="save(yesNoSettingsFormModel.formGroup, 'yesNo')" [model]="yesNoSettingsFormModel"></swagular-form>
+    </ng-template>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel >
+    <mat-expansion-panel-header>
+      Timing Settings
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <swagular-form (submit)="save(yesNoSettingsFormModel.formGroup, 'timing')" [model]="timingSettingsFormModel"></swagular-form>
+    </ng-template>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel >
+    <mat-expansion-panel-header>
+      Floor Values Settings
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+      <swagular-form (submit)="save(yesNoSettingsFormModel.formGroup, 'floor')" [model]="floorValueSettingsFormModel"></swagular-form>
+    </ng-template>
+  </mat-expansion-panel>
+</mat-accordion>
