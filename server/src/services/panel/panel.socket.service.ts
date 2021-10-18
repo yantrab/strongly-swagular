@@ -4,9 +4,10 @@ import { Buffer } from "buffer";
 import { PanelService } from "./panel.service";
 import { ActionType, PanelDetails } from "../../domain/panel/panel.details";
 import { panelPropertiesSetting } from "../../domain/panel/panel";
-import { Source } from "../../domain/panel/panel.contacts";
-import { cloneDeep } from "lodash";
+import { ChangeItem, Source } from "../../domain/panel/panel.contacts";
+import { cloneDeep, get, slice } from "lodash";
 import { WebSocketService } from "../sokcet/socket.service";
+import { SettingsChangeItem } from "../../domain/panel/settings";
 
 const SOCKET_TIMEOUT = 1000 * 30;
 
@@ -102,27 +103,46 @@ export class PanelSocketService {
     const status = panelDetails.status;
     if (status === ActionType.writeToPanel || status === ActionType.writeToPanelInProgress) {
       const panel = await this.panelService.getPanel(panelDetails);
-      const getNextChange = () => panel.contacts.changes.find(c => c.previewsValue !== null && c.source === Source.client) as any;
+      const getNextChange = () =>
+        panel.contacts.changes.find(c => c.previewsValue !== null && c.source === Source.client) ||
+        panel.settings.changes.find(c => c.previewsValue !== null && c.source === Source.client);
       let nextChange = getNextChange();
-
+      let isContactChanges = (nextChange as any)["key"];
       if (action.d && nextChange) {
         if (status === ActionType.writeToPanel) {
           panelDetails.status = ActionType.writeToPanelInProgress;
         }
         (nextChange as any).previewsValue = null;
         nextChange.source = Source.Panel;
-        await this.panelService.setContactsChanges(panelDetails.panelId, panel.contacts.changes);
+        if (isContactChanges) {
+          await this.panelService.setContactsChanges(panelDetails.panelId, panel.contacts.changes);
+        } else {
+          await this.panelService.setSettingsChanges(panelDetails.panelId, panel.settings.changes);
+        }
         nextChange = getNextChange();
       }
 
       if (!nextChange) {
         panelDetails.status = ActionType.idle;
       } else {
+        isContactChanges = (nextChange as any)["key"];
+
         nextChange.source = Source.PanelProgress;
-        this.sentMsg(action.pId, "updateContacts", panel.contacts);
-        const newValue = panel.contacts.list[nextChange.index][nextChange.key];
-        const indexSettings = panelPropertiesSetting.contacts[nextChange.key];
-        const index = indexSettings.index + indexSettings.length * nextChange.index;
+        let index: number, newValue: any;
+        if (isContactChanges) {
+          nextChange = nextChange as ChangeItem;
+          newValue = panel.contacts.list[nextChange.index][nextChange.key];
+          const indexSettings = panelPropertiesSetting.contacts[nextChange.key];
+          index = indexSettings.index + indexSettings.length * nextChange.index;
+          this.sentMsg(action.pId, "updateContacts", panel.contacts);
+        } else {
+          nextChange = nextChange as SettingsChangeItem;
+          const indexSettings = get(panelPropertiesSetting.settings, nextChange.path);
+          newValue = (get(panel.settings, nextChange.path) + " ".repeat(indexSettings.length)).slice(0, indexSettings.length);
+          index = indexSettings.index;
+          this.sentMsg(action.pId, "updateSettings", panel.settings);
+        }
+
         return "04" + ("0".repeat(10) + index).slice(-10) + newValue;
       }
 

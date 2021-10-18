@@ -117,7 +117,7 @@ export class FloorValueSettings {
   @min(0) @max(250) floorValue29: number;
   @min(0) @max(250) floorValue30: number;
 }
-interface SettingsChangeItem {
+export class SettingsChangeItem {
   path: string;
   previewsValue?: any;
   source: Source;

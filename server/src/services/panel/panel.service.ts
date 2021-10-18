@@ -2,11 +2,10 @@ import { ActionType, PanelDetails } from "../../domain/panel/panel.details";
 import { DbService, Repository } from "../db/db.service";
 import { ChangeItem, Contact, Contacts, Source } from "../../domain/panel/panel.contacts";
 import { dumps } from "../../domain/panel/initial-damps";
-import { Panel } from "../../domain/panel/panel";
-import { assignWith, cloneDeep } from "lodash";
+import { Panel, panelPropertiesSetting } from "../../domain/panel/panel";
+import { cloneDeep } from "lodash";
 import { getContactsChanges } from "../../../../shared/panel";
-import { Settings } from "../../domain/panel/settings";
-import { SettingsChangeItem } from "../../../../client/src/app/api/models/settings-change-item";
+import { Settings, SettingsChangeItem } from "../../domain/panel/settings";
 
 export class PanelService {
   private panelDetailsRepo: Repository<PanelDetails>;
@@ -65,7 +64,7 @@ export class PanelService {
   }
 
   updateSettings(panelId: number, settings: any, changes: SettingsChangeItem[]) {
-    return this.panelContactsRepo.collection.updateOne({ panelId }, { $set: settings });
+    return this.panelSettingsRepo.collection.updateOne({ panelId }, { $set: { ...settings, changes } });
   }
 
   updateContacts(panelId: number, contacts: Contact[], changes?: ChangeItem[]) {
@@ -74,6 +73,10 @@ export class PanelService {
 
   setContactsChanges(panelId: number, changes: ChangeItem[]) {
     return this.panelContactsRepo.collection.updateOne({ panelId }, { $set: { changes } });
+  }
+
+  setSettingsChanges(panelId: number, changes: SettingsChangeItem[]) {
+    return this.panelSettingsRepo.collection.updateOne({ panelId }, { $set: { changes } });
   }
 
   async dump(panelDetails: PanelDetails) {
@@ -88,7 +91,18 @@ export class PanelService {
     panel.contacts.changes = panel.contacts.changes.concat(getContactsChanges(panel.contacts.list, oldPanel.contacts.list, Source.client));
     await this.updateContacts(panelDetails.panelId, panel.contacts.list, panel.contacts.changes);
 
-    // TODO settings
+    // settings
+    panel.settings.changes = panel.settings.changes || [];
+    Object.keys(panelPropertiesSetting.settings).forEach(key => {
+      Object.keys(panelPropertiesSetting.settings[key]).forEach(prop => {
+        const oldValue = oldPanel.settings[key][prop];
+        const newValue = panel.settings[key][prop];
+        if (oldValue !== newValue) {
+          panel.settings.changes.push({ path: `${key}.${prop}`, source: Source.client, previewsValue: oldValue });
+        }
+      });
+    });
+
     return { contacts: panel.contacts, settings: panel.settings };
   }
 

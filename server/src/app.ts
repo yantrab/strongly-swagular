@@ -12,6 +12,7 @@ const config = new ConfigService().config;
 export const app = async (path?) => {
   const url = config.mongoUrl || (await MongoMemoryServer.create()).getUri();
   const mongo = await new MongoClient(url, { ignoreUndefined: true });
+  console.log(mongo);
   await mongo.connect();
   const dbService = new DbService(mongo);
   const webSocketService = new WebSocketService();

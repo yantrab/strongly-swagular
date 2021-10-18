@@ -17,7 +17,7 @@ export class Contact {
   @max(panelPropertiesSetting.contacts.ref.length) @numberString ref: string;
   @max(panelPropertiesSetting.contacts.apartment.length) @numberString apartment: string;
 }
-export interface ChangeItem {
+export class ChangeItem {
   index: number;
   key: string;
   previewsValue?: string;
