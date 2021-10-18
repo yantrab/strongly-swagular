@@ -124,6 +124,8 @@ export class PanelSocketService {
 
       if (!nextChange) {
         panelDetails.status = ActionType.idle;
+        await this.panelService.setContactsChanges(panelDetails.panelId, []);
+        await this.panelService.setSettingsChanges(panelDetails.panelId, []);
       } else {
         isContactChanges = (nextChange as any)["key"];
 
@@ -147,13 +149,9 @@ export class PanelSocketService {
       }
 
       this.sentMsg(action.pId, "updateContacts", panel.contacts);
-      if (!panel.contacts.changes.find(c => c.previewsValue)) {
-        await this.panelService.setContactsChanges(panelDetails.panelId, []);
-      }
     } else if (action.d) {
-      if (panelDetails.status === ActionType.writeToPanelInProgress) {
-        await this.panelService.setContactsChanges(panelDetails.panelId, []);
-      }
+      await this.panelService.setContactsChanges(panelDetails.panelId, []);
+      await this.panelService.setSettingsChanges(panelDetails.panelId, []);
       panelDetails.status = ActionType.idle;
     }
 
@@ -200,6 +198,7 @@ export class PanelSocketService {
     });
     await this.panelService.updateContacts(panelDetails.panelId, panel.contacts.list, panel.contacts.changes);
     this.sentMsg(action.pId, "updateContacts", panel.contacts);
+    this.sentMsg(action.pId, "updateSettings", panel.settings);
     return "111";
   }
 

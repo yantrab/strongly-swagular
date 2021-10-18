@@ -24,21 +24,21 @@ const registerActionStringD = JSON.stringify(registerActionD);
 class AppSpec {
   panelService: PanelService;
   panel: PanelDetails;
-  static async before() {
-    await app();
-  }
-  async before() {
-    this.panel = { panelId: 1, direction: Lang.en, userId: "1", status: ActionType.idle, phoneNumber: "1" };
-    this.panelService = await inject(PanelService);
-    // @ts-ignore
-    await this.panelService.panelDetailsRepo.collection.deleteMany({});
-    // @ts-ignore
-    await this.panelService.panelContactsRepo.collection.deleteMany({});
-    // @ts-ignore
-    await this.panelService.panelSettingsRepo.collection.deleteMany({});
-
-    await this.panelService.addNewPanel(this.panel);
-  }
+  // static async before() {
+  //   await app();
+  // }
+  // async before() {
+  //   this.panel = { panelId: 1, direction: Lang.en, userId: "1", status: ActionType.idle, phoneNumber: "1" };
+  //   this.panelService = await inject(PanelService);
+  //   // @ts-ignore
+  //   await this.panelService.panelDetailsRepo.collection.deleteMany({});
+  //   // @ts-ignore
+  //   await this.panelService.panelContactsRepo.collection.deleteMany({});
+  //   // @ts-ignore
+  //   await this.panelService.panelSettingsRepo.collection.deleteMany({});
+  //
+  //   await this.panelService.addNewPanel(this.panel);
+  // }
   write = async (str: string) => {
     return new Promise(resolve => {
       const client = new Socket();
@@ -163,18 +163,19 @@ class AppSpec {
       expect(dump.slice(i, i + gap)).toEqual(expe.slice(i, i + gap));
     }
   }
-  // @test
-  // async s() {
-  //   const command = "!00000000000000102551555bbaabbbbb";
-  //   const result = await this.write(command);
-  //
-  //   const registerAction = { type: ActionType.status, pId: "1" };
-  //   const registerActionString = JSON.stringify(registerAction);
-  //   const registerActionD = { type: ActionType.status, pId: "1", d: 1 };
-  //   const registerActionStringD = JSON.stringify(registerActionD);
-  //
-  //   await this.write(registerActionString);
-  // }
+
+  @test
+  async s() {
+    // const command = "!00000000000000102551555bbaabbbbb";
+    // const result = await this.write(command);
+
+    const registerAction = { type: ActionType.status, pId: "1" };
+    const registerActionString = JSON.stringify(registerAction);
+    const registerActionD = { type: ActionType.status, pId: "1", d: 1 };
+    const registerActionStringD = JSON.stringify(registerActionD);
+
+    await this.write(registerActionStringD);
+  }
 
   // @test async s2() {
   //   "!00000000000000200000555          ";

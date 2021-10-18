@@ -148,7 +148,10 @@ export class PanelComponent {
         return this.currentPanel.msgCount || 0;
       case ActionType.writeToPanel:
       case ActionType.writeToPanelInProgress:
-        return this.service.contacts.value?.changes.filter(c => c.previewsValue === null).length || 0;
+        return (
+          (this.service.contacts.value?.changes.filter(c => c.previewsValue === null).length || 0) +
+          (this.service.settings.value?.changes.filter(c => c.previewsValue === null).length || 0)
+        );
     }
     return 0;
   }
@@ -163,7 +166,7 @@ export class PanelComponent {
         return 70;
       case ActionType.writeToPanel:
       case ActionType.writeToPanelInProgress:
-        return this.service.contacts.value?.changes.length;
+        return (this.service.contacts.value?.changes.length || 0) + (this.service.settings.value?.changes.length || 0);
     }
     return 0;
   }
