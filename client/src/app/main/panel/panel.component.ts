@@ -176,7 +176,7 @@ export class PanelComponent {
       case ActionType.writeToPanelInProgress:
         return (this.service.contacts.value?.changes.length || 0) + (this.service.settings.value?.changes.length || 0);
     }
-    return 1;
+    return 0;
   }
 
   changeStatus(status: ActionType) {
