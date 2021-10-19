@@ -5,7 +5,7 @@ import { PanelService } from "./panel.service";
 import { ActionType, PanelDetails } from "../../domain/panel/panel.details";
 import { panelPropertiesSetting } from "../../domain/panel/panel";
 import { ChangeItem, Source } from "../../domain/panel/panel.contacts";
-import { cloneDeep, get, slice } from "lodash";
+import { cloneDeep, get } from "lodash";
 import { WebSocketService } from "../sokcet/socket.service";
 import { SettingsChangeItem } from "../../domain/panel/settings";
 
@@ -65,6 +65,13 @@ export class PanelSocketService {
                   result = ActionType.readAllFromPanelCanceled.toString();
                 } else {
                   result = await this.updateFromPanel(panel, action);
+                }
+                break;
+              case ActionType.writeAllToPanel:
+                if (panel.status === ActionType.writeToPanelCanceled || panel.status === ActionType.idle) {
+                  result = ActionType.writeToPanelCanceled;
+                } else {
+                  result = await this.writeToPanel(panel, action);
                 }
                 break;
               case ActionType.status:
@@ -159,7 +166,6 @@ export class PanelSocketService {
   }
 
   private async updateFromPanel(panelDetails: PanelDetails, action: Action) {
-    action.data.start = +action.data.start;
     if (panelDetails.status !== ActionType.readAllFromPanelInProgress) {
       panelDetails.msgCount = 0;
       panelDetails.status = ActionType.readAllFromPanelInProgress;
@@ -202,6 +208,19 @@ export class PanelSocketService {
     return "111";
   }
 
+  private async writeToPanel(panelDetails: PanelDetails, action: Action) {
+    if (panelDetails.status !== ActionType.writeAllToPanelInProgress) {
+      panelDetails.msgCount = 0;
+      panelDetails.status = ActionType.writeAllToPanelInProgress;
+    }
+    panelDetails.msgCount!++;
+    const panel = await this.panelService.getPanel(panelDetails);
+    const dump = panel.dump();
+    const start = action.data.start;
+    const length = action.data.length;
+    return "S" + dump.slice(start, start + length);
+  }
+
   private buildAction(buffer: Buffer): Action {
     for (let i = 0; i < buffer.length; i++) {
       if (buffer[i] < 187 && buffer[i] > 159) {
@@ -220,6 +239,10 @@ export class PanelSocketService {
             data: { start: +msg.slice(16, 21), data: msg.slice(24) }
           };
     result.pId = +result.pId;
+    if (result.data?.start) {
+      result.data.start = +result.data.start;
+      result.data.length = +result.data.length;
+    }
     return result;
   }
 

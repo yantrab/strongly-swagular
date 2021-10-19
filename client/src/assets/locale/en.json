@@ -196,6 +196,7 @@
     "upload": "Upload",
     "download": "Download",
     "sentChangesTo": "Sent changes to the panel",
+    "sentAllToPanel": "Sent all to the panel",
     "nameOrder": "Name Order",
     "powerUp": "powerUp",
     "getAll": "Get all from panel",

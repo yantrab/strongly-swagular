@@ -41,6 +41,9 @@ import { Source } from '../../api/models/source';
             <button (click)="changeStatus(status.writeToPanel)" mat-menu-item>
               <mat-icon>call_made</mat-icon> {{ locale.sentChangesTo }}
             </button>
+            <button (click)="changeStatus(status.writeAllToPanel)" mat-menu-item>
+              <mat-icon>call_made</mat-icon> {{ locale.sentAllToPanel }}
+            </button>
             <button (click)="changeStatus(status.nameOrder)" mat-menu-item><mat-icon>sort</mat-icon> {{ locale.nameOrder }}</button>
             <button (click)="changeStatus(status.powerUp)" mat-menu-item>
               <mat-icon>power_settings_new</mat-icon> {{ locale.powerUp }}
@@ -145,6 +148,8 @@ export class PanelComponent {
       case ActionType.powerUp:
       case ActionType.readAllFromPanel:
       case ActionType.readAllFromPanelInProgress:
+      case ActionType.writeAllToPanel:
+      case ActionType.writeAllToPanelInProgress:
         return this.currentPanel.msgCount || 0;
       case ActionType.writeToPanel:
       case ActionType.writeToPanelInProgress:
@@ -164,6 +169,9 @@ export class PanelComponent {
       case ActionType.readAllFromPanel:
       case ActionType.readAllFromPanelInProgress:
         return 70;
+      case ActionType.writeAllToPanel:
+      case ActionType.writeAllToPanelInProgress:
+        return 40;
       case ActionType.writeToPanel:
       case ActionType.writeToPanelInProgress:
         return (this.service.contacts.value?.changes.length || 0) + (this.service.settings.value?.changes.length || 0);
@@ -185,6 +193,7 @@ export class PanelComponent {
         this.currentPanel.status = ActionType.readAllFromPanelCanceled;
         break;
       case ActionType.writeToPanelInProgress:
+      case ActionType.writeAllToPanelInProgress:
         this.currentPanel.status = ActionType.writeToPanelCanceled;
         break;
       default:

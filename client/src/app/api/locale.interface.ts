@@ -155,6 +155,7 @@ export interface IPanelToolBar {
     upload: string;
     download: string;
     sentChangesTo: string;
+    sentAllToPanel: string;
     nameOrder: string;
     powerUp: string;
     getAll: string;

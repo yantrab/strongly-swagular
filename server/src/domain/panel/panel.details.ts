@@ -6,21 +6,22 @@ enum Lang {
 }
 export enum ActionType {
   idle = "000",
-  // readAll = 2,
-  // writeAllToPanel = 3,
-  writeToPanel = "444",
-  readAllFromPanel = "555",
   status = "666",
   nameOrder = "777",
   powerUp = "888",
-  // writeAllProgress = 10,
-  // readAllProgress = 11,
 
+  writeAllToPanel = "333",
+  writeAllToPanelInProgress = 10,
+
+  writeToPanel = "444",
   writeToPanelInProgress = 12,
+
+  readAllFromPanel = "555",
   readAllFromPanelInProgress = 13,
 
   writeToPanelCanceled = "RRR",
   readAllFromPanelCanceled = "SSS",
+
   nameOrderCanceled = "TTT",
   powerUpCanceled = "808"
 }
