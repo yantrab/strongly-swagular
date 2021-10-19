@@ -131,9 +131,16 @@ export class PanelSocketService {
           await this.panelService.setSettingsChanges(panelDetails.panelId, panel.settings.changes);
         }
         nextChange = getNextChange();
+        panelDetails.progressPst = Math.floor(
+          ((panel.settings.changes.filter(c => c.previewsValue === null).length +
+            panel.contacts.changes.filter(c => c.previewsValue === null).length) /
+            (panel.settings.changes.length + panel.contacts.changes.length)) *
+            100
+        );
       }
 
       if (!nextChange) {
+        panelDetails.progressPst = 100;
         panelDetails.status = ActionType.idle;
         await this.panelService.setContactsChanges(panelDetails.panelId, []);
         await this.panelService.setSettingsChanges(panelDetails.panelId, []);
@@ -161,14 +168,14 @@ export class PanelSocketService {
 
       this.sentMsg(action.pId, "updateContacts", panel.contacts);
     } else if (action.d) {
-      await this.panelService.setContactsChanges(panelDetails.panelId, []);
-      await this.panelService.setSettingsChanges(panelDetails.panelId, []);
       panelDetails.status = ActionType.idle;
       if (status === ActionType.writeAllToPanelInProgress) {
+        panelDetails.progressPst = 100;
         return ActionType.writeToPanelCanceled;
       }
 
       if (status === ActionType.readAllFromPanelInProgress) {
+        panelDetails.progressPst = 100;
         return ActionType.readAllFromPanelCanceled;
       }
     }
@@ -185,10 +192,10 @@ export class PanelSocketService {
 
   private async updateFromPanel(panelDetails: PanelDetails, action: Action) {
     if (panelDetails.status !== ActionType.readAllFromPanelInProgress) {
-      panelDetails.msgCount = 0;
       panelDetails.status = ActionType.readAllFromPanelInProgress;
     }
-    panelDetails.msgCount!++;
+    panelDetails.progressPst = panelDetails.progressPst || 1;
+    if (panelDetails.progressPst + 1 < 100) panelDetails.progressPst += 3;
     const panel = await this.panelService.getPanel(panelDetails);
     const oldPanel = cloneDeep(panel);
     const dump = panel.dump().split("");
@@ -228,10 +235,10 @@ export class PanelSocketService {
 
   private async writeToPanel(panelDetails: PanelDetails, action: Action) {
     if (panelDetails.status !== ActionType.writeAllToPanelInProgress) {
-      panelDetails.msgCount = 0;
       panelDetails.status = ActionType.writeAllToPanelInProgress;
     }
-    panelDetails.msgCount!++;
+    panelDetails.progressPst = panelDetails.progressPst || 1;
+    if (panelDetails.progressPst + 1 < 100) panelDetails.progressPst += 3;
     const panel = await this.panelService.getPanel(panelDetails);
     const dump = panel.dump();
     const start = action.data.start;

@@ -8,11 +8,11 @@ export interface PanelDetails {
   contactPhone?: string;
   direction: Lang;
   lastConnection?: number;
-  msgCount?: number;
   panelId: number;
   phoneNumber: string;
+  progressPst?: number;
   status: ActionType;
   userId: string;
 }
 
-export const PanelDetailsSchema  = {"type":"object","properties":{"phoneNumber":{"type":"string"},"address":{"type":"string"},"contactName":{"type":"string"},"contactPhone":{"type":"string"},"direction":{"$ref":"#/components/schemas/Lang"},"panelId":{"type":"number"},"userId":{"type":"string"},"status":{"$ref":"#/components/schemas/ActionType"},"lastConnection":{"type":"number"},"msgCount":{"type":"number"},"_id":{"type":"string"},"_isDeleted":{"type":"boolean"}},"required":["phoneNumber","direction","panelId","userId","status"]}
+export const PanelDetailsSchema  = {"type":"object","properties":{"phoneNumber":{"type":"string"},"address":{"type":"string"},"contactName":{"type":"string"},"contactPhone":{"type":"string"},"direction":{"$ref":"#/components/schemas/Lang"},"panelId":{"type":"number"},"userId":{"type":"string"},"status":{"$ref":"#/components/schemas/ActionType"},"lastConnection":{"type":"number"},"progressPst":{"type":"number"},"_id":{"type":"string"},"_isDeleted":{"type":"boolean"}},"required":["phoneNumber","direction","panelId","userId","status"]}

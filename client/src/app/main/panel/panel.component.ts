@@ -77,11 +77,10 @@ import { Source } from '../../api/models/source';
         </div>
 
         <app-progress
-          *ngIf="showProgressBar && initialCount"
+          *ngIf="showProgressBar"
           [status]="statusText"
-          [doneCount]="doneCount"
-          [initialCount]="initialCount"
           (cancel)="cancelAction()"
+          [pst]="currentPanel?.progressPst || 1"
           (done)="service.showProgressBar = false"
         ></app-progress>
         <div fxLayout="row" class="connected-indicator">
@@ -140,43 +139,6 @@ export class PanelComponent {
 
   get currentPanel(): PanelDetails {
     return this.service.currentPanel!;
-  }
-
-  get doneCount() {
-    switch (this.currentPanel.status.toString()) {
-      case ActionType.nameOrder:
-      case ActionType.powerUp:
-      case ActionType.readAllFromPanel:
-      case ActionType.readAllFromPanelInProgress:
-      case ActionType.writeAllToPanel:
-      case ActionType.writeAllToPanelInProgress:
-        return this.currentPanel.msgCount || 0;
-      case ActionType.writeToPanel:
-      case ActionType.writeToPanelInProgress:
-        return (
-          (this.service.contacts.value?.changes.filter(c => c.previewsValue === null).length || 0) +
-          (this.service.settings.value?.changes.filter(c => c.previewsValue === null).length || 0)
-        );
-    }
-    return 0;
-  }
-
-  get initialCount() {
-    switch (this.currentPanel.status.toString()) {
-      case ActionType.nameOrder:
-      case ActionType.powerUp:
-        return 1;
-      case ActionType.readAllFromPanel:
-      case ActionType.readAllFromPanelInProgress:
-        return 32;
-      case ActionType.writeAllToPanel:
-      case ActionType.writeAllToPanelInProgress:
-        return 40;
-      case ActionType.writeToPanel:
-      case ActionType.writeToPanelInProgress:
-        return (this.service.contacts.value?.changes.length || 0) + (this.service.settings.value?.changes.length || 0);
-    }
-    return 0;
   }
 
   changeStatus(status: ActionType) {

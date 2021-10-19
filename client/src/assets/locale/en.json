@@ -208,6 +208,7 @@
     "12": "in progress...",
     "555" : "connecting...",
     "13": "in progress...",
+    "000": "שולח...",
     "notConnected": "not connected"
   },
   "userFormModel": {

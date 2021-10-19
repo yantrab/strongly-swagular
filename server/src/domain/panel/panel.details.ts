@@ -37,7 +37,7 @@ export class PanelDetails extends Entity<PanelDetails> {
   userId: string;
   status: ActionType;
   lastConnection?: number;
-  msgCount?: number;
+  progressPst?: number;
 }
 
 export class AddPanelDetailsDTO {
