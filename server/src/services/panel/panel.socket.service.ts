@@ -169,11 +169,11 @@ export class PanelSocketService {
       this.sentMsg(action.pId, "updateContacts", panel.contacts);
     } else if (action.d) {
       panelDetails.status = ActionType.idle;
+      panelDetails.progressPst = 100;
+      await this.panelService.setContactsChanges(panelDetails.panelId, []);
+      await this.panelService.setSettingsChanges(panelDetails.panelId, []);
 
       if (status === ActionType.readAllFromPanelInProgress) {
-        panelDetails.progressPst = 100;
-        await this.panelService.setContactsChanges(panelDetails.panelId, []);
-        await this.panelService.setSettingsChanges(panelDetails.panelId, []);
         return ActionType.readAllFromPanelCanceled;
       }
     }
@@ -240,7 +240,7 @@ export class PanelSocketService {
       panelDetails.status = ActionType.writeAllToPanelInProgress;
     }
     panelDetails.progressPst = panelDetails.progressPst || 1;
-    if (panelDetails.progressPst + 2 < 100) panelDetails.progressPst += 1;
+    if (panelDetails.progressPst + 2 < 100) panelDetails.progressPst += 1.5;
     const panel = await this.panelService.getPanel(panelDetails);
     const dump = panel.dump();
     const start = action.data.start;
