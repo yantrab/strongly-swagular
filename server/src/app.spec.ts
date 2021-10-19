@@ -1,17 +1,24 @@
 import { suite, test } from "@testdeck/jest";
 import "reflect-metadata";
-import { app } from "./app";
 import { PanelService } from "./services/panel/panel.service";
-import { inject } from "strongly";
 import { Lang } from "../../client/src/app/api/models/lang";
 import { ActionType, PanelDetails } from "./domain/panel/panel.details";
 import { Socket } from "net";
 import { Source } from "./domain/panel/panel.contacts";
+import { Panel } from "./domain/panel/panel";
+import { dumps } from "./domain/panel/initial-damps";
+import { app } from "./app";
+import { inject } from "strongly";
+import { GeneralSettings } from "./domain/panel/settings";
 
 const port = 4000;
 const pId = "1"; //'861311009983668'; //'1'//
 const host = "localhost"; //'128.199.41.162'; //'178.62.237.25' //'
 jest.setTimeout(1000000);
+const registerAction = { type: ActionType.status, pId: "1" };
+const registerActionString = JSON.stringify(registerAction);
+const registerActionD = { type: ActionType.status, pId: "1", d: 1 };
+const registerActionStringD = JSON.stringify(registerActionD);
 
 @suite
 class AppSpec {
@@ -27,6 +34,9 @@ class AppSpec {
   //   await this.panelService.panelDetailsRepo.collection.deleteMany({});
   //   // @ts-ignore
   //   await this.panelService.panelContactsRepo.collection.deleteMany({});
+  //   // @ts-ignore
+  //   await this.panelService.panelSettingsRepo.collection.deleteMany({});
+  //
   //   await this.panelService.addNewPanel(this.panel);
   // }
   write = async (str: string) => {
@@ -56,11 +66,6 @@ class AppSpec {
 
   @test
   async status() {
-    const registerAction = { type: ActionType.status, pId: "1" };
-    const registerActionString = JSON.stringify(registerAction);
-    const registerActionD = { type: ActionType.status, pId: "1", d: 1 };
-    const registerActionStringD = JSON.stringify(registerActionD);
-
     expect(await this.write(registerActionString)).toBe("000");
 
     this.panel.status = ActionType.readAllFromPanel;
@@ -93,6 +98,22 @@ class AppSpec {
     expect(await this.write(registerActionString)).toBe("RRR");
     expect(await this.write(registerActionStringD)).toBe("000");
   }
+
+  @test
+  async statusSettings() {
+    await this.panelService.saveOrUpdatePanel(this.panel);
+
+    const p = await this.panelService.getPanel(this.panel);
+    p.settings.general.masterCode = "1";
+    p.settings.changes = [{ path: "general.masterCode", source: Source.client, previewsValue: "123456" }];
+
+    await this.panelService.updateSettings(1, { general: p.settings.general }, p.settings.changes);
+    this.panel.status = ActionType.writeToPanel;
+    await this.panelService.saveOrUpdatePanel(this.panel);
+    expect(await this.write(registerActionString)).toBe("0400000000311         ");
+    expect(await this.write(registerActionStringD)).toBe("000");
+  }
+
   @test
   async readFromPanel() {
     const registerAction = { type: ActionType.status, pId: "1" };
@@ -129,16 +150,31 @@ class AppSpec {
   }
 
   @test
+  dumpRedump() {
+    const initialPanel = new Panel({
+      details: { panelId: 1, userId: "", direction: Lang.he, status: ActionType.idle, phoneNumber: "1" }
+    }).reDump(dumps.MP[Lang.he]);
+    const dump = initialPanel.dump();
+    const expe = dumps.MP.Hebrew;
+    const gap = Math.floor(dump.length / 1000);
+    expect(dump).toEqual(expe);
+    for (let i = 0; i < dump.length; i += gap) {
+      console.log(i);
+      expect(dump.slice(i, i + gap)).toEqual(expe.slice(i, i + gap));
+    }
+  }
+
+  @test
   async s() {
-    const command = "!00000000000000102551555bbaabbbbb";
-    const result = await this.write(command);
+    // const command = "!00000000000000102551555bbaabbbbb";
+    // const result = await this.write(command);
 
     const registerAction = { type: ActionType.status, pId: "1" };
     const registerActionString = JSON.stringify(registerAction);
     const registerActionD = { type: ActionType.status, pId: "1", d: 1 };
     const registerActionStringD = JSON.stringify(registerActionD);
 
-    await this.write(registerActionString);
+    await this.write(registerActionStringD);
   }
 
   // @test async s2() {

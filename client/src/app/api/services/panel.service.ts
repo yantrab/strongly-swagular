@@ -8,7 +8,7 @@ import { map, filter } from 'rxjs/operators';
 import { SwagularService } from 'swagular';
 import { FormModel } from 'swagular/models';
 
-import { AddPanelDetailsDto, AddPanelDetailsDtoSchema } from '../models/add-panel-details-dto';import { ChangeItem, ChangeItemSchema } from '../models/change-item';import { Contact, ContactSchema } from '../models/contact';import { Contacts, ContactsSchema } from '../models/contacts';import { PanelDetails, PanelDetailsSchema } from '../models/panel-details';
+import { AddPanelDetailsDto, AddPanelDetailsDtoSchema } from '../models/add-panel-details-dto';import { ChangeItem, ChangeItemSchema } from '../models/change-item';import { Contact, ContactSchema } from '../models/contact';import { Contacts, ContactsSchema } from '../models/contacts';import { FloorValueSettings, FloorValueSettingsSchema } from '../models/floor-value-settings';import { GeneralSettings, GeneralSettingsSchema } from '../models/general-settings';import { PanelDetails, PanelDetailsSchema } from '../models/panel-details';import { Settings, SettingsSchema } from '../models/settings';import { SettingsChangeItem, SettingsChangeItemSchema } from '../models/settings-change-item';import { TimingSettings, TimingSettingsSchema } from '../models/timing-settings';import { YesNoQuestionsSettings, YesNoQuestionsSettingsSchema } from '../models/yes-no-questions-settings';
 
   
   
@@ -20,6 +20,7 @@ import { AddPanelDetailsDto, AddPanelDetailsDtoSchema } from '../models/add-pane
     export const savePanelFormGroupSchema = PanelDetailsSchema;
 
   
+  
     export declare type UpdateContactFormGroupType = { 'changes': Array<ChangeItem>, 'contact': Contact }
     export const updateContactFormGroupSchema = {"properties":{"changes":{"type":"array","items":{"$ref":"#/components/schemas/ChangeItem"}},"contact":{"$ref":"#/components/schemas/Contact"}},"type":"object","required":["changes","contact"]}
 
@@ -29,6 +30,18 @@ import { AddPanelDetailsDto, AddPanelDetailsDtoSchema } from '../models/add-pane
 
     export declare type UpdateContactsFormGroupType = { 'changes': Array<ChangeItem>, 'contacts': Array<Contact>, 'panelId': number }
     export const updateContactsFormGroupSchema = {"properties":{"changes":{"type":"array","items":{"$ref":"#/components/schemas/ChangeItem"}},"contacts":{"type":"array","items":{"$ref":"#/components/schemas/Contact"}},"panelId":{"type":"number"}},"type":"object","required":["changes","contacts","panelId"]}
+
+    export declare type GeneralSettingsFormGroupType = { 'changes': Array<SettingsChangeItem>, 'settings': GeneralSettings }
+    export const generalSettingsFormGroupSchema = {"properties":{"changes":{"type":"array","items":{"$ref":"#/components/schemas/SettingsChangeItem"}},"settings":{"$ref":"#/components/schemas/GeneralSettings"}},"type":"object","required":["changes","settings"]}
+
+    export declare type TimingSettingsFormGroupType = { 'changes': Array<SettingsChangeItem>, 'settings': TimingSettings }
+    export const timingSettingsFormGroupSchema = {"properties":{"changes":{"type":"array","items":{"$ref":"#/components/schemas/SettingsChangeItem"}},"settings":{"$ref":"#/components/schemas/TimingSettings"}},"type":"object","required":["changes","settings"]}
+
+    export declare type YesNoSettingsFormGroupType = { 'changes': Array<SettingsChangeItem>, 'settings': YesNoQuestionsSettings }
+    export const yesNoSettingsFormGroupSchema = {"properties":{"changes":{"type":"array","items":{"$ref":"#/components/schemas/SettingsChangeItem"}},"settings":{"$ref":"#/components/schemas/YesNoQuestionsSettings"}},"type":"object","required":["changes","settings"]}
+
+    export declare type FloorSettingsFormGroupType = { 'changes': Array<SettingsChangeItem>, 'settings': FloorValueSettings }
+    export const floorSettingsFormGroupSchema = {"properties":{"changes":{"type":"array","items":{"$ref":"#/components/schemas/SettingsChangeItem"}},"settings":{"$ref":"#/components/schemas/FloorValueSettings"}},"type":"object","required":["changes","settings"]}
 
 
 @Injectable({
@@ -60,6 +73,10 @@ export class PanelService extends BaseService {
      */
     static readonly ContactsPath = '/panel/{id}/contacts';
     /**
+     * Path part for operation settings
+     */
+    static readonly SettingsPath = '/panel/{id}/settings';
+    /**
      * Path part for operation updateContact
      */
     static readonly UpdateContactPath = '/panel/{id}/save-contacts';
@@ -75,6 +92,22 @@ export class PanelService extends BaseService {
      * Path part for operation updateContacts
      */
     static readonly UpdateContactsPath = '/panel/update-contacts';
+    /**
+     * Path part for operation generalSettings
+     */
+    static readonly GeneralSettingsPath = '/panel/{id}/settings/general';
+    /**
+     * Path part for operation timingSettings
+     */
+    static readonly TimingSettingsPath = '/panel/{id}/settings/timing';
+    /**
+     * Path part for operation yesNoSettings
+     */
+    static readonly YesNoSettingsPath = '/panel/{id}/settings/questions';
+    /**
+     * Path part for operation floorSettings
+     */
+    static readonly FloorSettingsPath = '/panel/{id}/settings/floorValue';
   constructor(config: ApiConfiguration, http: HttpClient, private swagularService: SwagularService) {
     super(config, http);
   }
@@ -82,7 +115,7 @@ export class PanelService extends BaseService {
 
 
 
-): Observable<{ 'contacts': Contacts }> {
+): Observable<{ 'contacts': Contacts, 'settings': Settings }> {
 const rb = new RequestBuilder(this.rootUrl, PanelService.ResetPath, 'put');
 
   rb.path('id', id, {});
@@ -93,7 +126,7 @@ responseType: 'json',
 accept: 'application/json'
 })).pipe(
 filter((r: any) => r instanceof HttpResponse),
-map(r => r.body as { 'contacts': Contacts })
+map(r => r.body as { 'contacts': Contacts, 'settings': Settings })
 );
 
   }
@@ -196,6 +229,26 @@ map(r => r.body as Contacts)
 
   }
 
+  settings(      id: number,
+
+
+
+): Observable<Settings> {
+const rb = new RequestBuilder(this.rootUrl, PanelService.SettingsPath, 'get');
+
+  rb.path('id', id, {});
+
+
+return this.http.request(rb.build({
+responseType: 'json',
+accept: 'application/json'
+})).pipe(
+filter((r: any) => r instanceof HttpResponse),
+map(r => r.body as Settings)
+);
+
+  }
+
   updateContact(      id: number,
 
          body 
@@ -244,7 +297,7 @@ map(r => r.body as string)
        body 
 : { 'dump': string, 'panel': PanelDetails }
 
-): Observable<{ 'contacts': Contacts }> {
+): Observable<{ 'contacts': Contacts, 'settings': Settings }> {
 const rb = new RequestBuilder(this.rootUrl, PanelService.ReDumpPath, 'post');
 
 
@@ -256,7 +309,7 @@ responseType: 'json',
 accept: 'application/json'
 })).pipe(
 filter((r: any) => r instanceof HttpResponse),
-map(r => r.body as { 'contacts': Contacts })
+map(r => r.body as { 'contacts': Contacts, 'settings': Settings })
 );
 
   }
@@ -268,6 +321,102 @@ map(r => r.body as { 'contacts': Contacts })
 ): Observable<any> {
 const rb = new RequestBuilder(this.rootUrl, PanelService.UpdateContactsPath, 'post');
 
+
+  rb.body(   body 
+, 'application/json');
+
+return this.http.request(rb.build({
+responseType: 'json',
+accept: 'application/json'
+})).pipe(
+filter((r: any) => r instanceof HttpResponse),
+map(r => r.body as any)
+);
+
+  }
+
+  generalSettings(      id: number,
+
+         body 
+: { 'changes': Array<SettingsChangeItem>, 'settings': GeneralSettings }
+
+
+): Observable<any> {
+const rb = new RequestBuilder(this.rootUrl, PanelService.GeneralSettingsPath, 'put');
+
+  rb.path('id', id, {});
+
+  rb.body(   body 
+, 'application/json');
+
+return this.http.request(rb.build({
+responseType: 'json',
+accept: 'application/json'
+})).pipe(
+filter((r: any) => r instanceof HttpResponse),
+map(r => r.body as any)
+);
+
+  }
+
+  timingSettings(      id: number,
+
+         body 
+: { 'changes': Array<SettingsChangeItem>, 'settings': TimingSettings }
+
+
+): Observable<any> {
+const rb = new RequestBuilder(this.rootUrl, PanelService.TimingSettingsPath, 'put');
+
+  rb.path('id', id, {});
+
+  rb.body(   body 
+, 'application/json');
+
+return this.http.request(rb.build({
+responseType: 'json',
+accept: 'application/json'
+})).pipe(
+filter((r: any) => r instanceof HttpResponse),
+map(r => r.body as any)
+);
+
+  }
+
+  yesNoSettings(      id: number,
+
+         body 
+: { 'changes': Array<SettingsChangeItem>, 'settings': YesNoQuestionsSettings }
+
+
+): Observable<any> {
+const rb = new RequestBuilder(this.rootUrl, PanelService.YesNoSettingsPath, 'put');
+
+  rb.path('id', id, {});
+
+  rb.body(   body 
+, 'application/json');
+
+return this.http.request(rb.build({
+responseType: 'json',
+accept: 'application/json'
+})).pipe(
+filter((r: any) => r instanceof HttpResponse),
+map(r => r.body as any)
+);
+
+  }
+
+  floorSettings(      id: number,
+
+         body 
+: { 'changes': Array<SettingsChangeItem>, 'settings': FloorValueSettings }
+
+
+): Observable<any> {
+const rb = new RequestBuilder(this.rootUrl, PanelService.FloorSettingsPath, 'put');
+
+  rb.path('id', id, {});
 
   rb.body(   body 
 , 'application/json');
@@ -302,6 +451,7 @@ map(r => r.body as any)
   }
 
   
+  
      updateContactFormGroup(value?:UpdateContactFormGroupType) {
     return this.swagularService.getFormGroup<UpdateContactFormGroupType>(updateContactFormGroupSchema, value);
   }
@@ -325,6 +475,38 @@ map(r => r.body as any)
 
    updateContactsFormModel(options?: Partial<FormModel> & { displayProperties?: (keyof UpdateContactsFormGroupType & string)[] }, value?: UpdateContactsFormGroupType) {
     return this.swagularService.getFormModel<UpdateContactsFormGroupType>(updateContactsFormGroupSchema, options as any, value);
+  }
+
+     generalSettingsFormGroup(value?:GeneralSettingsFormGroupType) {
+    return this.swagularService.getFormGroup<GeneralSettingsFormGroupType>(generalSettingsFormGroupSchema, value);
+  }
+
+   generalSettingsFormModel(options?: Partial<FormModel> & { displayProperties?: (keyof GeneralSettingsFormGroupType & string)[] }, value?: GeneralSettingsFormGroupType) {
+    return this.swagularService.getFormModel<GeneralSettingsFormGroupType>(generalSettingsFormGroupSchema, options as any, value);
+  }
+
+     timingSettingsFormGroup(value?:TimingSettingsFormGroupType) {
+    return this.swagularService.getFormGroup<TimingSettingsFormGroupType>(timingSettingsFormGroupSchema, value);
+  }
+
+   timingSettingsFormModel(options?: Partial<FormModel> & { displayProperties?: (keyof TimingSettingsFormGroupType & string)[] }, value?: TimingSettingsFormGroupType) {
+    return this.swagularService.getFormModel<TimingSettingsFormGroupType>(timingSettingsFormGroupSchema, options as any, value);
+  }
+
+     yesNoSettingsFormGroup(value?:YesNoSettingsFormGroupType) {
+    return this.swagularService.getFormGroup<YesNoSettingsFormGroupType>(yesNoSettingsFormGroupSchema, value);
+  }
+
+   yesNoSettingsFormModel(options?: Partial<FormModel> & { displayProperties?: (keyof YesNoSettingsFormGroupType & string)[] }, value?: YesNoSettingsFormGroupType) {
+    return this.swagularService.getFormModel<YesNoSettingsFormGroupType>(yesNoSettingsFormGroupSchema, options as any, value);
+  }
+
+     floorSettingsFormGroup(value?:FloorSettingsFormGroupType) {
+    return this.swagularService.getFormGroup<FloorSettingsFormGroupType>(floorSettingsFormGroupSchema, value);
+  }
+
+   floorSettingsFormModel(options?: Partial<FormModel> & { displayProperties?: (keyof FloorSettingsFormGroupType & string)[] }, value?: FloorSettingsFormGroupType) {
+    return this.swagularService.getFormModel<FloorSettingsFormGroupType>(floorSettingsFormGroupSchema, options as any, value);
   }
 
 }

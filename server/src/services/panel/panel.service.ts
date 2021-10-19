@@ -2,16 +2,19 @@ import { ActionType, PanelDetails } from "../../domain/panel/panel.details";
 import { DbService, Repository } from "../db/db.service";
 import { ChangeItem, Contact, Contacts, Source } from "../../domain/panel/panel.contacts";
 import { dumps } from "../../domain/panel/initial-damps";
-import { Panel } from "../../domain/panel/panel";
-import { assignWith, cloneDeep } from "lodash";
+import { Panel, panelPropertiesSetting } from "../../domain/panel/panel";
+import { cloneDeep } from "lodash";
 import { getContactsChanges } from "../../../../shared/panel";
+import { Settings, SettingsChangeItem } from "../../domain/panel/settings";
 
 export class PanelService {
   private panelDetailsRepo: Repository<PanelDetails>;
   private panelContactsRepo: Repository<Contacts>;
+  private panelSettingsRepo: Repository<Settings>;
   constructor(private dbService: DbService) {
     this.panelDetailsRepo = this.dbService.getRepository(PanelDetails, "panels");
     this.panelContactsRepo = this.dbService.getRepository(Contacts, "panels");
+    this.panelSettingsRepo = this.dbService.getRepository(Settings, "panels");
     this.panelDetailsRepo.collection.createIndex({ panelId: 1 }, { unique: true }).then(() => {});
     this.panelContactsRepo.collection.createIndex({ panelId: 1 }, { unique: true }).then(() => {});
   }
@@ -27,7 +30,10 @@ export class PanelService {
   async getPanel(panelDetails: PanelDetails) {
     const contacts = await this.getPanelContacts(panelDetails.panelId);
     if (!contacts) throw "contacts missing for panel " + panelDetails.panelId;
-    return new Panel({ contacts: contacts, details: panelDetails });
+
+    const settings = await this.getPanelSettings(panelDetails.panelId);
+    if (!settings) throw "settings missing for panel " + panelDetails.panelId;
+    return new Panel({ contacts, settings, details: panelDetails });
   }
 
   saveOrUpdatePanel(panel: PanelDetails) {
@@ -38,12 +44,16 @@ export class PanelService {
     panel.status = ActionType.idle;
     const savedPanel = await this.saveOrUpdatePanel(panel);
     const initialPanel = new Panel({ details: panel }).reDump(dumps.MP[panel.direction]);
-    await this.panelContactsRepo.saveOrUpdateOne({ panelId: panel.panelId, list: initialPanel.contacts.list, changes: [] });
+    await this.panelContactsRepo.saveOrUpdateOne(initialPanel.contacts);
+    await this.panelSettingsRepo.saveOrUpdateOne(initialPanel.settings);
     return savedPanel;
   }
 
   async getPanelContacts(panelId: number) {
     return this.panelContactsRepo.findOne({ panelId: panelId });
+  }
+  async getPanelSettings(panelId: number) {
+    return this.panelSettingsRepo.findOne({ panelId: panelId });
   }
 
   updateContact(panelId: number, contact: Contact, changes: ChangeItem[]) {
@@ -53,12 +63,20 @@ export class PanelService {
     );
   }
 
+  updateSettings(panelId: number, settings: any, changes: SettingsChangeItem[]) {
+    return this.panelSettingsRepo.collection.updateOne({ panelId }, { $set: { ...settings, changes } });
+  }
+
   updateContacts(panelId: number, contacts: Contact[], changes?: ChangeItem[]) {
     return this.panelContactsRepo.collection.updateOne({ panelId }, { $set: { list: contacts, changes } });
   }
 
   setContactsChanges(panelId: number, changes: ChangeItem[]) {
     return this.panelContactsRepo.collection.updateOne({ panelId }, { $set: { changes } });
+  }
+
+  setSettingsChanges(panelId: number, changes: SettingsChangeItem[]) {
+    return this.panelSettingsRepo.collection.updateOne({ panelId }, { $set: { changes } });
   }
 
   async dump(panelDetails: PanelDetails) {
@@ -72,7 +90,20 @@ export class PanelService {
     panel.contacts.changes = panel.contacts.changes || [];
     panel.contacts.changes = panel.contacts.changes.concat(getContactsChanges(panel.contacts.list, oldPanel.contacts.list, Source.client));
     await this.updateContacts(panelDetails.panelId, panel.contacts.list, panel.contacts.changes);
-    return { contacts: panel.contacts };
+
+    // settings
+    panel.settings.changes = panel.settings.changes || [];
+    Object.keys(panelPropertiesSetting.settings).forEach(key => {
+      Object.keys(panelPropertiesSetting.settings[key]).forEach(prop => {
+        const oldValue = oldPanel.settings[key][prop];
+        const newValue = panel.settings[key][prop];
+        if (oldValue !== newValue) {
+          panel.settings.changes.push({ path: `${key}.${prop}`, source: Source.client, previewsValue: oldValue });
+        }
+      });
+    });
+
+    return { contacts: panel.contacts, settings: panel.settings };
   }
 
   async reset(id: number) {
@@ -80,6 +111,9 @@ export class PanelService {
     const initialPanel = new Panel({ details: panel }).reDump(dumps.MP[panel.direction]);
     await this.panelContactsRepo.collection.deleteOne({ panelId: id });
     await this.panelContactsRepo.saveOrUpdateOne({ panelId: panel.panelId, list: initialPanel.contacts.list, changes: [] });
-    return { contacts: initialPanel.contacts };
+
+    await this.panelSettingsRepo.collection.deleteOne({ panelId: id });
+    await this.panelSettingsRepo.saveOrUpdateOne(initialPanel.settings);
+    return { contacts: initialPanel.contacts, settings: initialPanel.settings };
   }
 }

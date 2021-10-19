@@ -1,6 +1,6 @@
 <div [dir]="localeService.direction" class="main">
   <div class="container center" fxLayout="column">
-    <swagular-form (submit)="login()" [model]="model" class="container"></swagular-form>
+    <swagular-form (save)="login()" [model]="model" class="container"></swagular-form>
     <span *ngIf="loginError" fxFlex="20px">{{ loginError }}</span>
   </div>
 </div>

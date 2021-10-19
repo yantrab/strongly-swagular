@@ -5,8 +5,9 @@ import { AddPanelDetailsDTO, PanelDetails } from "../../domain/panel/panel.detai
 import { omit } from "lodash";
 import { ChangeItem, Contact } from "../../domain/panel/panel.contacts";
 import { PanelSocketService } from "../../services/panel/panel.socket.service";
-import { LogService } from "../../../../client/src/app/api/services/log.service";
 import { LoggerService } from "../../services/loggerService";
+import { FloorValueSettings, GeneralSettings, TimingSettings, YesNoQuestionsSettings } from "../../domain/panel/settings";
+import { SettingsChangeItem } from "../../../../client/src/app/api/models/settings-change-item";
 
 @guard(user => !!user)
 export class PanelController {
@@ -38,6 +39,10 @@ export class PanelController {
     return this.service.getPanelContacts(id);
   }
 
+  @get(":id/settings") settings(@params("id") id: number) {
+    return this.service.getPanelSettings(id);
+  }
+
   @post(":id/save-contacts") updateContact(
     @params("id") panelId: number,
     @body("contact") contact: Contact,
@@ -56,5 +61,34 @@ export class PanelController {
 
   @post updateContacts(@body("panelId") panelId: number, @body("contacts") contacts: Contact[], @body("changes") changes?: ChangeItem[]) {
     return this.service.updateContacts(panelId, contacts, changes);
+  }
+
+  @put(":id/settings/general") generalSettings(
+    @params("id") panelId: number,
+    @body("settings") generalSettings: GeneralSettings,
+    @body("changes") changes: SettingsChangeItem[]
+  ) {
+    return this.service.updateSettings(panelId, { general: generalSettings }, changes);
+  }
+  @put(":id/settings/timing") timingSettings(
+    @params("id") panelId: number,
+    @body("settings") timingSettings: TimingSettings,
+    @body("changes") changes: SettingsChangeItem[]
+  ) {
+    return this.service.updateSettings(panelId, { timing: timingSettings }, changes);
+  }
+  @put(":id/settings/questions") yesNoSettings(
+    @params("id") panelId: number,
+    @body("settings") yesNoQuestions: YesNoQuestionsSettings,
+    @body("changes") changes: SettingsChangeItem[]
+  ) {
+    return this.service.updateSettings(panelId, { yesNo: yesNoQuestions }, changes);
+  }
+  @put(":id/settings/floorValue") floorSettings(
+    @params("id") panelId: number,
+    @body("settings") floorSettings: FloorValueSettings,
+    @body("changes") changes: SettingsChangeItem[]
+  ) {
+    return this.service.updateSettings(panelId, { floor: floorSettings }, changes);
   }
 }
