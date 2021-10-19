@@ -85,7 +85,7 @@ import { Source } from '../../api/models/source';
           (done)="service.showProgressBar = false"
         ></app-progress>
         <div fxLayout="row" class="connected-indicator">
-          <span *ngIf="!isConnected"> {{ locale.notConnected }}</span>
+          <!--          <span *ngIf="!isConnected"> {{ locale.notConnected }}</span>-->
           <div class="circle" [class.connect]="isConnected" [class.disconnect]="!isConnected"></div>
         </div>
       </mat-toolbar>
@@ -168,7 +168,7 @@ export class PanelComponent {
         return 1;
       case ActionType.readAllFromPanel:
       case ActionType.readAllFromPanelInProgress:
-        return 70;
+        return 32;
       case ActionType.writeAllToPanel:
       case ActionType.writeAllToPanelInProgress:
         return 40;
@@ -176,7 +176,7 @@ export class PanelComponent {
       case ActionType.writeToPanelInProgress:
         return (this.service.contacts.value?.changes.length || 0) + (this.service.settings.value?.changes.length || 0);
     }
-    return 0;
+    return 1;
   }
 
   changeStatus(status: ActionType) {
