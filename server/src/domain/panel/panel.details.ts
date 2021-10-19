@@ -6,7 +6,7 @@ enum Lang {
 }
 export enum ActionType {
   idle = "000",
-  status = "666",
+  status = 6,
   nameOrder = "777",
   powerUp = "888",
 

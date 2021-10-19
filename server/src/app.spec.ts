@@ -12,8 +12,8 @@ import { inject } from "strongly";
 import { GeneralSettings } from "./domain/panel/settings";
 
 const port = 4000;
-const pId = "1"; //'861311009983668'; //'1'//
-const host = "localhost"; //'128.199.41.162'; //'178.62.237.25' //'
+const pId = "861123052740857"; //'1'//
+const host = "localhost"; //'128.199.41.162'; // "178.62.237.25"; //'
 jest.setTimeout(1000000);
 const registerAction = { type: ActionType.status, pId: "1" };
 const registerActionString = JSON.stringify(registerAction);
@@ -141,6 +141,7 @@ class AppSpec {
     expect(p?.changes[0]).toStrictEqual({ index: 0, key: "name1", source: 0 });
 
     expect(await this.write(registerActionString)).toBe(ActionType.readAllFromPanelInProgress.toString());
+    expect(await this.write(registerActionStringD)).toBe(ActionType.readAllFromPanelCanceled);
     expect(await this.write(registerActionStringD)).toBe(ActionType.idle);
   }
 
@@ -178,7 +179,7 @@ class AppSpec {
   //
   //   const registerAction = { type: ActionType.status, pId: "1" };
   //   const registerActionString = JSON.stringify(registerAction);
-  //   const registerActionD = { type: ActionType.status, pId: "1", d: 1 };
+  //   const registerActionD = { type: 6, pId: "861123052740857", d: 1 };
   //   const registerActionStringD = JSON.stringify(registerActionD);
   //
   //   await this.write(registerActionStringD);
