@@ -150,7 +150,7 @@ class AppSpec {
     await this.panelService.saveOrUpdatePanel(this.panel);
     expect(await this.write(registerActionString)).toBe(ActionType.writeAllToPanel);
 
-    const command = { type: "2", pId: "1", data: { start: 2551, length: 10 } };
+    const command = { type: 4, pId: "1", data: { start: 2551, length: 10 } };
     const commandString = JSON.stringify(command);
     expect(await this.write(commandString)).toBe("S   APP. # ");
     this.panel.status = ActionType.writeToPanelCanceled;

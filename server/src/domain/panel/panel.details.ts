@@ -10,10 +10,10 @@ export enum ActionType {
   nameOrder = "777",
   powerUp = "888",
 
-  writeAllToPanel = "222",
+  writeAllToPanel = "444",
   writeAllToPanelInProgress = 10,
 
-  writeToPanel = "444",
+  writeToPanel = "222",
   writeToPanelInProgress = 12,
 
   readAllFromPanel = "333",
