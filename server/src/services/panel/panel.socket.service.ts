@@ -169,24 +169,26 @@ export class PanelSocketService {
       this.sentMsg(action.pId, "updateContacts", panel.contacts);
     } else if (action.d) {
       panelDetails.status = ActionType.idle;
-      if (status === ActionType.writeAllToPanelInProgress) {
-        panelDetails.progressPst = 100;
-        return ActionType.writeToPanelCanceled;
-      }
 
       if (status === ActionType.readAllFromPanelInProgress) {
         panelDetails.progressPst = 100;
+        await this.panelService.setContactsChanges(panelDetails.panelId, []);
+        await this.panelService.setSettingsChanges(panelDetails.panelId, []);
         return ActionType.readAllFromPanelCanceled;
       }
     }
 
     if (status === ActionType.writeAllToPanelInProgress) {
-      return ActionType.writeToPanel;
+      panelDetails.progressPst = 100;
+      panelDetails.status = ActionType.idle;
+      await this.panelService.setContactsChanges(panelDetails.panelId, []);
+      await this.panelService.setSettingsChanges(panelDetails.panelId, []);
     }
 
     if (status === ActionType.readAllFromPanelInProgress) {
       return ActionType.readAllFromPanel;
     }
+
     return panelDetails.status.toString();
   }
 
@@ -195,7 +197,7 @@ export class PanelSocketService {
       panelDetails.status = ActionType.readAllFromPanelInProgress;
     }
     panelDetails.progressPst = panelDetails.progressPst || 1;
-    if (panelDetails.progressPst + 1 < 100) panelDetails.progressPst += 3;
+    if (panelDetails.progressPst + 6 < 100) panelDetails.progressPst += 3;
     const panel = await this.panelService.getPanel(panelDetails);
     const oldPanel = cloneDeep(panel);
     const dump = panel.dump().split("");
@@ -238,7 +240,7 @@ export class PanelSocketService {
       panelDetails.status = ActionType.writeAllToPanelInProgress;
     }
     panelDetails.progressPst = panelDetails.progressPst || 1;
-    if (panelDetails.progressPst + 1 < 100) panelDetails.progressPst += 3;
+    if (panelDetails.progressPst + 2 < 100) panelDetails.progressPst += 1;
     const panel = await this.panelService.getPanel(panelDetails);
     const dump = panel.dump();
     const start = action.data.start;
