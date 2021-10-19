@@ -15,12 +15,12 @@ export class ProgressComponent implements OnInit {
 
   _pst = 1;
 
-  @Input() set pst(pst: number) {
-    this._pst = Math.floor(pst);
+  get pst() {
+    return this._pst;
   }
 
-  @Input() get() {
-    return this._pst;
+  @Input() set pst(pst: number) {
+    this._pst = Math.floor(pst);
   }
 
   ngOnInit(): void {}
