@@ -15,4 +15,23 @@ export enum ActionType {
   powerUpCanceled = '808'
 }
 
-export const ActionTypeSchema  = {"enum":["000",6,"777","888","222",10,"444",12,"333",13,"RRR","SSS","TTT","808"],"x-enumNames":["idle","status","nameOrder","powerUp","writeAllToPanel","writeAllToPanelInProgress","writeToPanel","writeToPanelInProgress","readAllFromPanel","readAllFromPanelInProgress","writeToPanelCanceled","readAllFromPanelCanceled","nameOrderCanceled","powerUpCanceled"],"type":"string"}
+export const ActionTypeSchema = {
+  enum: ['000', 6, '777', '888', '444', 10, '222', 12, '333', 13, 'RRR', 'SSS', 'TTT', '808'],
+  'x-enumNames': [
+    'idle',
+    'status',
+    'nameOrder',
+    'powerUp',
+    'writeAllToPanel',
+    'writeAllToPanelInProgress',
+    'writeToPanel',
+    'writeToPanelInProgress',
+    'readAllFromPanel',
+    'readAllFromPanelInProgress',
+    'writeToPanelCanceled',
+    'readAllFromPanelCanceled',
+    'nameOrderCanceled',
+    'powerUpCanceled'
+  ],
+  type: 'string'
+};
