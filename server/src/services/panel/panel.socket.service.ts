@@ -52,10 +52,18 @@ export class PanelSocketService {
           this.logError("err.message " + port + ".", socket.address, err).then();
         });
         socket.on("data", async (msg: Buffer) => {
+          const msgString = msg.toString();
+          timeOut.refresh();
+          const action = this.buildAction(msg);
           try {
-            const msgString = msg.toString();
-            timeOut.refresh();
-            const action = this.buildAction(msg);
+            this.logInfo("panel answered", host, {
+              req: msgString,
+              buffer: msg,
+              pId: action.pId,
+              type: action.type,
+              data: JSON.stringify(action.data || {})
+            }).then();
+
             const panel = await this.panelService.getPanelDetails(action.pId);
             if (!panel) return socket.write("999");
             let result;
@@ -89,16 +97,12 @@ export class PanelSocketService {
             }
             const resultString = buffer.toString();
             this.logInfo("panel answered", host, {
-              req: msgString,
-              buffer: msg,
               res: resultString,
-              pId: action.pId,
-              type: ActionType[action.type],
-              data: JSON.stringify(action.data || {})
+              pId: action.pId
             }).then();
             return socket.write(buffer);
           } catch (e) {
-            this.logError("err.message " + port + ".", socket.address, e).then();
+            this.logError("err.message " + port + ".", socket.address, { ...e, pId: action.pId }).then();
             socket.write("100");
             socket.end();
           }
@@ -160,6 +164,13 @@ export class PanelSocketService {
       await this.panelService.setContactsChanges(panelDetails.panelId, []);
       await this.panelService.setSettingsChanges(panelDetails.panelId, []);
       panelDetails.status = ActionType.idle;
+      if (status === ActionType.writeAllToPanelInProgress) {
+        return ActionType.writeToPanelCanceled;
+      }
+
+      if (status === ActionType.readAllFromPanelInProgress) {
+        return ActionType.readAllFromPanelCanceled;
+      }
     }
 
     return panelDetails.status.toString();
