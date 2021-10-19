@@ -163,9 +163,11 @@ export interface IPanelToolBar {
     excel: string;
     cancel: string;
     444: string;
+    333: string;
     12: string;
     555: string;
     13: string;
+    '000': string;
     notConnected: string;
 }
 export interface IUserFormModel {
