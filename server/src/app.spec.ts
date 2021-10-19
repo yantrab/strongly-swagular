@@ -24,21 +24,21 @@ const registerActionStringD = JSON.stringify(registerActionD);
 class AppSpec {
   panelService: PanelService;
   panel: PanelDetails;
-  // static async before() {
-  //   await app();
-  // }
-  // async before() {
-  //   this.panel = { panelId: 1, direction: Lang.en, userId: "1", status: ActionType.idle, phoneNumber: "1" };
-  //   this.panelService = await inject(PanelService);
-  //   // @ts-ignore
-  //   await this.panelService.panelDetailsRepo.collection.deleteMany({});
-  //   // @ts-ignore
-  //   await this.panelService.panelContactsRepo.collection.deleteMany({});
-  //   // @ts-ignore
-  //   await this.panelService.panelSettingsRepo.collection.deleteMany({});
-  //
-  //   await this.panelService.addNewPanel(this.panel);
-  // }
+  static async before() {
+    await app();
+  }
+  async before() {
+    this.panel = { panelId: 1, direction: Lang.en, userId: "1", status: ActionType.idle, phoneNumber: "1" };
+    this.panelService = await inject(PanelService);
+    // @ts-ignore
+    await this.panelService.panelDetailsRepo.collection.deleteMany({});
+    // @ts-ignore
+    await this.panelService.panelContactsRepo.collection.deleteMany({});
+    // @ts-ignore
+    await this.panelService.panelSettingsRepo.collection.deleteMany({});
+
+    await this.panelService.addNewPanel(this.panel);
+  }
   write = async (str: string) => {
     return new Promise(resolve => {
       const client = new Socket();
@@ -150,7 +150,7 @@ class AppSpec {
     await this.panelService.saveOrUpdatePanel(this.panel);
     expect(await this.write(registerActionString)).toBe(ActionType.writeAllToPanel);
 
-    const command = { type: ActionType.writeAllToPanel, pId: "1", data: { start: 2551, length: 10 } };
+    const command = { type: "2", pId: "1", data: { start: 2551, length: 10 } };
     const commandString = JSON.stringify(command);
     expect(await this.write(commandString)).toBe("S   APP. # ");
     this.panel.status = ActionType.writeToPanelCanceled;
@@ -171,19 +171,19 @@ class AppSpec {
       expect(dump.slice(i, i + gap)).toEqual(expe.slice(i, i + gap));
     }
   }
-
-  @test
-  async s() {
-    // const command = "!00000000000000102551555bbaabbbbb";
-    // const result = await this.write(command);
-
-    const registerAction = { type: 6, pId: "1" };
-    const registerActionString = JSON.stringify(registerAction);
-    const registerActionD = { type: 6, pId: "1", d: 1 };
-    const registerActionStringD = JSON.stringify(registerActionD);
-
-    await this.write(registerActionStringD);
-  }
+  //
+  // @test
+  // async s() {
+  //   // const command = "!00000000000000102551555bbaabbbbb";
+  //   // const result = await this.write(command);
+  //
+  //   const registerAction = { type: 6, pId: "1" };
+  //   const registerActionString = JSON.stringify(registerAction);
+  //   const registerActionD = { type: 6, pId: "1", d: 1 };
+  //   const registerActionStringD = JSON.stringify(registerActionD);
+  //
+  //   await this.write(registerActionStringD);
+  // }
 
   // @test async s2() {
   //   "!00000000000000200000555          ";

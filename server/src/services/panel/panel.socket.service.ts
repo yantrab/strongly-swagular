@@ -253,7 +253,6 @@ export class PanelSocketService {
         i++;
       }
     }
-
     const msg = buffer.toString("utf8");
     const result =
       msg[0] !== "!"
@@ -267,6 +266,9 @@ export class PanelSocketService {
     if (result.data?.start) {
       result.data.start = +result.data.start;
       result.data.length = +result.data.length;
+    }
+    if (result.type === "2") {
+      result.type = "222";
     }
     return result;
   }

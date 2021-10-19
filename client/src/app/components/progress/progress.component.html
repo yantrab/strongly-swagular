@@ -8,7 +8,7 @@
        <button (click)="hideProgressBar()" *ngIf="pst===100" mat-button>
          <mat-icon>download_done</mat-icon>
        </button>
-       <button (click)="cancelAction()" *ngIf="pst!==10 && mouseover" mat-button>
+       <button (click)="cancelAction()" *ngIf="pst!==100 && mouseover" mat-button>
          <mat-icon>cancel</mat-icon>
        </button>
      </div>

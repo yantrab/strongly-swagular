@@ -144,6 +144,7 @@ export class PanelComponent {
   changeStatus(status: ActionType) {
     this.service.showProgressBar = true;
     this.currentPanel.status = status;
+    this.currentPanel.progressPst = 1;
     this.api.savePanel(this.currentPanel).subscribe(() => {
       this.cd.markForCheck();
     });
