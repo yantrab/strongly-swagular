@@ -6,8 +6,13 @@ import { omit } from "lodash";
 import { ChangeItem, Contact } from "../../domain/panel/panel.contacts";
 import { PanelSocketService } from "../../services/panel/panel.socket.service";
 import { LoggerService } from "../../services/loggerService";
-import { FloorValueSettings, GeneralSettings, TimingSettings, YesNoQuestionsSettings } from "../../domain/panel/settings";
-import { SettingsChangeItem } from "../../../../client/src/app/api/models/settings-change-item";
+import {
+  FloorValueSettings,
+  GeneralSettings,
+  SettingsChangeItem,
+  TimingSettings,
+  YesNoQuestionsSettings
+} from "../../domain/panel/settings";
 
 @guard(user => !!user)
 export class PanelController {
