@@ -24,21 +24,21 @@ const registerActionStringD = JSON.stringify(registerActionD);
 class AppSpec {
   panelService: PanelService;
   panel: PanelDetails;
-  // static async before() {
-  //   await app();
-  // }
-  // async before() {
-  //   this.panel = { panelId: 1, direction: Lang.en, userId: "1", status: ActionType.idle, phoneNumber: "1" };
-  //   this.panelService = await inject(PanelService);
-  //   // @ts-ignore
-  //   await this.panelService.panelDetailsRepo.collection.deleteMany({});
-  //   // @ts-ignore
-  //   await this.panelService.panelContactsRepo.collection.deleteMany({});
-  //   // @ts-ignore
-  //   await this.panelService.panelSettingsRepo.collection.deleteMany({});
-  //
-  //   await this.panelService.addNewPanel(this.panel);
-  // }
+  static async before() {
+    await app();
+  }
+  async before() {
+    this.panel = { panelId: 1, direction: Lang.en, userId: "1", status: ActionType.idle, phoneNumber: "1" };
+    this.panelService = await inject(PanelService);
+    // @ts-ignore
+    await this.panelService.panelDetailsRepo.collection.deleteMany({});
+    // @ts-ignore
+    await this.panelService.panelContactsRepo.collection.deleteMany({});
+    // @ts-ignore
+    await this.panelService.panelSettingsRepo.collection.deleteMany({});
+
+    await this.panelService.addNewPanel(this.panel);
+  }
   write = async (str: string) => {
     return new Promise(resolve => {
       const client = new Socket();
@@ -70,7 +70,7 @@ class AppSpec {
 
     this.panel.status = ActionType.readAllFromPanel;
     await this.panelService.saveOrUpdatePanel(this.panel);
-    expect(await this.write(registerActionString)).toBe("555");
+    expect(await this.write(registerActionString)).toBe(ActionType.readAllFromPanel);
     expect(await this.write(registerActionStringD)).toBe("000");
 
     this.panelService.updateContact(1, { index: 0, apartment: "11", name1: "name", tel1: "111", ref: "22" }, [
@@ -140,7 +140,7 @@ class AppSpec {
     expect(p?.list[0].name1).toBe("aaaa    aaaa");
     expect(p?.changes[0]).toStrictEqual({ index: 0, key: "name1", source: 0 });
 
-    expect(await this.write(registerActionString)).toBe(ActionType.readAllFromPanelInProgress.toString());
+    expect(await this.write(registerActionString)).toBe(ActionType.readAllFromPanel);
     expect(await this.write(registerActionStringD)).toBe(ActionType.readAllFromPanelCanceled);
     expect(await this.write(registerActionStringD)).toBe(ActionType.idle);
   }
@@ -172,18 +172,18 @@ class AppSpec {
     }
   }
 
-  @test
-  async s() {
-    // const command = "!00000000000000102551555bbaabbbbb";
-    // const result = await this.write(command);
-
-    const registerAction = { type: 6, pId: "861123052740857", d: 1 };
-    const registerActionString = JSON.stringify(registerAction);
-    const registerActionD = { type: 6, pId: "861123052740857", d: 1 };
-    const registerActionStringD = JSON.stringify(registerActionD);
-
-    await this.write(registerActionString);
-  }
+  // @test
+  // async s() {
+  //   // const command = "!00000000000000102551555bbaabbbbb";
+  //   // const result = await this.write(command);
+  //
+  //   const registerAction = { type: 6, pId: "861123052740857", d: 1 };
+  //   const registerActionString = JSON.stringify(registerAction);
+  //   const registerActionD = { type: 6, pId: "861123052740857", d: 1 };
+  //   const registerActionStringD = JSON.stringify(registerActionD);
+  //
+  //   await this.write(registerActionString);
+  // }
 
   // @test async s2() {
   //   "!00000000000000200000555          ";

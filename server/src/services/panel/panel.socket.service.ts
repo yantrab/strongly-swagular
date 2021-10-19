@@ -173,6 +173,13 @@ export class PanelSocketService {
       }
     }
 
+    if (status === ActionType.writeAllToPanelInProgress) {
+      return ActionType.writeToPanel;
+    }
+
+    if (status === ActionType.readAllFromPanelInProgress) {
+      return ActionType.readAllFromPanel;
+    }
     return panelDetails.status.toString();
   }
 
