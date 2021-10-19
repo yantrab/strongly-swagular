@@ -268,7 +268,7 @@ export class PanelSocketService {
       result.data.length = +result.data.length;
     }
     if (result.type === 4) {
-      result.type = "444";
+      result.type = "222";
     }
     return result;
   }
