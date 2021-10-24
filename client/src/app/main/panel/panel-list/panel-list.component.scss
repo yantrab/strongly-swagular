@@ -8,3 +8,7 @@
 ::ng-deep .actions-column {
 width: 225px !important;
 }
+
+::ng-deep .deleted{
+  opacity: 40%;
+}

@@ -39,11 +39,12 @@ export class PanelListComponent implements OnInit {
         columns: options.columns,
         rowActions: [
           { icon: 'edit', action: ($event, row) => this.openEditPanelDialog(row) },
-          { icon: 'delete', action: ($event, row) => this.deletePanel(row) },
+          { icon: row => (row._isDeleted ? 'rotate_right' : 'delete'), action: ($event, row) => this.deletePanel(row, this.showDeleted) },
           { icon: 'manage_accounts', action: ($event, row) => this.panelService.navigateToContact(row) },
           { icon: 'settings', action: ($event, row) => this.panelService.navigateToSettings(row) }
         ],
-        actions: { rowClick: row => this.panelService.navigateToContact(row) }
+        actions: { rowClick: row => this.panelService.navigateToContact(row) },
+        rowClass: row => (row._isDeleted ? 'deleted' : '')
       };
       this.panelService.panelList.subscribe(panels => {
         if (!panels) return;
@@ -115,8 +116,8 @@ export class PanelListComponent implements OnInit {
     });
   }
 
-  deletePanel(row: PanelDetails) {
-    row._isDeleted = true;
+  deletePanel(row: PanelDetails, showDeleted: boolean) {
+    row._isDeleted = !showDeleted;
     this.api.savePanel(row).subscribe(user => {
       const snackBarRef = this.snackBar.open('Panel was deleted successfully', 'Cancel', {
         duration: 2000

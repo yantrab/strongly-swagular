@@ -14,8 +14,8 @@ import { Source } from '../../api/models/source';
   selector: 'app-panel',
   template: `
     <div fxLayout="column" fxFlexFill *ngIf="locale">
-      <mat-toolbar *ngIf="currentPanel" fxLayoutAlign="space-between center">
-        <div fxFlex="30%">
+      <mat-toolbar *ngIf="currentPanel" fxLayoutAlign="space-between center" fxLayout="row wrap">
+        <div fxFlex="50%" fxFlex.lt-md="100%">
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -69,25 +69,33 @@ import { Source } from '../../api/models/source';
           <a mat-button [routerLink]="'settings/' + currentPanel.panelId">{{ locale.editSettings }}</a>
           <a mat-button [routerLink]="'logs/' + currentPanel.panelId">{{ locale.logs }}</a>
         </div>
-        <div fxLayout="row" fxFlex="25%">
+        <div fxFlex fxLayout="row" fxFlex.lt-md="100%" fxLayoutAlign="space-between center">
           <span> {{ ' ' + (currentPanel.address || '') + ' ' }} </span>
-          <!--          <div fxLayoutAlign="center center" fxLayout="row">-->
-          <!--            <span fxFlex="30px" *ngIf="lastConnect < 30"> {{ lastConnect }}</span>-->
-          <!--          </div>-->
-        </div>
-
-        <app-progress
-          *ngIf="showProgressBar"
-          [status]="statusText"
-          (cancel)="cancelAction()"
-          [pst]="currentPanel?.progressPst || 1"
-          (done)="service.showProgressBar = false"
-        ></app-progress>
-        <div fxLayout="row" class="connected-indicator">
-          <!--          <span *ngIf="!isConnected"> {{ locale.notConnected }}</span>-->
-          <div class="circle" [class.connect]="isConnected" [class.disconnect]="!isConnected"></div>
+          <div fxLayout="row" fxLayoutAlign="end">
+            <app-progress
+              [fxShow.lt-md]="false"
+              *ngIf="showProgressBar"
+              [status]="statusText"
+              (cancel)="cancelAction()"
+              [pst]="currentPanel?.progressPst || 1"
+              (done)="service.showProgressBar = false"
+            ></app-progress>
+            <div class="connected-indicator">
+              <!--          <span *ngIf="!isConnected"> {{ locale.notConnected }}</span>-->
+              <div class="circle" [class.connect]="isConnected" [class.disconnect]="!isConnected"></div>
+            </div>
+          </div>
         </div>
       </mat-toolbar>
+      <app-progress
+        [fxHide.gt-md]="true"
+        *ngIf="showProgressBar"
+        [status]="statusText"
+        (cancel)="cancelAction()"
+        [pst]="currentPanel?.progressPst || 1"
+        (done)="service.showProgressBar = false"
+      ></app-progress>
+
       <div style="padding: 1%;" fxFlex>
         <router-outlet
           style="flex: 1 1 auto;

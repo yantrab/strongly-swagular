@@ -29,7 +29,7 @@ import { forkJoin } from 'rxjs';
       <a mat-button routerLink="panel">{{ locale.panels }}</a>
       <a mat-button routerLink="admin" *ngIf="user?.role === 'admin'">{{ locale.admin }}</a>
       <span style="flex: 1 1 auto;"></span>
-      <span> Hello {{ user?.firstName }} {{ user?.lastName }}</span>
+      <!--      <span [fxShow.lt-md]="false"> Hello {{ user?.firstName }} {{ user?.lastName }}</span>-->
     </mat-toolbar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
