@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ToolbarComponent } from './toolbar.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { LocaleService } from 'swagular/components';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 @Component({
   selector: 'app-root',
   template: `
@@ -47,7 +48,8 @@ class MainComponent {
         ]
       }
     ]),
-    MatMenuModule
+    MatMenuModule,
+    MatSlideToggleModule
   ]
 })
 export class MainModule {}

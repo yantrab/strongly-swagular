@@ -1,5 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+@import "assets/styles/material";
+body.dark-theme {
+  background-color: #2d3436;
+  //color: #dfe6e9;
+}
 
+body.light-theme {
+  //background-color: #dfe6e9;
+  //color: #2d3436;
+}
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
