@@ -80,9 +80,9 @@ class AppSpec {
     ]);
     this.panel.status = ActionType.writeToPanel;
     await this.panelService.saveOrUpdatePanel(this.panel);
-    expect(await this.write(registerActionString)).toBe("040000002551name"); // name
-    expect(await this.write(registerActionStringD)).toBe("04000003563111"); //apartment
-    expect(await this.write(registerActionStringD)).toBe("040000036382111"); //tel1
+    expect(await this.write(registerActionString)).toBe("040000002551   name         "); // name
+    expect(await this.write(registerActionStringD)).toBe("04000003563111 "); //apartment
+    expect(await this.write(registerActionStringD)).toBe("040000036382111            "); //tel1
     expect(await this.write(registerActionStringD)).toBe("000");
 
     this.panelService.updateContact(1, { index: 0, apartment: "11", name1: "name", tel1: "111", ref: "22" }, [
@@ -92,7 +92,7 @@ class AppSpec {
     ]);
     this.panel.status = ActionType.writeToPanel;
     await this.panelService.saveOrUpdatePanel(this.panel);
-    expect(await this.write(registerActionString)).toBe("040000002551name"); // name
+    expect(await this.write(registerActionString)).toBe("040000002551   name         "); // name
     this.panel.status = ActionType.writeToPanelCanceled;
     await this.panelService.saveOrUpdatePanel(this.panel);
     expect(await this.write(registerActionString)).toBe("RRR");

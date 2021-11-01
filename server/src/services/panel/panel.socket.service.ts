@@ -146,23 +146,21 @@ export class PanelSocketService {
         await this.panelService.setSettingsChanges(panelDetails.panelId, []);
       } else {
         isContactChanges = (nextChange as any)["key"];
-
+        let indexSettings: { index: number; length: number };
         nextChange.source = Source.PanelProgress;
-        let index: number, newValue: any;
+        let index: number;
         if (isContactChanges) {
           nextChange = nextChange as ChangeItem;
-          newValue = panel.contacts.list[nextChange.index][nextChange.key];
-          const indexSettings = panelPropertiesSetting.contacts[nextChange.key];
+          indexSettings = panelPropertiesSetting.contacts[nextChange.key];
           index = indexSettings.index + indexSettings.length * nextChange.index;
           this.sentMsg(action.pId, "updateContacts", panel.contacts);
         } else {
           nextChange = nextChange as SettingsChangeItem;
-          const indexSettings = get(panelPropertiesSetting.settings, nextChange.path);
-          newValue = (get(panel.settings, nextChange.path) + " ".repeat(indexSettings.length)).slice(0, indexSettings.length);
+          indexSettings = get(panelPropertiesSetting.settings, nextChange.path);
           index = indexSettings.index;
           this.sentMsg(action.pId, "updateSettings", panel.settings);
         }
-
+        const newValue = panel.dump().slice(index, index + indexSettings.length);
         return "04" + ("0".repeat(10) + index).slice(-10) + newValue;
       }
 
