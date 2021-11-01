@@ -23,8 +23,7 @@ $dark-theme: mat.define-dark-theme((
 ));
 
 // Apply the light theme by default
-@include mat.core-color($light-theme);
-@include mat.button-color($light-theme);
+@include mat.all-component-themes($light-theme);
 
 
 .light-theme {
