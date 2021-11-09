@@ -195,7 +195,72 @@ export class PanelComponent {
   }
 
   downloadCsv() {
-    this.service.downloadCsv();
+    // @ts-ignore
+    // Filter on devices with the Arduino Uno USB Vendor/Product IDs.
+    const filters = [
+      // { usbVendorId: 0x10c4, usbProductId: 0x1770 }
+      // { usbVendorId: 0x2341, usbProductId: 0x0001 }
+    ];
+
+    // Prompt user to select an Arduino Uno device.
+    // @ts-ignore
+    navigator.serial.requestPort({ filters }).then(async port => {
+      try {
+        await port.open({ baudRate: 57600, flowControl: 'none', stopBits: 2, dataBits: 8, parity: 'none' });
+        await port.setSignals({ dataTerminalReady: true });
+
+        const textEncoderW = new TextEncoderStream();
+        const writableStreamClosed = textEncoderW.readable.pipeTo(port.writable);
+
+        const writer = textEncoderW.writable.getWriter();
+
+        await writer.write('4R0000020\n');
+
+        // Allow the serial port to be closed later.
+        writer.releaseLock();
+        // Listen to data coming from the serial device.
+        // while (true) {
+        //   const { value, done } = await reader.read();
+        //   if (done) {
+        //     // Allow the serial port to be closed later.
+        //     reader.releaseLock();
+        //     break;
+        //   }
+        //   // value is a Uint8Array.
+        //   console.log(new TextDecoder().decode(value));
+        // }
+
+        const textDecoder = new TextDecoderStream();
+        const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+        const reader = textDecoder.readable.getReader();
+
+        // Listen to data coming from the serial device.
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) {
+            reader.releaseLock();
+            break;
+          }
+          // value is a string.
+          console.log(value);
+        }
+        const textEncoder = new TextEncoderStream();
+
+        reader.cancel();
+        await readableStreamClosed.catch(() => {
+          /* Ignore the error */
+        });
+
+        writer.close();
+        await writableStreamClosed;
+
+        await port.close();
+      } catch (x) {
+        console.log(x);
+      }
+    });
+
+    //this.service.downloadCsv();
   }
   reset() {
     this.service.reset();
