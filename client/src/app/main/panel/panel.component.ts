@@ -206,55 +206,47 @@ export class PanelComponent {
     // @ts-ignore
     navigator.serial.requestPort({ filters }).then(async port => {
       try {
+        const encoder = new TextEncoder();
+        const writer = port.writable.getWriter();
+
+        const read = async () => {
+          try {
+            const reader = port.readable.getReader();
+            const readerData = await reader.read();
+            console.log(readerData);
+            return ''; //this.decoder.decode(readerData.value);
+          } catch (err) {
+            const errorMessage = `error reading data: ${err}`;
+            console.error(errorMessage);
+            return errorMessage;
+          }
+        };
         await port.open({ baudRate: 57600, flowControl: 'none', stopBits: 2, dataBits: 8, parity: 'none' });
-        await port.setSignals({ dataTerminalReady: true });
 
-        const textEncoderW = new TextEncoderStream();
-        const writableStreamClosed = textEncoderW.readable.pipeTo(port.writable);
+        read();
 
-        const writer = textEncoderW.writable.getWriter();
-
-        await writer.write('4R0000020\n');
-
-        // Allow the serial port to be closed later.
-        writer.releaseLock();
-        // Listen to data coming from the serial device.
-        // while (true) {
-        //   const { value, done } = await reader.read();
-        //   if (done) {
-        //     // Allow the serial port to be closed later.
-        //     reader.releaseLock();
-        //     break;
+        const comm = encoder.encode(String.fromCharCode(4) + 'R0000456' + String.fromCharCode(13));
+        const asd = await writer.write(comm);
+        // while (port.readable) {
+        //   try {
+        //     while (true) {
+        //       const { value, done } = await reader.read();
+        //       if (done) {
+        //         // Allow the serial port to be closed later.
+        //         reader.releaseLock();
+        //         break;
+        //       }
+        //       if (value) {
+        //         console.log(value);
+        //       }
+        //     }
+        //   } catch (error) {
+        //     // TODO: Handle non-fatal read error.
         //   }
-        //   // value is a Uint8Array.
-        //   console.log(new TextDecoder().decode(value));
         // }
 
-        const textDecoder = new TextDecoderStream();
-        const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
-        const reader = textDecoder.readable.getReader();
-
-        // Listen to data coming from the serial device.
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) {
-            reader.releaseLock();
-            break;
-          }
-          // value is a string.
-          console.log(value);
-        }
-        const textEncoder = new TextEncoderStream();
-
-        reader.cancel();
-        await readableStreamClosed.catch(() => {
-          /* Ignore the error */
-        });
-
-        writer.close();
-        await writableStreamClosed;
-
-        await port.close();
+        // Allow the serial port to be closed later.
+        await port.setSignals({ dataTerminalReady: true });
       } catch (x) {
         console.log(x);
       }
