@@ -12,10 +12,12 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { PanelService } from './panel.service';
 import { PanelLogsComponent } from './panel-logs/panel-logs.component';
 import { MatExpansionModule } from '@angular/material/expansion';
-
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { ScannerComponent } from './panel-list/scanner/scanner.component';
 @NgModule({
-  declarations: [PanelListComponent, PanelComponent, SettingsComponent, ContactsComponent, PanelLogsComponent],
+  declarations: [PanelListComponent, PanelComponent, SettingsComponent, ContactsComponent, PanelLogsComponent, ScannerComponent],
   imports: [
+    ZXingScannerModule,
     ComponentModule,
     CommonModule,
     RouterModule.forChild([
