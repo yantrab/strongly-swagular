@@ -11,18 +11,36 @@ starter for strongly js & angular
 ## serve on nginx
 ```
 upstream app_nodejs {
-  server 127.0.0.1:4001;
   server 127.0.0.1:4000;
 }
 
 server {
-    listen 0.0.0.0:80;
+    listen 80 default_server;
+    listen [::]:80 default_server;
     root /srv/site;
+    server_name tador.net www.tador.net;
+    
     location = /api{
-    return 302 /api/;
+         return 302 /api/;
     }
+    
+    location ~* \.io {
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $http_host;
+      proxy_set_header X-NginX-Proxy false;
+
+      proxy_pass http://localhost:4001;
+      proxy_redirect off;
+
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+    }
+
+
     location / {
-    try_files $uri $uri/ /index.html;
+        try_files $uri $uri/ /index.html;
     }
 
     location /api/ {
@@ -30,8 +48,12 @@ server {
     }
 }
 ```
+https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/
 
+sudo certbot --nginx -d dev.tador.net
 sudo nano /etc/nginx/sites-enabled/default
+sudo systemctl reload nginx
+sudo ufw allow 443
 
-sudo iptables -A INPUT -s 176.228.222.91 -p tcp --destination-port 27017 -m state --state NEW,ESTABLISHED -j ACCEPT
-sudo iptables -A OUTPUT -d 176.228.222.91 -p tcp --source-port 27017 -m state --state ESTABLISHED -j ACCEPT
+sudo iptables -A INPUT -s 176.228.157.97 -p tcp --destination-port 27017 -m state --state NEW,ESTABLISHED -j ACCEPT
+sudo iptables -A OUTPUT -d 176.228.157.97 -p tcp --source-port 27017 -m state --state ESTABLISHED -j ACCEPT
