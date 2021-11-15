@@ -14,7 +14,7 @@
     "pm2-serve-static": "cd server && pm2 start --name static npm run serve-static",
     "build-client-prod": "cd client  && npm run build:prod",
     "build-client-dev": "cd client && npm run build:dev",
-    "deploy": "npm run git && pm2 restart server && sudo rm -rf /srv/site && sudo mv ~/tador/strongly-swagular/client/dist/app /srv/site && sudo service nginx restart",
+    "deploy": "npm run git && pm2 restart server && sudo rm -rf /srv/site && sudo mv ~/tador/strongly-swagular/client/dist/app /srv/site && sudo systemctl reload nginx",
     "pm2-start-server": "pm2 delete server 2> /dev/null && cd server && pm2 start --name server npm --  start",
     "deploy-prod": "npm run git&&npm i && pm2 restart server&&npm run build-client-prod&& pm2 restart static",
     "deploy-dev": "npm run git&&npm i && pm2 restart server&&npm run build-client-dev&& pm2 restart static"
