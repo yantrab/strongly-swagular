@@ -127,9 +127,9 @@ export class PanelListComponent implements OnInit {
       maxWidth: '540px'
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: string) => {
       if (result) {
-        this.panelService.addPanel(result);
+        this.openAddPanelDialog(+result.split('IMEI:')[1].split(';')[0]);
       }
     });
   }

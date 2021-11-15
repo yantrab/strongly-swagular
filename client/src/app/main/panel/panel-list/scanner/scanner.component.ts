@@ -12,7 +12,7 @@ export class ScannerComponent {
   constructor(public dialogRef: MatDialogRef<ScannerComponent>) {}
   scanCompleteHandler(event: any) {
     console.log(event);
-    // this.dialogRef.close($event);
+    this.dialogRef.close(event);
   }
 
   cancel() {
