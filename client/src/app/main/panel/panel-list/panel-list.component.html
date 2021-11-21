@@ -1,6 +1,6 @@
 <div *ngIf="panels && panelsTableOptions" fxFlexFill fxLayout="column">
   <div fxFlex="40px" fxLayoutAlign="space-between" style="width: 100%">
-    <button (click)="openAddPanelDialog()" fxHide.lt-sm="true" mat-raised-button style="width: 150px;">Create New Panel</button>
+    <button (click)="openAddPanelDialog(1)" fxHide.lt-sm="true" mat-raised-button style="width: 150px;">Create New Panel</button>
     <button (click)="scanPanel()" fxHide.gt-xs="true" mat-mini-fab><mat-icon>qr_code_scanner</mat-icon></button>
     <mat-slide-toggle (change)="showDeleted = $event.checked" [checked]="false">Show deleted panels</mat-slide-toggle>
   </div>

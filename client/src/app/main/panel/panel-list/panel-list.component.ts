@@ -102,11 +102,10 @@ export class PanelListComponent implements OnInit {
     });
 
     if (uuid) {
-      this.addPanelFormModel.formGroup.controls.panelId.setValue(uuid);
-      this.addPanelFormModel.formGroup.controls.id.setValue(op(uuid));
+      this.addPanelFormModel.formGroup.patchValue({ panelId: uuid, id: +op(uuid) });
 
-      this.addPanelFormModel.formGroup.controls.panelId.disable();
-      this.addPanelFormModel.formGroup.controls.id.disable();
+      // this.addPanelFormModel.formGroup.controls.panelId.disable();
+      // this.addPanelFormModel.formGroup.controls.id.disable();
     }
     const dialogRef = this.dialog.open(FormComponent, {
       width: '80%',
