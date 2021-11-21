@@ -169,6 +169,7 @@ export interface IPanelToolBar {
     13: string;
     '000': string;
     notConnected: string;
+    epprom: string;
 }
 export interface IUserFormModel {
     firstName: IFirstName;
