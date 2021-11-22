@@ -254,40 +254,35 @@ export class PanelComponent {
           // }
         });
       };
-      const length = parseInt('FF09', 16);
-      for (let i = 0; i <= 100; i++) {
-        const address = ('0000' + i.toString(16)).slice(-4).toUpperCase();
-        let check = 32 + parseInt(address, 16);
-        // 32 +
-        // address.split('').reduce((previousValue, currentValue) => {
-        //   return previousValue + parseInt(currentValue, 16);
-        // }, 0);
-        if (check > 999) check -= 1000;
-        const checkSum = ('000' + check.toString(16).toUpperCase()).slice(-3);
+      const length = 4092; //parseInt('FF09', 16) / 16;
+      for (let i = 0; i <= length; i++) {
+        const address = ('0000' + i.toString()).slice(-4).toUpperCase();
+        let check = 20;
+        address.split('').forEach(l => {
+          const hexValue = (+l).toString();
+          check += parseInt(hexValue, 16);
+          if (check > 999) check -= 1000;
+        });
+        const checkSum = ('000' + check.toString().toUpperCase()).slice(-3);
 
         const comString = String.fromCharCode(4) + 'R' + address + checkSum + String.fromCharCode(13);
-        console.log(comString);
+        //console.log(comString);
         const comm = encoder.encode(comString);
         await writer.write(comm);
         try {
           await read();
+          //await new Promise(resolve => setTimeout(() => resolve(null), 100));
         } catch (x) {
-          await reader.releaseLock();
-          reader = this.port!.port!.readable.getReader();
-          //await new Promise(resolve => setTimeout(() => resolve(null), 1000));
+          console.log(i);
+          if (i - 4000 > 0) {
+            await reader.releaseLock();
+            reader = this.port!.port!.readable.getReader();
+          }
+          //await new Promise(resolve => setTimeout(() => resolve(null), 50));
           i--;
         }
       }
-      // const r: any[] = [[]];
-      // let lastI = 0;
-      // buffer.forEach((value, index) => {
-      //   if (value === 13) {
-      //     r.push([]);
-      //     lastI++;
-      //   } else {
-      //     r[lastI].push(value);
-      //   }
-      // });
+      console.log(result);
       this.closeSerialPort();
     } catch (x) {
       console.log(x);
@@ -305,7 +300,7 @@ export class PanelComponent {
     };
     this.api.dump(this.currentPanel).subscribe(async dump => {
       const dumpArray: number[] = [];
-      dump = '     987        ';
+      // dump = '     987        ';
       dump.split('').forEach(l => {
         const n = l.charCodeAt(0);
         // n = n === 32 ? 255 : n;
@@ -315,22 +310,24 @@ export class PanelComponent {
         dumpArray.push(parseInt(a, 16));
         dumpArray.push(parseInt(b, 16));
       });
-      for (let aa = 0; aa < 100; aa++) {
-        console.log('aa:' + aa);
-        let i = 9;
+      let i = 0;
+      while (i < dumpArray.length) {
+        const dataToSent = dumpArray.slice(i, i + 32);
+        const address = ('0000' + i.toString()).slice(-4).toUpperCase();
+        let check = 10;
+        address.split('').forEach(l => {
+          const hexValue = (+l).toString();
+          check += parseInt(hexValue, 16);
+          if (check > 999) check -= 1000;
+        });
+        const checkSum = ('000' + check.toString().toUpperCase()).slice(-3);
 
-        while (i < 20) {
-          const dataToSent = dumpArray.slice(i, i + 32);
-          const address = ('0000' + i.toString(16)).slice(-4);
-          const checkSum = ('000' + (parseInt(address, 16) + aa).toString(16)).slice(-3);
-
-          const comString = String.fromCharCode(4) + 'S' + address + checkSum + String.fromCharCode(13);
-          const encoder = new TextEncoder();
-          const comm = encoder.encode(comString);
-          await writer.write(new Buffer([...comm.slice(0, 6), ...dataToSent, ...comm.slice(-4)]));
-          await read();
-          i += 32;
-        }
+        const comString = String.fromCharCode(4) + 'S' + address + checkSum + String.fromCharCode(13);
+        const encoder = new TextEncoder();
+        const comm = encoder.encode(comString);
+        await writer.write(new Buffer([...comm.slice(0, 6), ...dataToSent, ...comm.slice(-4)]));
+        await read();
+        i += 32;
       }
       this.closeSerialPort();
     });
