@@ -9,6 +9,8 @@ import { round } from 'lodash';
 import { IPanelToolBar, IRootObject } from '../../api/locale.interface';
 import { LocaleService } from 'swagular/components';
 import { Source } from '../../api/models/source';
+import { Buffer } from 'buffer';
+import { SerialPort } from './serial';
 
 @Component({
   selector: 'app-panel',
@@ -60,10 +62,12 @@ import { Source } from '../../api/models/source';
             <button appFileUpload (fileContent)="uploadCsv($event)" mat-menu-item>
               <mat-icon>attach_file</mat-icon> {{ locale.excel }}
             </button>
+            <button (click)="uploadEpprom()" mat-menu-item><mat-icon>usb</mat-icon>{{ locale.epprom }}</button>
           </mat-menu>
           <mat-menu #download="matMenu">
             <button (click)="downloadDump()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.dump }}</button>
             <button (click)="downloadCsv()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.excel }}</button>
+            <button (click)="downloadEpprom()" mat-menu-item><mat-icon>usb</mat-icon>{{ locale.epprom }}</button>
           </mat-menu>
           <a mat-button [routerLink]="'contacts/' + currentPanel.panelId">{{ locale.editContact }}</a>
           <a mat-button [routerLink]="'settings/' + currentPanel.panelId">{{ locale.editSettings }}</a>
@@ -112,6 +116,8 @@ export class PanelComponent {
   lastConnect = 0;
   status = ActionType;
   locale?: IPanelToolBar;
+  port?: { port?: SerialPort; reader?: ReadableStreamDefaultReader<any>; writer?: WritableStreamDefaultWriter<any> };
+
   constructor(
     public service: PanelService,
     private socket: Socket,
@@ -197,7 +203,153 @@ export class PanelComponent {
   downloadCsv() {
     this.service.downloadCsv();
   }
+
   reset() {
     this.service.reset();
+  }
+
+  async uploadEpprom() {
+    try {
+      let { reader, writer } = await this.openSerialPort();
+      const encoder = new TextEncoder();
+      let result = '';
+      const read = async () => {
+        return new Promise(async (resolve, reject) => {
+          //try {
+          let readerData;
+          const buffData: string[] = [];
+          try {
+            readerData = await reader.read();
+          } catch (x) {
+            console.log(x);
+          }
+          readerData = readerData?.value;
+          if (readerData.length !== 42) {
+            return reject();
+          }
+
+          for (let i = 6; i < 38; i++) {
+            let hexValue = readerData[i];
+            let hexString = hexValue.toString(16);
+            const a = hexString[1];
+            i++;
+            hexValue = readerData[i];
+            hexString = hexValue.toString(16);
+
+            const b = hexString[1];
+            buffData.push(a + b);
+          }
+          result += buffData
+            .map(h => parseInt(h, 16))
+            .map(n => (n < 171 && n > 143 ? n - 16 : n))
+            .map(n => (n === 255 ? ' ' : String.fromCharCode(n)))
+            .join('');
+          resolve(result);
+        });
+      };
+      const length = 4092;
+      for (let i = 0; i <= length; i++) {
+        const address = ('0000' + i.toString()).slice(-4).toUpperCase();
+        let check = 20;
+        address.split('').forEach(l => {
+          const hexValue = (+l).toString();
+          check += parseInt(hexValue, 16);
+          if (check > 999) check -= 1000;
+        });
+        const checkSum = ('000' + check.toString().toUpperCase()).slice(-3);
+
+        const comString = String.fromCharCode(4) + 'R' + address + checkSum + String.fromCharCode(13);
+        const comm = encoder.encode(comString);
+        await writer.write(comm);
+        try {
+          await read();
+          console.log(i);
+          //await new Promise(resolve => setTimeout(() => resolve(null), 100));
+        } catch (x) {
+          if (i - 4000 > 0) {
+            await reader?.cancel();
+            await reader.releaseLock();
+            this.port!.reader = reader = this.port!.port!.readable.getReader();
+          }
+          //await new Promise(resolve => setTimeout(() => resolve(null), 50));
+          i--;
+        }
+      }
+      this.uploadDump(result);
+      this.closeSerialPort();
+    } catch (x) {
+      console.log(x);
+    }
+  }
+
+  async downloadEpprom() {
+    let { reader, writer } = await this.openSerialPort();
+    const read = async () => {
+      return new Promise(async (resolve, reject) => {
+        const readerData = await reader.read();
+        if (readerData.value.length !== 10) {
+          reject();
+        }
+        resolve(undefined);
+      });
+    };
+    this.api.dump(this.currentPanel).subscribe(async dump => {
+      const dumpArray: number[] = [];
+      dump.split('').forEach(l => {
+        let n = l.charCodeAt(0);
+        if (n < 171 && n > 143) n += 16;
+        const h = n.toString(16);
+        const a = '3' + h[0];
+        const b = '3' + h[1];
+        dumpArray.push(parseInt(a, 16));
+        dumpArray.push(parseInt(b, 16));
+      });
+      let i = 0;
+      while (i < dumpArray.length / 32) {
+        console.log(i);
+        const dataToSent = dumpArray.slice(i * 32, i * 32 + 32);
+        const address = ('0000' + i.toString()).slice(-4);
+        const encoder = new TextEncoder();
+        const comm = [...encoder.encode(address), ...dataToSent];
+        let check = 12;
+        comm.forEach(n => {
+          check += n & parseInt('f', 16);
+          if ((n & parseInt('f0', 16)) === parseInt('40', 16)) {
+            check += 9;
+          }
+          if (check > 999) check -= 1000;
+        });
+        const checkSum = encoder.encode(('000' + check).slice(-3));
+        await writer.write(new Buffer([4, 87, ...comm, ...checkSum, 13]));
+        try {
+          await read();
+          i += 1;
+        } catch (e) {
+          if (i > 3000) {
+            console.log('reread due to failed operation');
+            await reader?.cancel();
+            await reader.releaseLock();
+            this.port!.reader = reader = this.port!.port!.readable.getReader();
+          }
+        }
+      }
+      this.closeSerialPort();
+    });
+  }
+
+  private async openSerialPort() {
+    const port = await navigator.serial.requestPort({});
+    await port.open({ baudRate: 57600, flowControl: 'none', stopBits: 2, dataBits: 8, parity: 'none' });
+    const reader = port.readable.getReader();
+    const writer = port.writable.getWriter();
+    this.port = { port, reader, writer };
+    return { reader, writer };
+  }
+
+  private async closeSerialPort() {
+    console.log('closing serial port');
+    await this.port?.reader?.releaseLock();
+    await this.port?.writer?.releaseLock();
+    return this.port?.port?.close();
   }
 }
