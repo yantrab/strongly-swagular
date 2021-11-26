@@ -7,6 +7,7 @@ import { PanelService as Api } from '../../../api/services/panel.service';
 import { PanelDetails } from '../../../api/models/panel-details';
 import { PanelService } from '../panel.service';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { ScannerComponent } from './scanner/scanner.component';
 @Component({
   selector: 'app-panel',
   templateUrl: './panel-list.component.html',
@@ -82,33 +83,36 @@ export class PanelListComponent implements OnInit {
     });
   }
 
-  openAddPanelDialog(): void {
+  openAddPanelDialog(uuid: number | undefined = undefined): void {
+    this.addPanelFormModel.formGroup.reset();
+    const op = (id: number) =>
+      id
+        .toString()
+        .split('')
+        .map((l: any) => (10 - +l) % 10)
+        .join('');
     this.addPanelFormModel.formGroup.controls.id.setValidators(control => {
       const id = +control.value;
       const panelId = this.addPanelFormModel.formGroup.value.panelId;
 
-      if (
-        id &&
-        panelId &&
-        panelId
-          .toString()
-          .split('')
-          .map((l: any) => (10 - +l) % 10)
-          .join('') !== id.toString()
-      ) {
-        // this.addPanelFormModel.formGroup.controls.id.setErrors(['Something wrong!']);
+      if (id && panelId && op(panelId) !== id.toString()) {
         return ['Something wrong'];
       }
       return null;
     });
-    this.addPanelFormModel.formGroup.reset();
+
+    if (uuid) {
+      this.addPanelFormModel.formGroup.patchValue({ panelId: uuid, id: +op(uuid) });
+
+      // this.addPanelFormModel.formGroup.controls.panelId.disable();
+      // this.addPanelFormModel.formGroup.controls.id.disable();
+    }
     const dialogRef = this.dialog.open(FormComponent, {
       width: '80%',
       maxWidth: '540px',
       data: this.addPanelFormModel,
       panelClass: 'admin-form'
     });
-
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.panelService.addPanel(result);
@@ -116,6 +120,18 @@ export class PanelListComponent implements OnInit {
     });
   }
 
+  scanPanel() {
+    const dialogRef = this.dialog.open(ScannerComponent, {
+      width: '80%',
+      maxWidth: '540px'
+    });
+
+    dialogRef.afterClosed().subscribe((result: string) => {
+      if (result) {
+        this.openAddPanelDialog(+result.split('IMEI:')[1].split(';')[0]);
+      }
+    });
+  }
   deletePanel(row: PanelDetails, showDeleted: boolean) {
     row._isDeleted = !showDeleted;
     this.api.savePanel(row).subscribe(user => {
