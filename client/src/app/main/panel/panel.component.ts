@@ -224,10 +224,6 @@ export class PanelComponent {
             console.log(x);
           }
           readerData = readerData?.value;
-          // if (readerData.length > 42) {
-          //   readerData = readerData.toString().split(',13,')[1];
-          // }
-
           if (readerData.length !== 42) {
             return reject();
           }
@@ -245,16 +241,13 @@ export class PanelComponent {
           }
           result += buffData
             .map(h => parseInt(h, 16))
+            .map(n => (n < 171 && n > 143 ? n - 16 : n))
             .map(n => (n === 255 ? ' ' : String.fromCharCode(n)))
             .join('');
           resolve(result);
-          // } catch (err) {
-          //   const errorMessage = `error reading data: ${err}`;
-          //   console.error(errorMessage);
-          // }
         });
       };
-      const length = 4092; //parseInt('FF09', 16) / 16;
+      const length = 4092;
       for (let i = 0; i <= length; i++) {
         const address = ('0000' + i.toString()).slice(-4).toUpperCase();
         let check = 20;
@@ -266,23 +259,23 @@ export class PanelComponent {
         const checkSum = ('000' + check.toString().toUpperCase()).slice(-3);
 
         const comString = String.fromCharCode(4) + 'R' + address + checkSum + String.fromCharCode(13);
-        //console.log(comString);
         const comm = encoder.encode(comString);
         await writer.write(comm);
         try {
           await read();
+          console.log(i);
           //await new Promise(resolve => setTimeout(() => resolve(null), 100));
         } catch (x) {
-          console.log(i);
           if (i - 4000 > 0) {
+            await reader?.cancel();
             await reader.releaseLock();
-            reader = this.port!.port!.readable.getReader();
+            this.port!.reader = reader = this.port!.port!.readable.getReader();
           }
           //await new Promise(resolve => setTimeout(() => resolve(null), 50));
           i--;
         }
       }
-      console.log(result);
+      this.uploadDump(result);
       this.closeSerialPort();
     } catch (x) {
       console.log(x);
@@ -290,20 +283,21 @@ export class PanelComponent {
   }
 
   async downloadEpprom() {
-    const { reader, writer } = await this.openSerialPort();
+    let { reader, writer } = await this.openSerialPort();
     const read = async () => {
-      return new Promise(async resolve => {
+      return new Promise(async (resolve, reject) => {
         const readerData = await reader.read();
-        console.log(readerData.value);
+        if (readerData.value.length !== 10) {
+          reject();
+        }
         resolve(undefined);
       });
     };
     this.api.dump(this.currentPanel).subscribe(async dump => {
       const dumpArray: number[] = [];
-      // dump = '     987        ';
       dump.split('').forEach(l => {
-        const n = l.charCodeAt(0);
-        // n = n === 32 ? 255 : n;
+        let n = l.charCodeAt(0);
+        if (n < 171 && n > 143) n += 16;
         const h = n.toString(16);
         const a = '3' + h[0];
         const b = '3' + h[1];
@@ -311,23 +305,33 @@ export class PanelComponent {
         dumpArray.push(parseInt(b, 16));
       });
       let i = 0;
-      while (i < dumpArray.length) {
-        const dataToSent = dumpArray.slice(i, i + 32);
-        const address = ('0000' + i.toString()).slice(-4).toUpperCase();
-        let check = 10;
-        address.split('').forEach(l => {
-          const hexValue = (+l).toString();
-          check += parseInt(hexValue, 16);
+      while (i < dumpArray.length / 32) {
+        console.log(i);
+        const dataToSent = dumpArray.slice(i * 32, i * 32 + 32);
+        const address = ('0000' + i.toString()).slice(-4);
+        const encoder = new TextEncoder();
+        const comm = [...encoder.encode(address), ...dataToSent];
+        let check = 12;
+        comm.forEach(n => {
+          check += n & parseInt('f', 16);
+          if ((n & parseInt('f0', 16)) === parseInt('40', 16)) {
+            check += 9;
+          }
           if (check > 999) check -= 1000;
         });
-        const checkSum = ('000' + check.toString().toUpperCase()).slice(-3);
-
-        const comString = String.fromCharCode(4) + 'S' + address + checkSum + String.fromCharCode(13);
-        const encoder = new TextEncoder();
-        const comm = encoder.encode(comString);
-        await writer.write(new Buffer([...comm.slice(0, 6), ...dataToSent, ...comm.slice(-4)]));
-        await read();
-        i += 32;
+        const checkSum = encoder.encode(('000' + check).slice(-3));
+        await writer.write(new Buffer([4, 87, ...comm, ...checkSum, 13]));
+        try {
+          await read();
+          i += 1;
+        } catch (e) {
+          if (i > 3000) {
+            console.log('reread due to failed operation');
+            await reader?.cancel();
+            await reader.releaseLock();
+            this.port!.reader = reader = this.port!.port!.readable.getReader();
+          }
+        }
       }
       this.closeSerialPort();
     });
@@ -342,9 +346,10 @@ export class PanelComponent {
     return { reader, writer };
   }
 
-  private closeSerialPort() {
-    this.port?.reader?.releaseLock();
-    this.port?.writer?.releaseLock();
+  private async closeSerialPort() {
+    console.log('closing serial port');
+    await this.port?.reader?.releaseLock();
+    await this.port?.writer?.releaseLock();
     return this.port?.port?.close();
   }
 }
