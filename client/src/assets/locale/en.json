@@ -209,7 +209,8 @@
     "555" : "connecting...",
     "13": "in progress...",
     "000": "שולח...",
-    "notConnected": "not connected"
+    "notConnected": "not connected",
+    "epprom": "Epprom"
   },
   "userFormModel": {
     "firstName": {

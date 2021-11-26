@@ -209,7 +209,8 @@
     "555" : "מתחבר...",
     "13" : "מקבל...",
     "000": "שולח...",
-    "notConnected": "לא מחובר"
+    "notConnected": "לא מחובר",
+    "epprom": "Epprom"
   },
   "userFormModel": {
     "firstName":  {
