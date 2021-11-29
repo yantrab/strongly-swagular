@@ -211,7 +211,8 @@ export class PanelComponent {
   async uploadEpprom() {
     try {
       let { reader, writer } = await this.openSerialPort();
-      const encoder = new TextEncoder();
+      // @ts-ignore
+      const encoder = new TextEncoder('utf-8');
       let result = '';
       const read = async () => {
         return new Promise(async (resolve, reject) => {
@@ -284,6 +285,9 @@ export class PanelComponent {
 
   async downloadEpprom() {
     let { reader, writer } = await this.openSerialPort();
+    // @ts-ignore
+    const encoder = new TextEncoder('utf-8');
+
     const read = async () => {
       return new Promise(async (resolve, reject) => {
         const readerData = await reader.read();
@@ -295,21 +299,23 @@ export class PanelComponent {
     };
     this.api.dump(this.currentPanel).subscribe(async dump => {
       const dumpArray: number[] = [];
-      dump.split('').forEach(l => {
-        let n = l.charCodeAt(0);
-        if (n < 171 && n > 143) n += 16;
-        const h = n.toString(16);
-        const a = '3' + h[0];
-        const b = '3' + h[1];
-        dumpArray.push(parseInt(a, 16));
-        dumpArray.push(parseInt(b, 16));
-      });
+      dump = 'את'.repeat(8);
+      encoder
+        .encode(dump)
+        .filter((n, i) => i % 2 === 1)
+        .forEach(n => {
+          if (n <= 170 && n >= 144) n += 16;
+          const h = n.toString(16);
+          const a = '3' + h[0];
+          const b = '3' + h[1];
+          dumpArray.push(parseInt(a, 16));
+          dumpArray.push(parseInt(b, 16));
+        });
       let i = 0;
       while (i < dumpArray.length / 32) {
         console.log(i);
         const dataToSent = dumpArray.slice(i * 32, i * 32 + 32);
         const address = ('0000' + i.toString()).slice(-4);
-        const encoder = new TextEncoder();
         const comm = [...encoder.encode(address), ...dataToSent];
         let check = 12;
         comm.forEach(n => {
