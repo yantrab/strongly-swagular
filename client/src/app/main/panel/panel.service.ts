@@ -96,6 +96,10 @@ export class PanelService {
         const contacts = cloneDeep(this.contacts.value!);
         contacts.changes = contacts.changes || [];
         contacts.list = this.excelService.readFile<Contact>(file, columns);
+        contacts.list.forEach(c => {
+          c.name1 = c.name1?.trim();
+          c.name2 = c.name1?.trim();
+        });
         contacts.changes = contacts.changes.concat(getContactsChanges(contacts.list, this.contacts.value!.list, Source.client));
         this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId).subscribe(() => this.contacts.next(contacts));
       });

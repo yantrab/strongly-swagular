@@ -286,7 +286,7 @@ export class PanelComponent {
   async downloadEpprom() {
     let { reader, writer } = await this.openSerialPort();
     // @ts-ignore
-    const encoder = new TextEncoder('utf-8');
+    const encoder = new TextEncoder();
 
     const read = async () => {
       return new Promise(async (resolve, reject) => {
@@ -299,12 +299,12 @@ export class PanelComponent {
     };
     this.api.dump(this.currentPanel).subscribe(async dump => {
       const dumpArray: number[] = [];
-      dump = 'את'.repeat(8);
+      dump = 'az'.repeat(8);
       encoder
         .encode(dump)
-        .filter((n, i) => i % 2 === 1)
+        //.filter((n, i) => i % 2 === 1)
         .forEach(n => {
-          if (n <= 170 && n >= 144) n += 16;
+          // if (n <= 170 && n >= 144) n += 16;
           const h = n.toString(16);
           const a = '3' + h[0];
           const b = '3' + h[1];

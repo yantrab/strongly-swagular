@@ -50,13 +50,13 @@ server {
 ```
 https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/
 
-apt-get update
+sudo apt-get update
 sudo apt-get install certbot
-apt-get install python3-certbot-nginx
-sudo certbot --nginx -d dev.tador.net
+sudo apt-get install python3-certbot-nginx
+sudo certbot --nginx -d app.tador.net
 sudo nano /etc/nginx/sites-enabled/default
 sudo systemctl reload nginx
 sudo ufw allow 443
 
-sudo iptables -A INPUT -s 176.228.157.97 -p tcp --destination-port 27017 -m state --state NEW,ESTABLISHED -j ACCEPT
-sudo iptables -A OUTPUT -d 176.228.157.97 -p tcp --source-port 27017 -m state --state ESTABLISHED -j ACCEPT
+sudo iptables -A INPUT -s 77.127.147.136 -p tcp --destination-port 27017 -m state --state NEW,ESTABLISHED -j ACCEPT
+sudo iptables -A OUTPUT -d 77.127.147.136 -p tcp --source-port 27017 -m state --state ESTABLISHED -j ACCEPT
