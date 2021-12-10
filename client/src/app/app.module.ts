@@ -3,15 +3,16 @@ import { Component, NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { Guard } from './guard';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ApiModule } from './api/api.module';
 import { InterceptorsService } from './services/interceptors.service';
 import { SwagularModule, SwagularService } from 'swagular';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { environment } from '../environments/environment';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { LocaleService } from 'swagular/components';
 import { ExcelService } from './services/excel.service';
+
 const config: SocketIoConfig = { url: environment.socketUrl };
 
 const isCordovaApp = Object(window).cordova !== undefined;
@@ -53,4 +54,8 @@ const routes: Routes = [
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private localeService: LocaleService) {
+    localeService.language = 'he';
+  }
+}

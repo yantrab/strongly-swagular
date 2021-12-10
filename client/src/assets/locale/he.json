@@ -115,18 +115,6 @@
         "title": "טל' 3"
       },
       {
-        "key": "tel4",
-        "title":"טל' 4"
-      },
-      {
-        "key": "tel5",
-        "title": "טל' 5"
-      },
-      {
-        "key": "tel6",
-        "title": "טל' 6"
-      },
-      {
         "key": "code",
         "title": "קוד"
       },
@@ -157,15 +145,6 @@
     },
     "tel3": {
       "label": "טל' 3"
-    },
-    "tel4": {
-      "label": "טל' 4"
-    },
-    "tel5": {
-      "label": "טל' 5"
-    },
-    "tel6": {
-      "label": "טל' 6"
     },
     "code": {
       "label": "Code"

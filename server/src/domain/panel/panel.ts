@@ -3,6 +3,7 @@ import { PanelDetails } from "./panel.details";
 import { Contact, Contacts } from "./panel.contacts";
 import { dumps } from "./initial-damps";
 import { Settings } from "./settings";
+
 export const panelPropertiesSetting = {
   contactsLength: 249,
   contacts: {
@@ -12,9 +13,6 @@ export const panelPropertiesSetting = {
     tel1: { length: 15, index: 36382 },
     tel2: { length: 15, index: 40132 },
     tel3: { length: 15, index: 43882 },
-    tel4: { length: 15, index: 47632 },
-    tel5: { length: 15, index: 51382 },
-    tel6: { length: 15, index: 55132 },
 
     code: { length: 10, index: 51 },
     ref: { length: 3, index: 10551 },
@@ -132,6 +130,7 @@ export const panelPropertiesSetting = {
     }
   }
 };
+
 function sliceContactProperty(dump: string, startIndex: number, index: number, length: number) {
   const start = startIndex + index * length;
   const end = start + length;
@@ -157,6 +156,7 @@ enum Lang {
   he = "Hebrew",
   en = "English"
 }
+
 export class Panel extends Entity<Panel> {
   details: PanelDetails;
   contacts: Contacts;
@@ -184,16 +184,6 @@ export class Panel extends Entity<Panel> {
         tel3:
           sliceContactProperty(dump, panelPropertiesSetting.contacts.tel3.index, i, panelPropertiesSetting.contacts.tel3.length) ||
           undefined,
-        tel4:
-          sliceContactProperty(dump, panelPropertiesSetting.contacts.tel4.index, i, panelPropertiesSetting.contacts.tel4.length) ||
-          undefined,
-        tel5:
-          sliceContactProperty(dump, panelPropertiesSetting.contacts.tel5.index, i, panelPropertiesSetting.contacts.tel5.length) ||
-          undefined,
-        tel6:
-          sliceContactProperty(dump, panelPropertiesSetting.contacts.tel6.index, i, panelPropertiesSetting.contacts.tel6.length) ||
-          undefined,
-
         code:
           sliceContactProperty(dump, panelPropertiesSetting.contacts.code.index, i, panelPropertiesSetting.contacts.code.length) ||
           undefined,

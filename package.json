@@ -4,8 +4,8 @@
   "description": "starter for strongly & swagular",
   "scripts": {
     "start:server": "cd ./server && npm start",
-    "gen-locale": "ts-node ./generateLocaleInterfaces",
     "start:client": "cd ./client && npm run gen && cd ../ && npm run gen-locale && cd ./client &&  npm start",
+    "gen-locale": "ts-node ./generateLocaleInterfaces",
     "install:server": "cd ./server && npm i",
     "install:client": "cd ./client && npm i",
     "install": "npm run install:client & npm run install:server",

@@ -96,9 +96,6 @@ export interface IUpdateContactFormModel {
     tel1: ITel1;
     tel2: ITel2;
     tel3: ITel3;
-    tel4: ITel4;
-    tel5: ITel5;
-    tel6: ITel6;
     code: ICode;
     ref: IRef;
     apartment: IApartment;
@@ -116,15 +113,6 @@ export interface ITel2 {
     label: string;
 }
 export interface ITel3 {
-    label: string;
-}
-export interface ITel4 {
-    label: string;
-}
-export interface ITel5 {
-    label: string;
-}
-export interface ITel6 {
     label: string;
 }
 export interface ICode {

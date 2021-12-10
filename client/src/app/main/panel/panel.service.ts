@@ -27,6 +27,7 @@ export class PanelService {
   settings = new BehaviorSubject<Settings | undefined>(undefined);
   panelList = new BehaviorSubject<PanelDetails[] | undefined>(undefined);
   showProgressBar = false;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -98,13 +99,17 @@ export class PanelService {
         contacts.list = this.excelService.readFile<Contact>(file, columns);
         contacts.list.forEach(c => {
           c.name1 = c.name1?.trim();
-          c.name2 = c.name1?.trim();
+          c.name2 = c.name2?.trim();
+          c.tel1 = c.tel1?.match(/\d+/g)?.join('');
+          c.tel2 = c.tel2?.match(/\d+/g)?.join('');
+          c.tel3 = c.tel3?.match(/\d+/g)?.join('');
         });
         contacts.changes = contacts.changes.concat(getContactsChanges(contacts.list, this.contacts.value!.list, Source.client));
         this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId).subscribe(() => this.contacts.next(contacts));
       });
     });
   }
+
   updateContacts(changes: Array<ChangeItem>, list: Array<Contact>, panelId: number) {
     return this.api.updateContacts({
       contacts: list,

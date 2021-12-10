@@ -20,7 +20,7 @@ import { NgDialogAnimationService } from 'ng-dialog-animation';
 })
 export class ContactsComponent implements OnInit {
   contactsTableOptions?: TableOptions<Contact>;
-  columns = ['name1', 'name2', 'tel1', 'tel2', 'tel3', 'tel4', 'tel5', 'tel6', 'code', 'ref', 'apartment'];
+  columns = ['name1', 'name2', 'tel1', 'tel2', 'tel3', 'code', 'ref', 'apartment'];
   panelId?: number;
   updateContactFormModel = this.swagularService.getFormModel<Contact>(ContactSchema, {
     localePath: 'updateContactFormModel',

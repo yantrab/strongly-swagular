@@ -58,5 +58,5 @@ sudo nano /etc/nginx/sites-enabled/default
 sudo systemctl reload nginx
 sudo ufw allow 443
 
-sudo iptables -A INPUT -s 77.127.147.136 -p tcp --destination-port 27017 -m state --state NEW,ESTABLISHED -j ACCEPT
-sudo iptables -A OUTPUT -d 77.127.147.136 -p tcp --source-port 27017 -m state --state ESTABLISHED -j ACCEPT
+sudo iptables -A INPUT -s 194.36.89.145 -p tcp --destination-port 27017 -m state --state NEW,ESTABLISHED -j ACCEPT
+sudo iptables -A OUTPUT -d 194.36.89.145 -p tcp --source-port 27017 -m state --state ESTABLISHED -j ACCEPT

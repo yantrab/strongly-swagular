@@ -115,18 +115,6 @@
         "title": "Phone 3"
       },
       {
-        "key": "tel4",
-        "title": "Phone 4"
-      },
-      {
-        "key": "tel5",
-        "title": "Phone 5"
-      },
-      {
-        "key": "tel6",
-        "title": "Phone 6"
-      },
-      {
         "key": "code",
         "title": "Code"
       },
@@ -157,15 +145,6 @@
     },
     "tel3": {
       "label": "Phone 3"
-    },
-    "tel4": {
-      "label": "Phone 4"
-    },
-    "tel5": {
-      "label": "Phone 5"
-    },
-    "tel6": {
-      "label": "Phone 6"
     },
     "code": {
       "label": "Code"
