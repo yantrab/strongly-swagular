@@ -1,5 +1,5 @@
 <div *ngIf="contacts?.list" fxFlexFill fxLayoutAlign="space-around">
-  <div fxFlex="0 1 1000px">
+  <div fxFlex="0 1 1200px">
     <swagular-table [dataSource]="contacts.list" [options]="contactsTableOptions">
       <ng-container *ngFor="let column of columns;">
         <ng-template [column]="column" appCellDef let-row="row">

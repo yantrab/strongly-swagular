@@ -9,7 +9,7 @@
     <mat-slide-toggle (change)="showDeleted = $event.checked" [checked]="false">Show deleted panels</mat-slide-toggle>
   </div>
   <div fxFlex fxLayout="row" fxLayoutAlign="space-around">
-    <div fxFlex="0 1 1000px">
+    <div fxFlex="0 1 1200px">
       <swagular-table [dataSource]="panelsToShow" [options]="panelsTableOptions"
       ></swagular-table>
     </div>
