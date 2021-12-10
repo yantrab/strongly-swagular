@@ -19,6 +19,7 @@ interface Action {
 
 export class PanelSocketService {
   constructor(private logger: LoggerService, private panelService: PanelService, private readonly webSocketService: WebSocketService) {}
+
   sentMsg(id: number, action: string, data: any) {
     this.webSocketService?.io.to("panel_" + id).emit(action, data);
   }

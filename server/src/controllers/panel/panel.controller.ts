@@ -1,7 +1,7 @@
-import { body, get, guard, params, post, user, query, put } from "strongly";
+import { body, get, guard, params, post, put, query, user } from "strongly";
 import { PanelService } from "../../services/panel/panel.service";
 import { Role, User } from "../../domain/user";
-import { AddPanelDetailsDTO, PanelDetails } from "../../domain/panel/panel.details";
+import { ActionType, AddPanelDetailsDTO, PanelDetails } from "../../domain/panel/panel.details";
 import { omit } from "lodash";
 import { ChangeItem, Contact } from "../../domain/panel/panel.contacts";
 import { PanelSocketService } from "../../services/panel/panel.socket.service";
@@ -19,9 +19,11 @@ export class PanelController {
   constructor(private service: PanelService, private panelSocketService: PanelSocketService, private logService: LoggerService) {
     panelSocketService.listen();
   }
+
   @put(":id/reset") reset(@params("id") id: number) {
     return this.service.reset(id);
   }
+
   @get(":id/logs") logs(@params("id") id: number) {
     return this.logService.getLogs({ pId: id });
   }
@@ -36,7 +38,11 @@ export class PanelController {
     return this.service.addNewPanel(toSave);
   }
 
-  @post savePanel(@body panel: PanelDetails) {
+  @post
+  async savePanel(@body panel: PanelDetails) {
+    if (panel.status === ActionType.writeAllToPanel) {
+      await this.service.resetChanges(panel);
+    }
     return this.service.saveOrUpdatePanel(panel);
   }
 
@@ -75,6 +81,7 @@ export class PanelController {
   ) {
     return this.service.updateSettings(panelId, { general: generalSettings }, changes);
   }
+
   @put(":id/settings/timing") timingSettings(
     @params("id") panelId: number,
     @body("settings") timingSettings: TimingSettings,
@@ -82,6 +89,7 @@ export class PanelController {
   ) {
     return this.service.updateSettings(panelId, { timing: timingSettings }, changes);
   }
+
   @put(":id/settings/questions") yesNoSettings(
     @params("id") panelId: number,
     @body("settings") yesNoQuestions: YesNoQuestionsSettings,
@@ -89,6 +97,7 @@ export class PanelController {
   ) {
     return this.service.updateSettings(panelId, { yesNo: yesNoQuestions }, changes);
   }
+
   @put(":id/settings/floorValue") floorSettings(
     @params("id") panelId: number,
     @body("settings") floorSettings: FloorValueSettings,

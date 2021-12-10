@@ -46,14 +46,14 @@ export class PanelService {
     api.list().subscribe(panels => {
       this.panelList.next(panels);
       // for refresh
-      this.router.routerState.root.params.subscribe(c => {
+      this.router.routerState.root.params.subscribe(() => {
         const panelId = +this.getLeafRoute(this.router.routerState.root)?.snapshot.params.panelId;
         if (panelId) this.setSelectedPanel(panels.find(p => p.panelId === panelId)!);
       });
       this.router.events
         .pipe(
           filter(event => event instanceof NavigationEnd),
-          map(event => this.getLeafRoute(this.router.routerState.root)?.snapshot.params)
+          map(() => this.getLeafRoute(this.router.routerState.root)?.snapshot.params)
         )
         .subscribe(params => {
           if (params?.panelId && +params?.panelId !== this.currentPanel?.panelId)
@@ -92,7 +92,7 @@ export class PanelService {
   }
 
   uploadCsv(file: any) {
-    return new Promise(res => {
+    return new Promise(() => {
       this.localeService.getLocaleItem('contactsTableOptions.columns').then(columns => {
         const contacts = cloneDeep(this.contacts.value!);
         contacts.changes = contacts.changes || [];
