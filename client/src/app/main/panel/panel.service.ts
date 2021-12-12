@@ -38,7 +38,7 @@ export class PanelService {
     private snackBar: MatSnackBar
   ) {
     socket.on('panelUpdate', (panel: PanelDetails) => {
-      console.log(panel);
+      // console.log(panel);
       // need to reorder names in this case
       if (
         [ActionType.writeAllToPanelInProgress, ActionType.writeAllToPanel].includes(this.currentPanel!.status) &&
