@@ -167,13 +167,8 @@ export class PanelSocketService {
 
       this.sentMsg(action.pId, "updateContacts", panel.contacts);
     } else if (action.d) {
-      if (panel.contacts.changes.length) {
-        panelDetails.status = ActionType.nameOrder;
-        panelDetails.progressPst = 99;
-      } else {
-        panelDetails.status = ActionType.idle;
-        panelDetails.progressPst = 100;
-      }
+      panelDetails.status = ActionType.idle;
+      panelDetails.progressPst = 100;
 
       await this.panelService.setContactsChanges(panelDetails.panelId, []);
       await this.panelService.setSettingsChanges(panelDetails.panelId, []);
