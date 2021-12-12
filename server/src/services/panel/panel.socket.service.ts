@@ -167,31 +167,33 @@ export class PanelSocketService {
 
       this.sentMsg(action.pId, "updateContacts", panel.contacts);
     } else if (action.d) {
-      const result = panelDetails.status;
-      panelDetails.status = ActionType.idle;
-      panelDetails.progressPst = 100;
+      await this.panelService.setContactsChanges(panelDetails.panelId, []);
+      await this.panelService.setSettingsChanges(panelDetails.panelId, []);
+
+      switch (panelDetails.status) {
+        case ActionType.readAllFromPanelInProgress:
+          panelDetails.status = ActionType.readAllFromPanelCanceled;
+          break;
+        case ActionType.writeAllToPanelInProgress:
+          panelDetails.status = ActionType.writeToPanelCanceled;
+          break;
+        case ActionType.writeToPanelCanceled:
+          panelDetails.status = ActionType.nameOrder;
+          panelDetails.progressPst = 99;
+          break;
+        default:
+          panelDetails.status = ActionType.idle;
+          panelDetails.progressPst = 100;
+      }
 
       await this.panelService.setContactsChanges(panelDetails.panelId, []);
       await this.panelService.setSettingsChanges(panelDetails.panelId, []);
 
-      if (status === ActionType.readAllFromPanelInProgress) {
-        return ActionType.readAllFromPanelCanceled;
-      }
-
-      if (status === ActionType.writeAllToPanelInProgress) {
-        panelDetails.status = ActionType.nameOrder;
-        panelDetails.progressPst = 99;
-        return ActionType.writeToPanelCanceled;
-      }
-      return result;
+      return panelDetails.status.toString();
     }
 
     if (status === ActionType.writeAllToPanelInProgress) {
       return ActionType.writeAllToPanel;
-      // panelDetails.progressPst = 100;
-      // panelDetails.status = ActionType.idle;
-      // await this.panelService.setContactsChanges(panelDetails.panelId, []);
-      // await this.panelService.setSettingsChanges(panelDetails.panelId, []);
     }
 
     if (status === ActionType.readAllFromPanelInProgress) {
