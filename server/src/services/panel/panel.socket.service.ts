@@ -141,8 +141,8 @@ export class PanelSocketService {
       }
 
       if (!nextChange) {
-        panelDetails.progressPst = 100;
-        panelDetails.status = ActionType.idle;
+        panelDetails.progressPst = 99;
+        panelDetails.status = ActionType.nameOrder;
         await this.panelService.setContactsChanges(panelDetails.panelId, []);
         await this.panelService.setSettingsChanges(panelDetails.panelId, []);
       } else {
