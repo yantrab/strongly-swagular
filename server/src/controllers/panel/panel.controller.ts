@@ -40,9 +40,9 @@ export class PanelController {
 
   @post
   async savePanel(@body panel: PanelDetails) {
-    if (panel.status === ActionType.writeAllToPanel) {
-      await this.service.resetChanges(panel);
-    }
+    // if (panel.status === ActionType.writeAllToPanel) {
+    //   await this.service.resetChanges(panel);
+    // }
     return this.service.saveOrUpdatePanel(panel);
   }
 

@@ -41,19 +41,19 @@ export class PanelService {
     return this.panelDetailsRepo.saveOrUpdateOne(panel);
   }
 
-  async resetChanges(panelDetails: PanelDetails) {
-    const panel = await this.getPanel(panelDetails);
-    panel.settings.changes?.forEach(c => {
-      set(panel.settings, c.path, c.previewsValue);
-    });
-
-    panel.contacts.changes?.forEach(c => {
-      set(panel.contacts.list[c.index], c.key, c.previewsValue);
-    });
-
-    await this.updateContacts(panel.details.panelId, panel.contacts.list, []);
-    await this.updateSettings(panel.details.panelId, panel.settings, []);
-  }
+  // async resetChanges(panelDetails: PanelDetails) {
+  //   const panel = await this.getPanel(panelDetails);
+  //   panel.settings.changes?.forEach(c => {
+  //     set(panel.settings, c.path, c.previewsValue);
+  //   });
+  //
+  //   panel.contacts.changes?.forEach(c => {
+  //     set(panel.contacts.list[c.index], c.key, c.previewsValue);
+  //   });
+  //
+  //   await this.updateContacts(panel.details.panelId, panel.contacts.list, []);
+  //   await this.updateSettings(panel.details.panelId, panel.settings, []);
+  // }
 
   async addNewPanel(panel: PanelDetails) {
     panel.status = ActionType.idle;
