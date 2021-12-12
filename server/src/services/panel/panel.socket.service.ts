@@ -167,6 +167,7 @@ export class PanelSocketService {
 
       this.sentMsg(action.pId, "updateContacts", panel.contacts);
     } else if (action.d) {
+      const result = panelDetails.status;
       panelDetails.status = ActionType.idle;
       panelDetails.progressPst = 100;
 
@@ -178,8 +179,11 @@ export class PanelSocketService {
       }
 
       if (status === ActionType.writeAllToPanelInProgress) {
+        panelDetails.status = ActionType.nameOrder;
+        panelDetails.progressPst = 99;
         return ActionType.writeToPanelCanceled;
       }
+      return result;
     }
 
     if (status === ActionType.writeAllToPanelInProgress) {

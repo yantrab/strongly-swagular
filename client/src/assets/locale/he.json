@@ -91,7 +91,6 @@
       }
     ]
   },
-
   "contactsTableOptions": {
     "columns": [
       {
@@ -128,7 +127,6 @@
       }
     ]
   },
-
   "updateContactFormModel": {
     "formTitle": "עריכת איש קשר",
     "name1": {
@@ -182,24 +180,26 @@
     "dump": "Dump",
     "excel": "Excel",
     "cancel": "Cancel",
-    "444" : "מתחבר...",
-    "333" : "מתחבר...",
-    "12" : "שולח...",
-    "555" : "מתחבר...",
-    "13" : "מקבל...",
+    "444": "מתחבר...",
+    "333": "מתחבר...",
+    "12": "שולח שינויים...",
+    "10": "שולח הכל...",
+    "777": "מארגן שמות...",
+    "555": "מתחבר...",
+    "13": "מקבל...",
     "000": "שולח...",
     "notConnected": "לא מחובר",
     "epprom": "Epprom"
   },
   "userFormModel": {
-    "firstName":  {
-      "label":"שם פרטי"
+    "firstName": {
+      "label": "שם פרטי"
     },
     "lastName": {
       "label": "שם משפחה"
     },
-    "email":{
-      "label":  "אמייל"
+    "email": {
+      "label": "אמייל"
     },
     "phone": {
       "label": "טלפון"
@@ -210,11 +210,26 @@
   },
   "userTableOptions": {
     "columns": [
-      { "key": "firstName", "title": "שם פרטי" },
-      { "key": "lastName", "title": "שם משפחה" },
-      { "key": "phone", "title": "טלפון" },
-      { "key": "email", "title": "אמייל" },
-      { "key": "role", "title": "תפקיד" }
+      {
+        "key": "firstName",
+        "title": "שם פרטי"
+      },
+      {
+        "key": "lastName",
+        "title": "שם משפחה"
+      },
+      {
+        "key": "phone",
+        "title": "טלפון"
+      },
+      {
+        "key": "email",
+        "title": "אמייל"
+      },
+      {
+        "key": "role",
+        "title": "תפקיד"
+      }
     ]
   }
 }
