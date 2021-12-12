@@ -113,8 +113,8 @@ export class PanelSocketService {
 
   private async getStatus(action: Action & { d }, panelDetails: PanelDetails): Promise<string> {
     const status = panelDetails.status;
+    const panel = await this.panelService.getPanel(panelDetails);
     if (status === ActionType.writeToPanel || status === ActionType.writeToPanelInProgress) {
-      const panel = await this.panelService.getPanel(panelDetails);
       const getNextChange = () =>
         panel.contacts.changes.find(c => c.previewsValue !== null && c.source === Source.client) ||
         panel.settings.changes.find(c => c.previewsValue !== null && c.source === Source.client);
@@ -167,8 +167,14 @@ export class PanelSocketService {
 
       this.sentMsg(action.pId, "updateContacts", panel.contacts);
     } else if (action.d) {
-      panelDetails.status = ActionType.idle;
-      panelDetails.progressPst = 100;
+      if (panel.contacts.changes.length) {
+        panelDetails.status = ActionType.nameOrder;
+        panelDetails.progressPst = 99;
+      } else {
+        panelDetails.status = ActionType.idle;
+        panelDetails.progressPst = 100;
+      }
+
       await this.panelService.setContactsChanges(panelDetails.panelId, []);
       await this.panelService.setSettingsChanges(panelDetails.panelId, []);
 

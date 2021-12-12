@@ -38,23 +38,6 @@ export class PanelService {
     private snackBar: MatSnackBar
   ) {
     socket.on('panelUpdate', (panel: PanelDetails) => {
-      console.log(panel);
-      // need to reorder names in this case
-      if (
-        [
-          ActionType.writeAllToPanelInProgress,
-          ActionType.writeToPanelInProgress,
-          ActionType.writeToPanel,
-          ActionType.writeAllToPanel
-        ].includes(this.currentPanel!.status) &&
-        panel.status === ActionType.idle
-      ) {
-        panel.status = ActionType.nameOrder;
-        this.api.savePanel(panel).subscribe(() => {
-          this.currentPanel = panel;
-          this.currentPanel.progressPst = 99;
-        });
-      }
       this.currentPanel = panel;
     });
     socket.on('updateContacts', (contacts: Contacts) => this.contacts.next(contacts));
