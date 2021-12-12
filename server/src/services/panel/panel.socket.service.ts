@@ -175,13 +175,18 @@ export class PanelSocketService {
       if (status === ActionType.readAllFromPanelInProgress) {
         return ActionType.readAllFromPanelCanceled;
       }
+
+      if (status === ActionType.writeAllToPanelInProgress) {
+        return ActionType.writeToPanelCanceled;
+      }
     }
 
     if (status === ActionType.writeAllToPanelInProgress) {
-      panelDetails.progressPst = 100;
-      panelDetails.status = ActionType.idle;
-      await this.panelService.setContactsChanges(panelDetails.panelId, []);
-      await this.panelService.setSettingsChanges(panelDetails.panelId, []);
+      return ActionType.writeAllToPanel;
+      // panelDetails.progressPst = 100;
+      // panelDetails.status = ActionType.idle;
+      // await this.panelService.setContactsChanges(panelDetails.panelId, []);
+      // await this.panelService.setSettingsChanges(panelDetails.panelId, []);
     }
 
     if (status === ActionType.readAllFromPanelInProgress) {
