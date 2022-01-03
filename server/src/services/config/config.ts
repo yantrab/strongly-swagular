@@ -25,7 +25,6 @@ export const smtp = {
   }
 };
 
-
 export const mongoUrl = undefined;
 
 export const jwt = {
@@ -43,3 +42,5 @@ export const corsOptions = {
 };
 
 export const clientUrl = "http://localhost:4200";
+
+export const smsAuth = "???";

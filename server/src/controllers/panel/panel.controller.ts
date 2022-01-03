@@ -40,9 +40,9 @@ export class PanelController {
 
   @post
   async savePanel(@body panel: PanelDetails) {
-    // if (panel.status === ActionType.writeAllToPanel) {
-    //   await this.service.resetChanges(panel);
-    // }
+    if (panel.status !== ActionType.idle && +new Date() - (panel.lastConnection || 0) > 1000 * 150) {
+      this.service.openPanel(panel);
+    }
     return this.service.saveOrUpdatePanel(panel);
   }
 

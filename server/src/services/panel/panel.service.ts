@@ -6,13 +6,15 @@ import { Panel, panelPropertiesSetting } from "../../domain/panel/panel";
 import { cloneDeep, set } from "lodash";
 import { getContactsChanges } from "../../../../shared/panel";
 import { Settings, SettingsChangeItem } from "../../domain/panel/settings";
+import { SmsService } from "../sms.service";
+import { PanelSocketService } from "./panel.socket.service";
 
 export class PanelService {
   private panelDetailsRepo: Repository<PanelDetails>;
   private panelContactsRepo: Repository<Contacts>;
   private panelSettingsRepo: Repository<Settings>;
 
-  constructor(private dbService: DbService) {
+  constructor(private dbService: DbService, private smsService: SmsService) {
     this.panelDetailsRepo = this.dbService.getRepository(PanelDetails, "panels");
     this.panelContactsRepo = this.dbService.getRepository(Contacts, "panels");
     this.panelSettingsRepo = this.dbService.getRepository(Settings, "panels");
@@ -135,5 +137,11 @@ export class PanelService {
     await this.panelSettingsRepo.collection.deleteOne({ panelId: id });
     await this.panelSettingsRepo.saveOrUpdateOne(initialPanel.settings);
     return { contacts: initialPanel.contacts, settings: initialPanel.settings };
+  }
+
+  openPanel(panel: PanelDetails) {
+    this.smsService.send(panel.phoneNumber, "123456srvon").then(x => {
+      console.log(x);
+    });
   }
 }

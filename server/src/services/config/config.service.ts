@@ -6,8 +6,7 @@ export class ConfigService {
   constructor() {
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const realConfig = require("../../../../../config");
-      this.config = realConfig;
+      this.config = require("../../../../../config");
     } catch {}
   }
 }

@@ -100,9 +100,16 @@ export class PanelService {
         contacts.list.forEach(c => {
           c.name1 = c.name1?.trim();
           c.name2 = c.name2?.trim();
+          c.tel1 = c.tel1?.toString();
+          c.tel2 = c.tel2?.toString();
+          c.tel3 = c.tel3?.toString();
           c.tel1 = c.tel1?.match(/\d+/g)?.join('');
           c.tel2 = c.tel2?.match(/\d+/g)?.join('');
           c.tel3 = c.tel3?.match(/\d+/g)?.join('');
+
+          if (c.tel1 && !c.tel1.startsWith('0')) c.tel1 = '0' + c.tel1;
+          if (c.tel2 && !c.tel2.startsWith('0')) c.tel2 = '0' + c.tel2;
+          if (c.tel3 && !c.tel3.startsWith('0')) c.tel3 = '0' + c.tel3;
         });
         contacts.changes = contacts.changes.concat(getContactsChanges(contacts.list, this.contacts.value!.list, Source.client));
         this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId).subscribe(() => this.contacts.next(contacts));
