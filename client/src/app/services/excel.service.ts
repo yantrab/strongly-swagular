@@ -2,6 +2,8 @@ import * as XLSX from 'xlsx';
 import { Injectable } from '@angular/core';
 import { SheetJSONOpts } from 'xlsx';
 import { cloneDeep } from 'lodash';
+import { saveAs } from 'file-saver';
+
 @Injectable()
 export class ExcelService {
   private wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'binary' };
@@ -32,7 +34,7 @@ export class ExcelService {
 
   readFile<T>(arrayBuffer: ArrayBuffer, columns?: { key: string; title: string }[]): T[] {
     const data = new Uint8Array(arrayBuffer);
-    const arr = new Array();
+    const arr = [];
     for (let i = 0; i !== data.length; ++i) {
       arr[i] = String.fromCharCode(data[i]);
     }

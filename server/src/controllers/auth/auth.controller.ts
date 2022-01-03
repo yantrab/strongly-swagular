@@ -9,7 +9,8 @@ import { existsSync } from "fs";
 export class AuthController {
   constructor(private userService: UserService) {}
 
-  @post async login(@body("email") @email email: string, @body("password") @min(6) password: string, @app app, @reply reply) {
+  @post
+  async login(@body("email") @email email: string, @body("password") @min(6) password: string, @app app, @reply reply) {
     const user = await this.userService.validateAndGetUser(email, password);
     if (!user) {
       throw new Unauthorized();
@@ -25,7 +26,8 @@ export class AuthController {
     return user;
   }
 
-  @post async setPassword(
+  @post
+  async setPassword(
     @body("email") @email email: string,
     @body("password") @min(6) password: string,
     @body("rePassword", { const: { $data: "1/password" } }) @min(6) rePassword: string,
@@ -34,6 +36,7 @@ export class AuthController {
     if (!this.userService.validateToken(email, token)) throw new Unauthorized();
     return this.userService.changePassword(email, token, password);
   }
+
   @post logout(@reply reply, @request req) {
     reply.setCookie("token", req.cookies.token, {
       path: "/",
