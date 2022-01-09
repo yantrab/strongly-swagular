@@ -249,11 +249,11 @@ export class PanelSocketService {
 
     ["general", "timing", "yesNo", "floor"].forEach(s => {
       Object.keys(panel.settings[s]).forEach(key => {
-        if (panel[s][key] !== oldPanel[s][key]) {
+        if (panel.settings[s][key] !== oldPanel.settings[s][key]) {
           panel.settings.changes.push({
             source: Source.Panel,
             path: s + "." + key,
-            previewsValue: oldPanel[s][key]
+            previewsValue: oldPanel.settings[s][key]
           } as any);
         }
       });

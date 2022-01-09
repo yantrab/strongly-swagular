@@ -12,7 +12,7 @@ import { inject } from "strongly";
 import { GeneralSettings } from "./domain/panel/settings";
 
 const port = 4000;
-const pId = "861123052740857"; //'1'//
+const pId = "000000000000001"; //
 const host = "localhost"; //'128.199.41.162'; // "178.62.237.25"; //'
 jest.setTimeout(1000000);
 const registerAction = { type: ActionType.status, pId: "1" };
@@ -24,9 +24,11 @@ const registerActionStringD = JSON.stringify(registerActionD);
 class AppSpec {
   panelService: PanelService;
   panel: PanelDetails;
+
   static async before() {
     await app();
   }
+
   async before() {
     this.panel = { panelId: 1, direction: Lang.en, userId: "1", status: ActionType.idle, phoneNumber: "1" };
     this.panelService = await inject(PanelService);
@@ -39,6 +41,7 @@ class AppSpec {
 
     await this.panelService.addNewPanel(this.panel);
   }
+
   write = async (str: string) => {
     return new Promise(resolve => {
       const client = new Socket();
@@ -134,18 +137,26 @@ class AppSpec {
     const panel = await this.panelService.getPanelDetails(1);
     expect(panel?.status).toBe(ActionType.readAllFromPanelInProgress);
 
-    const result3 = await this.write("!00000000000000102551555aaaa����aaaa    ");
+    let address = "02551";
+    let result3 = await this.write(`!${pId}${address}555aaaa����aaaa    `);
     expect(result3).toBe("111");
     const p = await this.panelService.getPanelContacts(1);
     expect(p?.list[0].name1).toBe("aaaa    aaaa");
     expect(p?.changes[0]).toStrictEqual({ index: 0, key: "name1", source: 0 });
+
+    address = "00031";
+    result3 = await this.write(`!${pId}${address}555654321`);
+    expect(result3).toBe("111");
+    const s = await this.panelService.getPanelSettings(1);
+    expect(s?.general.masterCode).toBe("654321");
 
     expect(await this.write(registerActionString)).toBe(ActionType.readAllFromPanel);
     expect(await this.write(registerActionStringD)).toBe(ActionType.readAllFromPanelCanceled);
     expect(await this.write(registerActionStringD)).toBe(ActionType.idle);
   }
 
-  @test async writeToPanel() {
+  @test
+  async writeToPanel() {
     this.panel.status = ActionType.writeAllToPanel;
     await this.panelService.saveOrUpdatePanel(this.panel);
     expect(await this.write(registerActionString)).toBe(ActionType.writeAllToPanel);
@@ -157,6 +168,7 @@ class AppSpec {
     await this.panelService.saveOrUpdatePanel(this.panel);
     expect(await this.write(commandString)).toBe(ActionType.writeToPanelCanceled);
   }
+
   @test
   dumpRedump() {
     const initialPanel = new Panel({
@@ -171,6 +183,7 @@ class AppSpec {
       expect(dump.slice(i, i + gap)).toEqual(expe.slice(i, i + gap));
     }
   }
+
   //
   // @test
   // async s() {
