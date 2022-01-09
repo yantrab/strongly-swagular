@@ -1,4 +1,5 @@
 import { Entity } from "../entity";
+import { numberString } from "strongly";
 
 enum Lang {
   he = "Hebrew",
@@ -43,7 +44,7 @@ export class PanelDetails extends Entity<PanelDetails> {
 
 export class AddPanelDetailsDTO {
   id: number;
-  phoneNumber: string;
+  @numberString phoneNumber: string;
   address: string;
   contactName?: string;
   contactPhone?: string;

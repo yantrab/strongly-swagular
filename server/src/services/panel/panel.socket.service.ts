@@ -7,7 +7,13 @@ import { panelPropertiesSetting } from "../../domain/panel/panel";
 import { ChangeItem, Source } from "../../domain/panel/panel.contacts";
 import { cloneDeep, get } from "lodash";
 import { WebSocketService } from "../sokcet/socket.service";
-import { SettingsChangeItem } from "../../domain/panel/settings";
+import {
+  FloorValueSettings,
+  GeneralSettings,
+  SettingsChangeItem,
+  TimingSettings,
+  YesNoQuestionsSettings
+} from "../../domain/panel/settings";
 
 const SOCKET_TIMEOUT = 1000 * 30;
 
@@ -240,7 +246,21 @@ export class PanelSocketService {
         }
       });
     });
+
+    ["general", "timing", "yesNo", "floor"].forEach(s => {
+      Object.keys(panel.settings[s]).forEach(key => {
+        if (panel[s][key] !== oldPanel[s][key]) {
+          panel.settings.changes.push({
+            source: Source.Panel,
+            path: s + "." + key,
+            previewsValue: oldPanel[s][key]
+          } as any);
+        }
+      });
+    });
+
     await this.panelService.updateContacts(panelDetails.panelId, panel.contacts.list, panel.contacts.changes);
+    await this.panelService.updateSettings(panelDetails.panelId, panel.settings, panel.settings.changes);
     this.sentMsg(action.pId, "updateContacts", panel.contacts);
     this.sentMsg(action.pId, "updateSettings", panel.settings);
     return "111";

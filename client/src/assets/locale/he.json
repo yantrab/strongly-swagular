@@ -41,7 +41,8 @@
       "label": "שפה"
     },
     "phoneNumber": {
-      "label": "מספר טלפון"
+      "label": "מספר טלפון",
+      "hint": "מספר הסים שבפנל"
     },
     "contactName": {
       "label": "שם איש קשר",

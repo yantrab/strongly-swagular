@@ -10,140 +10,142 @@ import { FormModel } from 'swagular/models';
 
 import { User, UserSchema } from '../models/user';
 
-export declare type SaveOrUpdateUserFormGroupType = User;
-export const saveOrUpdateUserFormGroupSchema = UserSchema;
+  
+    export declare type SaveOrUpdateUserFormGroupType = User
+    export const saveOrUpdateUserFormGroupSchema = UserSchema;
 
-export declare type DeleteUserFormGroupType = User;
-export const deleteUserFormGroupSchema = UserSchema;
+    export declare type DeleteUserFormGroupType = User
+    export const deleteUserFormGroupSchema = UserSchema;
 
-export declare type UnDeleteUserFormGroupType = User;
-export const unDeleteUserFormGroupSchema = UserSchema;
+    export declare type UnDeleteUserFormGroupType = User
+    export const unDeleteUserFormGroupSchema = UserSchema;
+
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminService extends BaseService {
-  /**
-   * Path part for operation users
-   */
-  static readonly UsersPath = '/admin/users';
-  /**
-   * Path part for operation saveOrUpdateUser
-   */
-  static readonly SaveOrUpdateUserPath = '/admin/user';
-  /**
-   * Path part for operation deleteUser
-   */
-  static readonly DeleteUserPath = '/admin/user';
-  /**
-   * Path part for operation unDeleteUser
-   */
-  static readonly UnDeleteUserPath = '/admin/un-delete-user';
-
+    /**
+     * Path part for operation users
+     */
+    static readonly UsersPath = '/admin/users';
+    /**
+     * Path part for operation saveOrUpdateUser
+     */
+    static readonly SaveOrUpdateUserPath = '/admin/user';
+    /**
+     * Path part for operation deleteUser
+     */
+    static readonly DeleteUserPath = '/admin/user';
+    /**
+     * Path part for operation unDeleteUser
+     */
+    static readonly UnDeleteUserPath = '/admin/un-delete-user';
   constructor(config: ApiConfiguration, http: HttpClient, private swagularService: SwagularService) {
     super(config, http);
   }
+  users(
+): Observable<Array<User>> {
+const rb = new RequestBuilder(this.rootUrl, AdminService.UsersPath, 'get');
 
-  users(): Observable<Array<User>> {
-    const rb = new RequestBuilder(this.rootUrl, AdminService.UsersPath, 'get');
 
-    return this.http
-      .request(
-        rb.build({
-          responseType: 'json',
-          accept: 'application/json'
-        })
-      )
-      .pipe(
-        filter((r: any) => r instanceof HttpResponse),
-        map(r => r.body as Array<User>)
-      );
+
+return this.http.request(rb.build({
+responseType: 'json',
+accept: 'application/json'
+})).pipe(
+filter((r: any) => r instanceof HttpResponse),
+map(r => r.body as Array<User>)
+);
+
   }
 
-  saveOrUpdateUser(user: User): Observable<User> {
-    const rb = new RequestBuilder(this.rootUrl, AdminService.SaveOrUpdateUserPath, 'post');
+  saveOrUpdateUser(        
+       user 
+: User
 
-    rb.body(user, 'application/json');
+): Observable<User> {
+const rb = new RequestBuilder(this.rootUrl, AdminService.SaveOrUpdateUserPath, 'post');
 
-    return this.http
-      .request(
-        rb.build({
-          responseType: 'json',
-          accept: 'application/json'
-        })
-      )
-      .pipe(
-        filter((r: any) => r instanceof HttpResponse),
-        map(r => r.body as User)
-      );
+
+  rb.body(   user 
+, 'application/json');
+
+return this.http.request(rb.build({
+responseType: 'json',
+accept: 'application/json'
+})).pipe(
+filter((r: any) => r instanceof HttpResponse),
+map(r => r.body as User)
+);
+
   }
 
-  deleteUser(user: User): Observable<User> {
-    const rb = new RequestBuilder(this.rootUrl, AdminService.DeleteUserPath, 'delete');
+  deleteUser(        
+       user 
+: User
 
-    rb.body(user, 'application/json');
+): Observable<User> {
+const rb = new RequestBuilder(this.rootUrl, AdminService.DeleteUserPath, 'delete');
 
-    return this.http
-      .request(
-        rb.build({
-          responseType: 'json',
-          accept: 'application/json'
-        })
-      )
-      .pipe(
-        filter((r: any) => r instanceof HttpResponse),
-        map(r => r.body as User)
-      );
+
+  rb.body(   user 
+, 'application/json');
+
+return this.http.request(rb.build({
+responseType: 'json',
+accept: 'application/json'
+})).pipe(
+filter((r: any) => r instanceof HttpResponse),
+map(r => r.body as User)
+);
+
   }
 
-  unDeleteUser(user: User): Observable<User> {
-    const rb = new RequestBuilder(this.rootUrl, AdminService.UnDeleteUserPath, 'post');
+  unDeleteUser(        
+       user 
+: User
 
-    rb.body(user, 'application/json');
+): Observable<User> {
+const rb = new RequestBuilder(this.rootUrl, AdminService.UnDeleteUserPath, 'post');
 
-    return this.http
-      .request(
-        rb.build({
-          responseType: 'json',
-          accept: 'application/json'
-        })
-      )
-      .pipe(
-        filter((r: any) => r instanceof HttpResponse),
-        map(r => r.body as User)
-      );
+
+  rb.body(   user 
+, 'application/json');
+
+return this.http.request(rb.build({
+responseType: 'json',
+accept: 'application/json'
+})).pipe(
+filter((r: any) => r instanceof HttpResponse),
+map(r => r.body as User)
+);
+
   }
 
-  saveOrUpdateUserFormGroup(value?: SaveOrUpdateUserFormGroupType) {
+  
+     saveOrUpdateUserFormGroup(value?:SaveOrUpdateUserFormGroupType) {
     return this.swagularService.getFormGroup<SaveOrUpdateUserFormGroupType>(saveOrUpdateUserFormGroupSchema, value);
   }
 
-  saveOrUpdateUserFormModel(
-    options?: Partial<FormModel> & { displayProperties?: (keyof SaveOrUpdateUserFormGroupType & string)[] },
-    value?: SaveOrUpdateUserFormGroupType
-  ) {
+   saveOrUpdateUserFormModel(options?: Partial<FormModel> & { displayProperties?: (keyof SaveOrUpdateUserFormGroupType & string)[] }, value?: SaveOrUpdateUserFormGroupType) {
     return this.swagularService.getFormModel<SaveOrUpdateUserFormGroupType>(saveOrUpdateUserFormGroupSchema, options as any, value);
   }
 
-  deleteUserFormGroup(value?: DeleteUserFormGroupType) {
+     deleteUserFormGroup(value?:DeleteUserFormGroupType) {
     return this.swagularService.getFormGroup<DeleteUserFormGroupType>(deleteUserFormGroupSchema, value);
   }
 
-  deleteUserFormModel(
-    options?: Partial<FormModel> & { displayProperties?: (keyof DeleteUserFormGroupType & string)[] },
-    value?: DeleteUserFormGroupType
-  ) {
+   deleteUserFormModel(options?: Partial<FormModel> & { displayProperties?: (keyof DeleteUserFormGroupType & string)[] }, value?: DeleteUserFormGroupType) {
     return this.swagularService.getFormModel<DeleteUserFormGroupType>(deleteUserFormGroupSchema, options as any, value);
   }
 
-  unDeleteUserFormGroup(value?: UnDeleteUserFormGroupType) {
+     unDeleteUserFormGroup(value?:UnDeleteUserFormGroupType) {
     return this.swagularService.getFormGroup<UnDeleteUserFormGroupType>(unDeleteUserFormGroupSchema, value);
   }
 
-  unDeleteUserFormModel(
-    options?: Partial<FormModel> & { displayProperties?: (keyof UnDeleteUserFormGroupType & string)[] },
-    value?: UnDeleteUserFormGroupType
-  ) {
+   unDeleteUserFormModel(options?: Partial<FormModel> & { displayProperties?: (keyof UnDeleteUserFormGroupType & string)[] }, value?: UnDeleteUserFormGroupType) {
     return this.swagularService.getFormModel<UnDeleteUserFormGroupType>(unDeleteUserFormGroupSchema, options as any, value);
   }
+
 }

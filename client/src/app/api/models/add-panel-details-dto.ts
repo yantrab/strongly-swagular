@@ -9,4 +9,4 @@ export interface AddPanelDetailsDto {
   phoneNumber: string;
 }
 
-export const AddPanelDetailsDtoSchema  = {"type":"object","properties":{"id":{"type":"number"},"phoneNumber":{"type":"string"},"address":{"type":"string"},"contactName":{"type":"string"},"contactPhone":{"type":"string"},"direction":{"$ref":"#/components/schemas/Lang"},"panelId":{"type":"number"}},"required":["id","phoneNumber","address","direction","panelId"]}
+export const AddPanelDetailsDtoSchema  = {"type":"object","properties":{"id":{"type":"number"},"phoneNumber":{"type":"string","pattern":"^[0-9]*$"},"address":{"type":"string"},"contactName":{"type":"string"},"contactPhone":{"type":"string"},"direction":{"$ref":"#/components/schemas/Lang"},"panelId":{"type":"number"}},"required":["id","phoneNumber","address","direction","panelId"]}

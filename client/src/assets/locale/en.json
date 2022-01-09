@@ -41,7 +41,8 @@
       "label": "Lang"
     },
     "phoneNumber": {
-      "label": "Phone Number"
+      "label": "Phone Number",
+      "hint": "The panel sim card number"
     },
     "contactName": {
       "label": "Contact Name",
@@ -91,7 +92,6 @@
       }
     ]
   },
-
   "contactsTableOptions": {
     "columns": [
       {
@@ -128,7 +128,6 @@
       }
     ]
   },
-
   "updateContactFormModel": {
     "formTitle": "Edit Panel Contact",
     "name1": {
@@ -182,10 +181,10 @@
     "dump": "Dump",
     "excel": "Excel",
     "cancel": "Cancel",
-    "444" : "connecting...",
-    "333" : "connecting...",
+    "444": "connecting...",
+    "333": "connecting...",
     "12": "in progress...",
-    "555" : "connecting...",
+    "555": "connecting...",
     "13": "in progress...",
     "000": "שולח...",
     "notConnected": "not connected",
@@ -210,11 +209,28 @@
   },
   "userTableOptions": {
     "columns": [
-      { "key": "firstName", "title": "First Name", "isFilterable": true, "isSortable": false },
-      { "key": "lastName", "title": "Last Name" },
-      { "key": "phone", "title": "Phone Number" },
-      { "key": "email", "title": "Email" },
-      { "key": "role", "title": "Role" }
+      {
+        "key": "firstName",
+        "title": "First Name",
+        "isFilterable": true,
+        "isSortable": false
+      },
+      {
+        "key": "lastName",
+        "title": "Last Name"
+      },
+      {
+        "key": "phone",
+        "title": "Phone Number"
+      },
+      {
+        "key": "email",
+        "title": "Email"
+      },
+      {
+        "key": "role",
+        "title": "Role"
+      }
     ]
   }
 }

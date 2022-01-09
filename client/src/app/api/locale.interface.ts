@@ -62,6 +62,7 @@ export interface IDirection {
 }
 export interface IPhoneNumber {
     label: string;
+    hint?: string;
 }
 export interface IContactName {
     label: string;
