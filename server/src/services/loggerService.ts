@@ -21,7 +21,7 @@ export class LoggerService {
     const logJson = JSON.parse(log);
     logJson.time = new Date();
     this.webSocketService?.io.to("logs").emit("log", logJson);
-    return this.logRepo.collection.insertOne(JSON.parse(logJson));
+    return this.logRepo.collection.insertOne(logJson);
   }
 
   async getLogs(query = {}) {
