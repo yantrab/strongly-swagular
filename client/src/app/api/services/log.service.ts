@@ -20,7 +20,7 @@ export class LogService extends BaseService {
     /**
      * Path part for operation logs
      */
-    static readonly LogsPath = '/log/logs';
+    static readonly LogsPath = '/log';
     /**
      * Path part for operation createLogToken
      */
