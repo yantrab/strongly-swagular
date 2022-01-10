@@ -20,8 +20,8 @@ export class LoggerService {
   async write(log: string) {
     const logJson = JSON.parse(log);
     logJson.time = new Date();
-    this.webSocketService?.io.to("logs").emit("log", log);
-    return this.logRepo.collection.insertOne(JSON.parse(log));
+    this.webSocketService?.io.to("logs").emit("log", logJson);
+    return this.logRepo.collection.insertOne(JSON.parse(logJson));
   }
 
   async getLogs(query = {}) {
