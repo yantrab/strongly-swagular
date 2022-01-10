@@ -308,12 +308,12 @@ export class PanelSocketService {
   }
 
   private logError(msg, hostname?, args?) {
-    const log = { msg, ...args, time: +new Date(), level: 51 };
+    const log = { msg, ...args, level: 51 };
     return this.logger.write(JSON.stringify(log));
   }
 
   private logInfo(msg, hostname?, args?) {
-    const log = { msg, ...args, time: +new Date(), level: 31 };
+    const log = { msg, ...args, level: 31 };
     return this.logger.write(JSON.stringify(log));
   }
 }

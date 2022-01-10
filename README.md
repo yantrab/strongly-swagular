@@ -1,14 +1,16 @@
 # strongly-swagular-starter
+
 starter for strongly js & angular
 
 ## Get starter
+
 * run ```npm i``` to install all dependencies
 * run ```start:server``` to run the server
 * run ```start:client``` to run the client (you have to start the server first)
 * login with admin@admin.com 123456
 
-
 ## serve on nginx
+
 ```
 upstream app_nodejs {
   server 127.0.0.1:4000;
@@ -48,15 +50,11 @@ server {
     }
 }
 ```
+
 https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/
 
-sudo apt-get update
-sudo apt-get install certbot
-sudo apt-get install python3-certbot-nginx
-sudo certbot --nginx -d app.tador.net
-sudo nano /etc/nginx/sites-enabled/default
-sudo systemctl reload nginx
-sudo ufw allow 443
+sudo apt-get update sudo apt-get install certbot sudo apt-get install python3-certbot-nginx sudo certbot --nginx -d
+app.tador.net sudo nano /etc/nginx/sites-enabled/default sudo systemctl reload nginx sudo ufw allow 443
 
-sudo iptables -A INPUT -s 194.36.89.145 -p tcp --destination-port 27017 -m state --state NEW,ESTABLISHED -j ACCEPT
-sudo iptables -A OUTPUT -d 194.36.89.145 -p tcp --source-port 27017 -m state --state ESTABLISHED -j ACCEPT
+sudo iptables -A INPUT -s 77.124.180.51 -p tcp --destination-port 27017 -m state --state NEW,ESTABLISHED -j ACCEPT sudo
+iptables -A OUTPUT -d 77.124.180.51 -p tcp --source-port 27017 -m state --state ESTABLISHED -j ACCEPT
