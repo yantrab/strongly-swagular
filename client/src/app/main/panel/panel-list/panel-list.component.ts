@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { FormComponent, LocaleService, TableOptions } from 'swagular/components';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
-
 import { PanelService as Api } from '../../../api/services/panel.service';
 import { PanelDetails } from '../../../api/models/panel-details';
 import { PanelService } from '../panel.service';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { ScannerComponent } from './scanner/scanner.component';
+
 @Component({
   selector: 'app-panel',
   templateUrl: './panel-list.component.html',
@@ -38,12 +38,18 @@ export class PanelListComponent implements OnInit {
     this.localeService.getLocaleItem('panelsTableOptions').then(options => {
       this.panelsTableOptions = {
         columns: options.columns,
-        rowActions: [
-          { icon: 'edit', action: ($event, row) => this.openEditPanelDialog(row) },
-          { icon: row => (row._isDeleted ? 'rotate_right' : 'delete'), action: ($event, row) => this.deletePanel(row, this.showDeleted) },
-          { icon: 'manage_accounts', action: ($event, row) => this.panelService.navigateToContact(row) },
-          { icon: 'settings', action: ($event, row) => this.panelService.navigateToSettings(row) }
-        ],
+        rowActions:
+          window.innerWidth > 925
+            ? [
+                { icon: 'edit', action: ($event, row) => this.openEditPanelDialog(row) },
+                {
+                  icon: row => (row._isDeleted ? 'rotate_right' : 'delete'),
+                  action: ($event, row) => this.deletePanel(row, this.showDeleted)
+                },
+                { icon: 'manage_accounts', action: ($event, row) => this.panelService.navigateToContact(row) },
+                { icon: 'settings', action: ($event, row) => this.panelService.navigateToSettings(row) }
+              ]
+            : undefined,
         actions: { rowClick: row => this.panelService.navigateToContact(row) },
         rowClass: row => (row._isDeleted ? 'deleted' : '')
       };
@@ -132,6 +138,7 @@ export class PanelListComponent implements OnInit {
       }
     });
   }
+
   deletePanel(row: PanelDetails, showDeleted: boolean) {
     row._isDeleted = !showDeleted;
     this.api.savePanel(row).subscribe(user => {
