@@ -25,7 +25,8 @@ export class PanelListComponent implements OnInit {
     displayProperties: ['address', 'phoneNumber', 'contactName', 'contactPhone']
   });
   panelsTableOptions?: TableOptions<PanelDetails>;
-  showDeleted = false;
+  panelsToShow = this.panels;
+  needToShowDeletedPanels = false;
 
   constructor(
     private api: Api,
@@ -44,7 +45,7 @@ export class PanelListComponent implements OnInit {
                 { icon: 'edit', action: ($event, row) => this.openEditPanelDialog(row) },
                 {
                   icon: row => (row._isDeleted ? 'rotate_right' : 'delete'),
-                  action: ($event, row) => this.deletePanel(row, this.showDeleted)
+                  action: ($event, row) => this.deletePanel(row, this.needToShowDeletedPanels)
                 },
                 { icon: 'manage_accounts', action: ($event, row) => this.panelService.navigateToContact(row) },
                 { icon: 'settings', action: ($event, row) => this.panelService.navigateToSettings(row) }
@@ -61,8 +62,9 @@ export class PanelListComponent implements OnInit {
     });
   }
 
-  get panelsToShow() {
-    return this.showDeleted ? this.panels : this.panels.filter(p => !p._isDeleted);
+  showDeleted(show: boolean) {
+    this.needToShowDeletedPanels = show;
+    this.panelsToShow = show ? this.panels : this.panels.filter(p => !p._isDeleted);
   }
 
   ngOnInit(): void {}
