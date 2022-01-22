@@ -18,11 +18,11 @@ export class PanelListComponent implements OnInit {
   panels: PanelDetails[] = [];
   addPanelFormModel = this.api.addNewPanelFormModel({
     localePath: 'addPanelFormModel',
-    displayProperties: ['panelId', 'id', 'address', 'phoneNumber', 'contactName', 'contactPhone', 'direction']
+    displayProperties: ['panelId', 'id', 'address', 'phoneNumber', 'code', 'direction', 'contactName', 'contactPhone']
   });
   updatePanelFormModel = this.api.savePanelFormModel({
     localePath: 'savePanelFormModel',
-    displayProperties: ['address', 'phoneNumber', 'contactName', 'contactPhone']
+    displayProperties: ['code', 'address', 'phoneNumber', 'contactName', 'contactPhone']
   });
   panelsTableOptions?: TableOptions<PanelDetails>;
   panelsToShow = this.panels;
@@ -57,6 +57,7 @@ export class PanelListComponent implements OnInit {
       this.panelService.panelList.subscribe(panels => {
         if (!panels) return;
         this.panels = panels;
+        this.panelsToShow = panels;
         this.cdr.detectChanges();
       });
     });

@@ -29,7 +29,7 @@ export enum ActionType {
 }
 
 export class PanelDetails extends Entity<PanelDetails> {
-  phoneNumber: string;
+  @numberString phoneNumber: string;
   address?: string;
   contactName?: string;
   contactPhone?: string;
@@ -40,6 +40,7 @@ export class PanelDetails extends Entity<PanelDetails> {
   status: ActionType;
   lastConnection?: number;
   progressPst?: number;
+  code: number;
 }
 
 export class AddPanelDetailsDTO {
@@ -51,4 +52,6 @@ export class AddPanelDetailsDTO {
 
   direction: Lang;
   panelId: number;
+
+  code: number;
 }

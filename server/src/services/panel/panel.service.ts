@@ -140,7 +140,7 @@ export class PanelService {
   }
 
   openPanel(panel: PanelDetails) {
-    this.smsService.send(panel.phoneNumber, "123456srvon").then(x => {
+    this.smsService.send(panel.phoneNumber, `${panel.code || "123456"}srvon`).then(x => {
       console.log(x);
     });
   }

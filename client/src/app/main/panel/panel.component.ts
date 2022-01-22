@@ -41,14 +41,20 @@ import { SerialPort } from './serial';
           </mat-menu>
           <mat-menu #sent="matMenu">
             <button (click)="changeStatus(status.writeToPanel)" mat-menu-item>
-              <mat-icon>call_made</mat-icon> {{ locale.sentChangesTo }}
+              <mat-icon>call_made</mat-icon>
+              {{ locale.sentChangesTo }}
             </button>
             <button (click)="changeStatus(status.writeAllToPanel)" mat-menu-item>
-              <mat-icon>call_made</mat-icon> {{ locale.sentAllToPanel }}
+              <mat-icon>call_made</mat-icon>
+              {{ locale.sentAllToPanel }}
             </button>
-            <button (click)="changeStatus(status.nameOrder)" mat-menu-item><mat-icon>sort</mat-icon> {{ locale.nameOrder }}</button>
+            <button (click)="changeStatus(status.nameOrder)" mat-menu-item>
+              <mat-icon>sort</mat-icon>
+              {{ locale.nameOrder }}
+            </button>
             <button (click)="changeStatus(status.powerUp)" mat-menu-item>
-              <mat-icon>power_settings_new</mat-icon> {{ locale.powerUp }}
+              <mat-icon>power_settings_new</mat-icon>
+              {{ locale.powerUp }}
             </button>
           </mat-menu>
           <mat-menu #receive="matMenu">
@@ -57,17 +63,31 @@ import { SerialPort } from './serial';
           </mat-menu>
           <mat-menu #upload="matMenu">
             <button appFileUpload (fileContent)="uploadDump($event)" mat-menu-item>
-              <mat-icon>upload_file</mat-icon> {{ locale.dump }}
+              <mat-icon>upload_file</mat-icon>
+              {{ locale.dump }}
             </button>
             <button appFileUpload (fileContent)="uploadCsv($event)" mat-menu-item>
-              <mat-icon>attach_file</mat-icon> {{ locale.excel }}
+              <mat-icon>attach_file</mat-icon>
+              {{ locale.excel }}
             </button>
-            <button (click)="uploadEpprom()" mat-menu-item><mat-icon>usb</mat-icon>{{ locale.epprom }}</button>
+            <button (click)="uploadEpprom()" mat-menu-item>
+              <mat-icon>usb</mat-icon>
+              {{ locale.epprom }}
+            </button>
           </mat-menu>
           <mat-menu #download="matMenu">
-            <button (click)="downloadDump()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.dump }}</button>
-            <button (click)="downloadCsv()" mat-menu-item><mat-icon>download_file</mat-icon>{{ locale.excel }}</button>
-            <button (click)="downloadEpprom()" mat-menu-item><mat-icon>usb</mat-icon>{{ locale.epprom }}</button>
+            <button (click)="downloadDump()" mat-menu-item>
+              <mat-icon>download_file</mat-icon>
+              {{ locale.dump }}
+            </button>
+            <button (click)="downloadCsv()" mat-menu-item>
+              <mat-icon>download_file</mat-icon>
+              {{ locale.excel }}
+            </button>
+            <button (click)="downloadEpprom()" mat-menu-item>
+              <mat-icon>usb</mat-icon>
+              {{ locale.epprom }}
+            </button>
           </mat-menu>
           <a mat-button [routerLink]="'contacts/' + currentPanel.panelId">{{ locale.editContact }}</a>
           <a mat-button [routerLink]="'settings/' + currentPanel.panelId">{{ locale.editSettings }}</a>
@@ -345,7 +365,7 @@ export class PanelComponent {
 
   private async openSerialPort() {
     const port = await navigator.serial.requestPort({});
-    await port.open({ baudRate: 57600, flowControl: 'none', stopBits: 2, dataBits: 8, parity: 'none' });
+    await port.open({ baudRate: 57600, stopBits: 1 });
     const reader = port.readable.getReader();
     const writer = port.writable.getWriter();
     this.port = { port, reader, writer };
