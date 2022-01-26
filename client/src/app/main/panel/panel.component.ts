@@ -238,7 +238,7 @@ export class PanelComponent {
         return new Promise(async (resolve, reject) => {
           //try {
           let readerData;
-          const buffData: string[] = [];
+          const buffData: number[] = [];
           try {
             readerData = await reader.read();
           } catch (x) {
@@ -258,18 +258,22 @@ export class PanelComponent {
             hexString = hexValue.toString(16);
 
             const b = hexString[1];
-            buffData.push(a + b);
+            const n = parseInt(a + b, 16);
+            if (n < 187 && n > 159) {
+              buffData.push(215);
+              buffData.push(n - 16);
+            } else {
+              buffData.push(n);
+            }
           }
-          result += buffData
-            .map(h => parseInt(h, 16))
-            .map(n => (n < 171 && n > 143 ? n - 16 : n))
-            .map(n => (n === 255 ? ' ' : String.fromCharCode(n)))
-            .join('');
+          const b = Buffer.from(buffData);
+          result += new TextDecoder().decode(b);
           resolve(result);
         });
       };
-      const length = 4092;
+      const length = 3887;
       for (let i = 0; i <= length; i++) {
+        //const address = '2551'; //  ('2551' + i.toString()).slice(-4).toUpperCase();
         const address = ('0000' + i.toString()).slice(-4).toUpperCase();
         let check = 20;
         address.split('').forEach(l => {
@@ -306,7 +310,7 @@ export class PanelComponent {
   async downloadEpprom() {
     let { reader, writer } = await this.openSerialPort();
     // @ts-ignore
-    const encoder = new TextEncoder();
+    const encoder = new TextEncoder('utf-8');
 
     const read = async () => {
       return new Promise(async (resolve, reject) => {
@@ -318,24 +322,30 @@ export class PanelComponent {
       });
     };
     this.api.dump(this.currentPanel).subscribe(async dump => {
-      const dumpArray: number[] = [];
-      dump = 'az'.repeat(8);
-      encoder
-        .encode(dump)
-        //.filter((n, i) => i % 2 === 1)
-        .forEach(n => {
-          // if (n <= 170 && n >= 144) n += 16;
-          const h = n.toString(16);
-          const a = '3' + h[0];
-          const b = '3' + h[1];
-          dumpArray.push(parseInt(a, 16));
-          dumpArray.push(parseInt(b, 16));
-        });
       let i = 0;
-      while (i < dumpArray.length / 32) {
+      const bachSize = 16;
+      while (i < dump.length / bachSize) {
+        const dumpArray: number[] = [];
+        const dumpSplit = (dump.slice(i * bachSize, i * bachSize + bachSize) + ' '.repeat(bachSize)).slice(0, bachSize);
+        encoder
+          .encode(dumpSplit)
+          //.filter((n, i) => i % 2 === 1)
+          .forEach(n => {
+            if (n === 215) return;
+            if (n <= 170 && n >= 144) {
+              n += 16;
+            }
+            const h = n.toString(16);
+            const a = '3' + h[0];
+            const b = '3' + h[1];
+            dumpArray.push(parseInt(a, 16));
+            dumpArray.push(parseInt(b, 16));
+          });
         console.log(i);
-        const dataToSent = dumpArray.slice(i * 32, i * 32 + 32);
+        const dataToSent = dumpArray;
+        //console.log('dataToSent: ' + dataToSent);
         const address = ('0000' + i.toString()).slice(-4);
+        //const address = '2551';
         const comm = [...encoder.encode(address), ...dataToSent];
         let check = 12;
         comm.forEach(n => {
@@ -347,6 +357,7 @@ export class PanelComponent {
         });
         const checkSum = encoder.encode(('000' + check).slice(-3));
         await writer.write(new Buffer([4, 87, ...comm, ...checkSum, 13]));
+        // await new Promise(resolve => setTimeout(() => resolve(null), 50));
         try {
           await read();
           i += 1;
