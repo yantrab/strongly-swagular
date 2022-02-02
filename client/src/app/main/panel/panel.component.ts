@@ -101,7 +101,7 @@ import { SerialPort } from './serial';
               *ngIf="showProgressBar"
               [status]="statusText"
               (cancel)="cancelAction()"
-              [pst]="currentPanel?.progressPst || 1"
+              [pst]="currentPanel?.progressPst || 0"
               (done)="service.showProgressBar = false"
             ></app-progress>
             <div class="connected-indicator">
@@ -271,7 +271,7 @@ export class PanelComponent {
           resolve(result);
         });
       };
-      const length = 3887;
+      const length = 4095;
       for (let i = 0; i <= length; i++) {
         //const address = '2551'; //  ('2551' + i.toString()).slice(-4).toUpperCase();
         const address = ('0000' + i.toString()).slice(-4).toUpperCase();

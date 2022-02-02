@@ -32,8 +32,8 @@ export const panelPropertiesSetting = {
       speechLevel: { length: 1, index: 35554 },
       toneCode1: { length: 1, index: 58902 },
       toneCode2: { length: 1, index: 58903 },
-      confirmTone: { length: 1, index: 58904 }
-
+      confirmTone: { length: 1, index: 58904 },
+      extra: { length: 3328, index: 62203 }
       // dialer1: { length: 16, index: 58910 },
       // dialer2: {},
       // relay1: {},

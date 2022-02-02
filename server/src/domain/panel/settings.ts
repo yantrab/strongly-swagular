@@ -1,10 +1,12 @@
 import { Entity } from "../entity";
 import { Source } from "./panel.contacts";
 import { max, min, numberString, pattern } from "strongly";
+
 export enum YesNo {
   No = "N",
   Yes = "Y"
 }
+
 export class GeneralSettings {
   @numberString @max(10) masterCode: string;
   @numberString @max(10) tecUserCode: string;
@@ -19,7 +21,7 @@ export class GeneralSettings {
   @pattern(/^[0-9\-]$/g) toneCode1: string;
   @pattern(/^[0-9\-]$/g) toneCode2: string;
   @pattern(/^[0-7\-]$/g) confirmTone: string;
-
+  extra?: string;
   // @numberString @max(16) dialer1: string;
   // @numberString @max(16) dialer2: string;
   // @numberString @max(16) relay1: string;
@@ -117,11 +119,13 @@ export class FloorValueSettings {
   @min(0) @max(250) floorValue29: number;
   @min(0) @max(250) floorValue30: number;
 }
+
 export class SettingsChangeItem {
   path: string;
   previewsValue?: any;
   source: Source;
 }
+
 export class Settings extends Entity<Settings> {
   general: GeneralSettings;
   timing: TimingSettings;
