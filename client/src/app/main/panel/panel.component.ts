@@ -5,7 +5,7 @@ import { ActionType } from '../../api/models/action-type';
 import { PanelService as API } from '../../api/services/panel.service';
 import { PanelDetails } from '../../api/models/panel-details';
 import { saveAs } from 'file-saver';
-import { round } from 'lodash';
+import { round, thru } from 'lodash';
 import { IPanelToolBar, IRootObject } from '../../api/locale.interface';
 import { LocaleService } from 'swagular/components';
 import { Source } from '../../api/models/source';
@@ -230,13 +230,13 @@ export class PanelComponent {
 
   async uploadEpprom() {
     try {
+      let checkReadThisAdd = '0';
       let { reader, writer } = await this.openSerialPort();
       // @ts-ignore
       const encoder = new TextEncoder('utf-8');
       let result = '';
       const read = async () => {
         return new Promise(async (resolve, reject) => {
-          //try {
           let readerData;
           const buffData: number[] = [];
           try {
@@ -245,7 +245,50 @@ export class PanelComponent {
             console.log(x);
           }
           readerData = readerData?.value;
-          if (readerData.length !== 42) {
+          let error = 0;
+          if (readerData.length === 42) {
+            const checkSumRead =
+              String.fromCharCode(readerData[38]) + String.fromCharCode(readerData[39]) + String.fromCharCode(readerData[40]);
+            let testCheckSum = 5;
+            for (let i = 2; i <= 37; i++) {
+              const n = String.fromCharCode(readerData[i]);
+              const hexValue = n.toString();
+              let hexBiggerThan9 = 0;
+              if (hexValue > '9') {
+                if (hexValue === ':') hexBiggerThan9 = 10;
+                else if (hexValue === ';') hexBiggerThan9 = 11;
+                else if (hexValue === '<') hexBiggerThan9 = 12;
+                else if (hexValue === '=') hexBiggerThan9 = 13;
+                else if (hexValue === '>') hexBiggerThan9 = 14;
+                else if (hexValue === '?') hexBiggerThan9 = 15;
+
+                testCheckSum = testCheckSum + hexBiggerThan9;
+                hexBiggerThan9 = testCheckSum;
+              }
+              testCheckSum += parseInt(hexValue, 16);
+              if (hexBiggerThan9) testCheckSum = hexBiggerThan9;
+              if (testCheckSum > 999) testCheckSum -= 1000;
+            }
+            const decCheckSumRead = parseInt(checkSumRead, 10);
+            if (testCheckSum !== decCheckSumRead) error = 1;
+          }
+
+          const readThisAdd1 = checkReadThisAdd[0];
+          const readThisAdd2 = checkReadThisAdd[1];
+          const readThisAdd3 = checkReadThisAdd[2];
+          const readThisAdd4 = checkReadThisAdd[3];
+
+          const cardReadAdd1 = String.fromCharCode(readerData[2]);
+          const cardReadAdd2 = String.fromCharCode(readerData[3]);
+          const cardReadAdd3 = String.fromCharCode(readerData[4]);
+          const cardReadAdd4 = String.fromCharCode(readerData[5]);
+
+          if (readThisAdd1 !== cardReadAdd1) error = 1;
+          if (readThisAdd2 !== cardReadAdd2) error = 1;
+          if (readThisAdd3 !== cardReadAdd3) error = 1;
+          if (readThisAdd4 !== cardReadAdd4) error = 1;
+
+          if (readerData.length !== 42 || readerData[0] !== 4 || readerData[1] !== 114 || error) {
             return reject();
           }
 
@@ -273,6 +316,7 @@ export class PanelComponent {
       };
       const length = 4095;
       for (let i = 0; i <= length; i++) {
+        //     for (let i = 4080; i <= 4095; i++) {
         //const address = '2551'; //  ('2551' + i.toString()).slice(-4).toUpperCase();
         const address = ('0000' + i.toString()).slice(-4).toUpperCase();
         let check = 20;
@@ -285,18 +329,17 @@ export class PanelComponent {
 
         const comString = String.fromCharCode(4) + 'R' + address + checkSum + String.fromCharCode(13);
         const comm = encoder.encode(comString);
+        checkReadThisAdd = address;
         await writer.write(comm);
         try {
           await read();
           console.log(i);
-          //await new Promise(resolve => setTimeout(() => resolve(null), 100));
         } catch (x) {
           if (i - 4000 > 0) {
             await reader?.cancel();
             await reader.releaseLock();
             this.port!.reader = reader = this.port!.port!.readable.getReader();
           }
-          //await new Promise(resolve => setTimeout(() => resolve(null), 50));
           i--;
         }
       }
@@ -309,13 +352,32 @@ export class PanelComponent {
 
   async downloadEpprom() {
     let { reader, writer } = await this.openSerialPort();
+    const checkThisSum = '0';
     // @ts-ignore
     const encoder = new TextEncoder('utf-8');
-
-    const read = async () => {
+    const read = async (address: string) => {
       return new Promise(async (resolve, reject) => {
         const readerData = await reader.read();
-        if (readerData.value.length !== 10) {
+
+        const checkSum1 = checkThisSum.substring(0, 2);
+        const checkSum2 = checkThisSum.substring(3, 5);
+        const checkSum3 = checkThisSum.substring(6, 8);
+
+        const readSum1 = readerData.value[6];
+        const readSum2 = readerData.value[7];
+        const readSum3 = readerData.value[8];
+
+        if (
+          readerData.value[0] !== 4 ||
+          readerData.value[1] !== 119 ||
+          String.fromCharCode(readerData.value[2]) !== address[0] ||
+          String.fromCharCode(readerData.value[3]) !== address[1] ||
+          String.fromCharCode(readerData.value[4]) !== address[2] ||
+          String.fromCharCode(readerData.value[5]) !== address[3] ||
+          readSum1 !== checkSum1 ||
+          readSum2 !== checkSum2 ||
+          readSum3 !== checkSum3
+        ) {
           reject();
         }
         resolve(undefined);
@@ -341,11 +403,9 @@ export class PanelComponent {
             dumpArray.push(parseInt(a, 16));
             dumpArray.push(parseInt(b, 16));
           });
-        console.log(i);
+        console.log('i=' + i);
         const dataToSent = dumpArray;
-        //console.log('dataToSent: ' + dataToSent);
         const address = ('0000' + i.toString()).slice(-4);
-        //const address = '2551';
         const comm = [...encoder.encode(address), ...dataToSent];
         let check = 12;
         comm.forEach(n => {
@@ -357,9 +417,8 @@ export class PanelComponent {
         });
         const checkSum = encoder.encode(('000' + check).slice(-3));
         await writer.write(new Buffer([4, 87, ...comm, ...checkSum, 13]));
-        // await new Promise(resolve => setTimeout(() => resolve(null), 50));
         try {
-          await read();
+          await read(address);
           i += 1;
         } catch (e) {
           if (i > 3000) {
