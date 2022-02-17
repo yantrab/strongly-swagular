@@ -352,31 +352,30 @@ export class PanelComponent {
 
   async downloadEpprom() {
     let { reader, writer } = await this.openSerialPort();
-    const checkThisSum = '0';
     // @ts-ignore
     const encoder = new TextEncoder('utf-8');
-    const read = async (address: string) => {
+    const read = async (address: string, checkSum: string) => {
       return new Promise(async (resolve, reject) => {
         const readerData = await reader.read();
 
-        const checkSum1 = checkThisSum.substring(0, 2);
-        const checkSum2 = checkThisSum.substring(3, 5);
-        const checkSum3 = checkThisSum.substring(6, 8);
+        const checkSum1 = checkSum.substring(0, 2);
+        const checkSum2 = checkSum.substring(3, 5);
+        const checkSum3 = checkSum.substring(6, 8);
 
         const readSum1 = readerData.value[6];
         const readSum2 = readerData.value[7];
         const readSum3 = readerData.value[8];
 
         if (
-          readerData.value[0] !== 4 ||
-          readerData.value[1] !== 119 ||
+          readerData.value[0] != 4 ||
+          readerData.value[1] != 119 ||
           String.fromCharCode(readerData.value[2]) !== address[0] ||
           String.fromCharCode(readerData.value[3]) !== address[1] ||
           String.fromCharCode(readerData.value[4]) !== address[2] ||
           String.fromCharCode(readerData.value[5]) !== address[3] ||
-          readSum1 !== checkSum1 ||
-          readSum2 !== checkSum2 ||
-          readSum3 !== checkSum3
+          readSum1 !== +checkSum1 ||
+          readSum2 !== +checkSum2 ||
+          readSum3 !== +checkSum3
         ) {
           reject();
         }
@@ -418,7 +417,7 @@ export class PanelComponent {
         const checkSum = encoder.encode(('000' + check).slice(-3));
         await writer.write(new Buffer([4, 87, ...comm, ...checkSum, 13]));
         try {
-          await read(address);
+          await read(address, ('000' + check).slice(-3));
           i += 1;
         } catch (e) {
           if (i > 3000) {
