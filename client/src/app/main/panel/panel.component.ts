@@ -367,8 +367,8 @@ export class PanelComponent {
         const readSum3 = readerData.value[8];
 
         if (
-          readerData.value[0] != 4 ||
-          readerData.value[1] != 119 ||
+          readerData.value[0] !== 4 ||
+          readerData.value[1] !== 119 ||
           String.fromCharCode(readerData.value[2]) !== address[0] ||
           String.fromCharCode(readerData.value[3]) !== address[1] ||
           String.fromCharCode(readerData.value[4]) !== address[2] ||
