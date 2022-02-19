@@ -316,8 +316,6 @@ export class PanelComponent {
       };
       const length = 4095;
       for (let i = 0; i <= length; i++) {
-        //     for (let i = 4080; i <= 4095; i++) {
-        //const address = '2551'; //  ('2551' + i.toString()).slice(-4).toUpperCase();
         const address = ('0000' + i.toString()).slice(-4).toUpperCase();
         let check = 20;
         address.split('').forEach(l => {
@@ -354,28 +352,15 @@ export class PanelComponent {
     let { reader, writer } = await this.openSerialPort();
     // @ts-ignore
     const encoder = new TextEncoder('utf-8');
-    const read = async (address: string, checkSum: string) => {
+    const read = async (address: string, checkSum: Uint8Array) => {
       return new Promise(async (resolve, reject) => {
         const readerData = await reader.read();
-
-        const checkSum1 = checkSum.substring(0, 2);
-        const checkSum2 = checkSum.substring(3, 5);
-        const checkSum3 = checkSum.substring(6, 8);
-
-        const readSum1 = readerData.value[6];
-        const readSum2 = readerData.value[7];
-        const readSum3 = readerData.value[8];
-
+        const data = readerData.value;
         if (
-          readerData.value[0] !== 4 ||
-          readerData.value[1] !== 119 ||
-          String.fromCharCode(readerData.value[2]) !== address[0] ||
-          String.fromCharCode(readerData.value[3]) !== address[1] ||
-          String.fromCharCode(readerData.value[4]) !== address[2] ||
-          String.fromCharCode(readerData.value[5]) !== address[3] ||
-          readSum1 !== +checkSum1 ||
-          readSum2 !== +checkSum2 ||
-          readSum3 !== +checkSum3
+          data[0] !== 4 ||
+          data[1] !== 119 ||
+          new TextDecoder().decode(data.slice(2, 6)) !== address ||
+          new TextDecoder().decode(data.slice(6, 9)) !== new TextDecoder().decode(checkSum)
         ) {
           reject();
         }
@@ -417,7 +402,7 @@ export class PanelComponent {
         const checkSum = encoder.encode(('000' + check).slice(-3));
         await writer.write(new Buffer([4, 87, ...comm, ...checkSum, 13]));
         try {
-          await read(address, ('000' + check).slice(-3));
+          await read(address, checkSum);
           i += 1;
         } catch (e) {
           if (i > 3000) {
