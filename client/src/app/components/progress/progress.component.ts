@@ -1,17 +1,21 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ceil } from 'lodash';
+
 @Component({
   selector: 'app-progress',
   templateUrl: './progress.component.html',
   styleUrls: ['./progress.component.scss']
 })
 export class ProgressComponent implements OnInit {
-  @Input() status?: string;
   @Output() cancel = new EventEmitter();
   @Output() done = new EventEmitter();
   mouseover = false;
+  @Input() status?: string;
 
   constructor() {}
+
+  get _status() {
+    return this._pst === 100 ? 'done' : this.status;
+  }
 
   _pst = 1;
 

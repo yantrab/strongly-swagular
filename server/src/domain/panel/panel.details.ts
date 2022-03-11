@@ -3,7 +3,7 @@ import { numberString } from "strongly";
 
 enum Lang {
   he = "Hebrew",
-  en = "English"
+  en = "English",
 }
 
 export enum ActionType {
@@ -25,7 +25,10 @@ export enum ActionType {
   readAllFromPanelCanceled = "SSS",
 
   nameOrderCanceled = "TTT",
-  powerUpCanceled = "808"
+  powerUpCanceled = "808",
+
+  uploadEpprom = "1",
+  downloadEpprom = "2",
 }
 
 export class PanelDetails extends Entity<PanelDetails> {

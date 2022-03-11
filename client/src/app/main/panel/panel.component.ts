@@ -5,7 +5,7 @@ import { ActionType } from '../../api/models/action-type';
 import { PanelService as API } from '../../api/services/panel.service';
 import { PanelDetails } from '../../api/models/panel-details';
 import { saveAs } from 'file-saver';
-import { round, thru } from 'lodash';
+import { round } from 'lodash';
 import { IPanelToolBar, IRootObject } from '../../api/locale.interface';
 import { LocaleService } from 'swagular/components';
 import { Source } from '../../api/models/source';
@@ -205,6 +205,14 @@ export class PanelComponent {
     });
   }
 
+  doneAction() {
+    this.currentPanel.status = ActionType.idle;
+    this.api.savePanel(this.currentPanel).subscribe(() => {
+      this.service.showProgressBar = false;
+      this.cd.markForCheck();
+    });
+  }
+
   uploadDump(dump: any) {
     this.service.reDump(dump);
   }
@@ -232,6 +240,8 @@ export class PanelComponent {
     try {
       let checkReadThisAdd = '0';
       let { reader, writer } = await this.openSerialPort();
+      this.currentPanel.status = ActionType.uploadEpprom;
+      this.service.showProgressBar = true;
       // @ts-ignore
       const encoder = new TextEncoder('utf-8');
       let result = '';
@@ -316,6 +326,7 @@ export class PanelComponent {
       };
       const length = 4095;
       for (let i = 0; i <= length; i++) {
+        this.currentPanel.progressPst = (1 / (length / 100)) * i;
         const address = ('0000' + i.toString()).slice(-4).toUpperCase();
         let check = 20;
         address.split('').forEach(l => {
@@ -342,7 +353,10 @@ export class PanelComponent {
         }
       }
       this.uploadDump(result);
-      this.closeSerialPort();
+      this.closeSerialPort().then(() => {
+        this.currentPanel.status = ActionType.idle;
+        this.currentPanel.progressPst = 100;
+      });
     } catch (x) {
       console.log(x);
     }
@@ -350,6 +364,8 @@ export class PanelComponent {
 
   async downloadEpprom() {
     let { reader, writer } = await this.openSerialPort();
+    this.service.showProgressBar = true;
+    this.currentPanel.status = ActionType.downloadEpprom;
     // @ts-ignore
     const encoder = new TextEncoder('utf-8');
     const read = async (address: string, checkSum: Uint8Array) => {
@@ -371,6 +387,8 @@ export class PanelComponent {
       let i = 0;
       const bachSize = 16;
       while (i < dump.length / bachSize) {
+        this.currentPanel.progressPst = (1 / (dump.length / bachSize / 100)) * i;
+
         const dumpArray: number[] = [];
         const dumpSplit = (dump.slice(i * bachSize, i * bachSize + bachSize) + ' '.repeat(bachSize)).slice(0, bachSize);
         encoder
@@ -413,7 +431,11 @@ export class PanelComponent {
           }
         }
       }
-      this.closeSerialPort();
+
+      this.closeSerialPort().then(() => {
+        this.currentPanel.status = ActionType.idle;
+        this.currentPanel.progressPst = 100;
+      });
     });
   }
 

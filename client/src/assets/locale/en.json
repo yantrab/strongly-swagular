@@ -188,7 +188,9 @@
     "13": "in progress...",
     "000": "שולח...",
     "notConnected": "not connected",
-    "epprom": "Epprom"
+    "epprom": "Epprom",
+    "1": "מעלה נתונים מההתקן",
+    "2": "מוריד נתונים להתקן"
   },
   "userFormModel": {
     "firstName": {
