@@ -2,13 +2,15 @@
   swagular-input {
     width: 48%;
   }
-
 }
 
 ::ng-deep .actions-column {
-width: 225px !important;
+  width: 225px !important;
 }
 
-::ng-deep .deleted{
+::ng-deep .deleted {
   opacity: 40%;
+}
+::ng-deep .cdk-column-panelId {
+  padding-left: 0 !important;
 }

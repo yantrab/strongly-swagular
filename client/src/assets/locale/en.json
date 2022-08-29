@@ -89,6 +89,10 @@
       {
         "key": "contactPhone",
         "title": "Contact Phone"
+      },
+      {
+        "key": "inspiredDate",
+        "title": "Valid until"
       }
     ]
   },

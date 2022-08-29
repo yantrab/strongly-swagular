@@ -2,11 +2,14 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { FormComponent, LocaleService, TableOptions } from 'swagular/components';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { PanelService as Api } from '../../../api/services/panel.service';
+import { PanelService as Api, SavePanelFormGroupType } from '../../../api/services/panel.service';
 import { PanelDetails } from '../../../api/models/panel-details';
 import { PanelService } from '../panel.service';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { ScannerComponent } from './scanner/scanner.component';
+import { AuthService } from 'src/app/auth/auth.service';
+import { Role } from 'src/app/api/models';
+import { FormModel } from 'swagular/models';
 
 @Component({
   selector: 'app-panel',
@@ -20,10 +23,7 @@ export class PanelListComponent implements OnInit {
     localePath: 'addPanelFormModel',
     displayProperties: ['panelId', 'id', 'address', 'phoneNumber', 'code', 'direction', 'contactName', 'contactPhone']
   });
-  updatePanelFormModel = this.api.savePanelFormModel({
-    localePath: 'savePanelFormModel',
-    displayProperties: ['code', 'address', 'phoneNumber', 'contactName', 'contactPhone']
-  });
+  updatePanelFormModel?: FormModel<SavePanelFormGroupType>;
   panelsTableOptions?: TableOptions<PanelDetails>;
   panelsToShow = this.panels;
   needToShowDeletedPanels = false;
@@ -34,8 +34,20 @@ export class PanelListComponent implements OnInit {
     private dialog: NgDialogAnimationService,
     private snackBar: MatSnackBar,
     private localeService: LocaleService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) {
+    authService.user$.subscribe(user => {
+      const displayProperties = ['code', 'address', 'phoneNumber', 'contactName', 'contactPhone'];
+      if (user.role === Role.admin) {
+        displayProperties.push('inspiredDate');
+      }
+      this.updatePanelFormModel = this.api.savePanelFormModel({
+        localePath: 'savePanelFormModel',
+        displayProperties: displayProperties as any
+      });
+    });
+
     this.localeService.getLocaleItem('panelsTableOptions').then(options => {
       this.panelsTableOptions = {
         columns: options.columns,
@@ -57,7 +69,7 @@ export class PanelListComponent implements OnInit {
       this.panelService.panelList.subscribe(panels => {
         if (!panels) return;
         this.panels = panels;
-        this.panelsToShow = panels;
+        this.showDeleted(this.needToShowDeletedPanels);
         this.cdr.detectChanges();
       });
     });
@@ -71,7 +83,7 @@ export class PanelListComponent implements OnInit {
   ngOnInit(): void {}
 
   openEditPanelDialog(panel: PanelDetails): void {
-    this.updatePanelFormModel.formGroup.patchValue(panel);
+    this.updatePanelFormModel!.formGroup.patchValue(panel);
     const dialogRef = this.dialog.open(FormComponent, {
       width: '80%',
       maxWidth: '540px',

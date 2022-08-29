@@ -35,6 +35,8 @@ export class PanelController {
   @post addNewPanel(@body panel: AddPanelDetailsDTO, @user user: User) {
     const toSave = (omit(panel, ["id"]) as unknown) as PanelDetails;
     toSave.userId = user._id!;
+    const date =  new Date()
+    toSave.inspiredDate =`${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`
     return this.service.addNewPanel(toSave);
   }
 
@@ -52,6 +54,10 @@ export class PanelController {
 
   @get(":id/settings") settings(@params("id") id: number) {
     return this.service.getPanelSettings(id);
+  }
+
+  @get(":id/delete") delete (@params("id") id: number) {
+    return this.service.deletePanel(id);
   }
 
   @post(":id/save-contacts") updateContact(

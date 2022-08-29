@@ -1,5 +1,5 @@
 import { Entity } from "../entity";
-import { numberString } from "strongly";
+import { date, numberString } from "strongly";
 
 enum Lang {
   he = "Hebrew",
@@ -44,6 +44,7 @@ export class PanelDetails extends Entity<PanelDetails> {
   lastConnection?: number;
   progressPst?: number;
   code: number;
+  @date inspiredDate: string;
 }
 
 export class AddPanelDetailsDTO {

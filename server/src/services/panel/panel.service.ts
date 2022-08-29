@@ -26,6 +26,15 @@ export class PanelService {
     return this.panelDetailsRepo.find(userId ? { userId } : {});
   }
 
+  async deletePanel(panelId: number) {
+    try {
+      await this.panelDetailsRepo.collection.deleteOne({ panelId });
+      await this.panelContactsRepo.collection.deleteOne({ panelId });
+      await this.panelSettingsRepo.collection.deleteOne({ panelId });
+      return true;
+    } catch (error) {}
+  }
+
   async getPanelDetails(panelId: number) {
     return this.panelDetailsRepo.findOne({ panelId: panelId });
   }
@@ -131,7 +140,7 @@ export class PanelService {
     await this.panelContactsRepo.saveOrUpdateOne({
       panelId: panel.panelId,
       list: initialPanel.contacts.list,
-      changes: []
+      changes: [],
     });
 
     await this.panelSettingsRepo.collection.deleteOne({ panelId: id });

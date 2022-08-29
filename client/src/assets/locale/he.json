@@ -97,6 +97,10 @@
       {
         "key": "contactPhone",
         "title": "טלפון איש קשר"
+      },
+      {
+        "key": "inspiredDate",
+        "title": "בתוקף עד"
       }
     ]
   },
