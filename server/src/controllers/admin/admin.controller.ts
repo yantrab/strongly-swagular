@@ -7,7 +7,7 @@ export class AdminController {
   constructor(private userService: UserService) {}
 
   @get users() {
-    return this.userService.getUsers({ _isDeleted: undefined });
+    return this.userService.getUsers({ _isDeleted: { $ne: true } });
   }
 
   @post("user") saveOrUpdateUser(@body user: User): Promise<User> {
@@ -33,7 +33,7 @@ export class AdminController {
   }
 
   private async addUser(user: User) {
-    const existUser = await this.userService.userRepo.findOne({ email: user.email, _isDeleted: undefined });
+    const existUser = await this.userService.userRepo.findOne({ email: user.email, _isDeleted: { $ne: true }  });
     if (existUser) throw new Error("The user already exist");
     const result = await this.userService.saveOrUpdateUser(user);
     this.userService.sentPermission(user.email);

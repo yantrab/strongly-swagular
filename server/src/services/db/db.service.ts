@@ -1,5 +1,5 @@
 import { Entity } from "../../domain/entity";
-import { Collection, ObjectId, MongoClient } from "mongodb";
+import { Collection, ObjectId, MongoClient, FilterQuery } from "mongodb";
 import { omit } from "lodash";
 import { EntityWithoutGetters } from "../../utils/typescript.util";
 
@@ -17,11 +17,11 @@ export class Repository<T extends Entity<T>> {
     return entity as T;
   }
 
-  find(query?: Partial<EntityWithoutGetters<T>>): Promise<T[]> {
+  find(query?: FilterQuery<Partial<EntityWithoutGetters<T>>>): Promise<T[]> {
     return this.collection.find<T>(query || {}, {}).toArray();
   }
 
-  findOne(query?: Partial<EntityWithoutGetters<T>>): Promise<T | null> {
+  findOne(query?: FilterQuery<Partial<EntityWithoutGetters<T>>>): Promise<T | null> {
     return this.collection.findOne<T>(query || {});
   }
 }

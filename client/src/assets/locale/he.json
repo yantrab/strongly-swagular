@@ -102,7 +102,14 @@
         "key": "inspiredDate",
         "title": "בתוקף עד"
       }
-    ]
+    ],
+    "buttons":{
+      "edit":{"title":"ערוך פרטים כללים"},
+      "delete":{"title":"מחק פנל"},
+      "undoDelete":{"title":"בטל מחיקת פנל"},
+      "editContact":{"title":"ערוך אנשי קשר"},
+      "editSettings":{"title":"ערוך הגדרות"}
+    }
   },
   "contactsTableOptions": {
     "columns": [
@@ -183,15 +190,23 @@
     "editSettings": "עריכת הגדרות",
     "sent": "שלח",
     "receive": "קבל",
-    "upload": "העלה",
-    "download": "הורד",
-    "sentChangesTo": "שלח שינויים",
-    "sentAllToPanel": "שלח הכל",
+    "sentChangesTo": "שלח שינויים לפנל",
+    "sentAllToPanel": "שלח הכל לפנל",
     "nameOrder": "סידור שמות",
     "powerUp": "הדלקה מחדש",
     "getAll": "קבל הכל מהפנל",
-    "dump": "Dump",
-    "excel": "Excel",
+    "download": {
+      "title": "הורד",
+      "dump": "הורד לקובץ Dump",
+      "excel": "הורד לקובץ Excel",
+      "epprom": "הורד לרכיב Epprom"
+    },
+    "upload": {
+      "title": "העלה",
+      "dump": "העלה מקובץ Dump",
+      "excel": "העלה מקובץ Excel",
+      "epprom": "העלה מרכיב Epprom"
+    },
     "cancel": "Cancel",
     "444": "מתחבר...",
     "333": "מתחבר...",
@@ -202,7 +217,6 @@
     "13": "מקבל...",
     "000": "שולח...",
     "notConnected": "לא מחובר",
-    "epprom": "Epprom",
     "1": "מעלה נתונים",
     "2": "מוריד נתונים"
   },

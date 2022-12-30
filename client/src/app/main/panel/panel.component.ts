@@ -32,11 +32,11 @@ import { SerialPort } from './serial';
             </button>
             <button mat-menu-item [matMenuTriggerFor]="upload">
               <mat-icon>file_upload</mat-icon>
-              <span>{{ locale.upload }}</span>
+              <span>{{ locale.upload.title }}</span>
             </button>
             <button mat-menu-item [matMenuTriggerFor]="download">
               <mat-icon>file_download</mat-icon>
-              <span>{{ locale.download }}</span>
+              <span>{{ locale.download.title }}</span>
             </button>
           </mat-menu>
           <mat-menu #sent="matMenu">
@@ -64,29 +64,29 @@ import { SerialPort } from './serial';
           <mat-menu #upload="matMenu">
             <button appFileUpload (fileContent)="uploadDump($event)" mat-menu-item>
               <mat-icon>upload_file</mat-icon>
-              {{ locale.dump }}
+              {{ locale.upload.dump }}
             </button>
             <button appFileUpload (fileContent)="uploadCsv($event)" mat-menu-item>
               <mat-icon>attach_file</mat-icon>
-              {{ locale.excel }}
+              {{ locale.upload.excel }}
             </button>
             <button (click)="uploadEpprom()" mat-menu-item>
               <mat-icon>usb</mat-icon>
-              {{ locale.epprom }}
+              {{ locale.upload.epprom }}
             </button>
           </mat-menu>
           <mat-menu #download="matMenu">
             <button (click)="downloadDump()" mat-menu-item>
               <mat-icon>download_file</mat-icon>
-              {{ locale.dump }}
+              {{ locale.download.dump }}
             </button>
             <button (click)="downloadCsv()" mat-menu-item>
               <mat-icon>download_file</mat-icon>
-              {{ locale.excel }}
+              {{ locale.download.excel }}
             </button>
             <button (click)="downloadEpprom()" mat-menu-item>
               <mat-icon>usb</mat-icon>
-              {{ locale.epprom }}
+              {{ locale.download.epprom }}
             </button>
           </mat-menu>
           <a mat-button [routerLink]="'contacts/' + currentPanel.panelId">{{ locale.editContact }}</a>
@@ -168,7 +168,7 @@ export class PanelComponent {
   }
 
   get statusText(): string | undefined {
-    return this.locale?.[this.currentPanel.status.toString() as keyof IPanelToolBar];
+    return this.locale?.[this.currentPanel.status.toString() as keyof IPanelToolBar] as string;
   }
 
   get currentPanel(): PanelDetails {

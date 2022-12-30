@@ -94,7 +94,14 @@
         "key": "inspiredDate",
         "title": "Valid until"
       }
-    ]
+    ],
+    "buttons":{
+      "edit":{"title":"Edit general details"},
+      "delete":{"title":"Delete panel"},
+      "undoDelete":{"title":"Undo delete panel"},
+      "editContact":{"title":"Edit contacts"},
+      "editSettings":{"title":"Edit settings"}
+    }
   },
   "contactsTableOptions": {
     "columns": [
@@ -175,15 +182,11 @@
     "editSettings": "Edit Panel Settings",
     "sent": "sent",
     "receive": "receive",
-    "upload": "Upload",
-    "download": "Download",
     "sentChangesTo": "Sent changes to the panel",
     "sentAllToPanel": "Sent all to the panel",
     "nameOrder": "Name Order",
     "powerUp": "powerUp",
     "getAll": "Get all from panel",
-    "dump": "Dump",
-    "excel": "Excel",
     "cancel": "Cancel",
     "444": "connecting...",
     "333": "connecting...",
@@ -192,7 +195,18 @@
     "13": "in progress...",
     "000": "שולח...",
     "notConnected": "not connected",
-    "epprom": "Epprom",
+    "download": {
+      "title": "Download",
+      "dump": "Donloud to Dump",
+      "excel": "Donloud to Excel",
+      "epprom": "Donloud to Epprom"
+    },
+    "upload": {
+      "title": "Upload",
+      "dump": "Upload from Dump",
+      "excel": "Upload from Excel",
+      "epprom": "Upload from Epprom"
+    },
     "1": "מעלה נתונים מההתקן",
     "2": "מוריד נתונים להתקן"
   },

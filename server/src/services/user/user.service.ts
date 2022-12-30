@@ -4,6 +4,7 @@ import { compare, genSalt, hash } from "bcryptjs";
 import NodeCache from "node-cache";
 import { MailerService } from "../mailer/mailer.service";
 import { v4 as uuidv4 } from "uuid";
+import { FilterQuery } from "mongodb";
 
 const cryptPassword = async password => {
   const salt = await genSalt(10);
@@ -47,7 +48,7 @@ export class UserService {
     return this.userRepo.collection.findOne({ email, _isDeleted: { $ne: true } });
   }
 
-  getUsers(query?: Partial<User>) {
+  getUsers(query?:  FilterQuery<Partial<User>>) {
     return this.userRepo.collection
       .find<User>(query || {}, {})
       .project({ password: 0 })
