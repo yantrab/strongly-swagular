@@ -16,7 +16,7 @@ export const panelPropertiesSetting = {
 
     code: { length: 10, index: 51 },
     ref: { length: 3, index: 10551 },
-    apartment: { length: 3, index: 35631 }
+    apartment: { length: 3, index: 35631 },
   },
   settings: {
     general: {
@@ -33,7 +33,7 @@ export const panelPropertiesSetting = {
       toneCode1: { length: 1, index: 58902 },
       toneCode2: { length: 1, index: 58903 },
       confirmTone: { length: 1, index: 58904 },
-      extra: { length: 3328, index: 62203 }
+      extra: { length: 3328, index: 62203 },
       // dialer1: { length: 16, index: 58910 },
       // dialer2: {},
       // relay1: {},
@@ -68,7 +68,7 @@ export const panelPropertiesSetting = {
       highRingFreq: { length: 2, index: 58894 },
       breakBetweenRings: { length: 2, index: 58896 },
       ringsToMovE: { length: 2, index: 58898 },
-      busyBeforeHang: { length: 2, index: 58900 }
+      busyBeforeHang: { length: 2, index: 58900 },
     },
     yesNo: {
       entryMessage: { length: 1, index: 35339 },
@@ -94,7 +94,7 @@ export const panelPropertiesSetting = {
       buzOnRlZ: { length: 1, index: 35359 },
       noApNoOf: { length: 1, index: 35360 },
       directDial: { length: 1, index: 35361 },
-      fullMenu: { length: 1, index: 35362 }
+      fullMenu: { length: 1, index: 35362 },
     },
     floor: {
       floorValue1: { length: 3, index: 35363 },
@@ -126,9 +126,9 @@ export const panelPropertiesSetting = {
       floorValue27: { length: 3, index: 35441 },
       floorValue28: { length: 3, index: 35444 },
       floorValue29: { length: 3, index: 35447 },
-      floorValue30: { length: 3, index: 35450 }
-    }
-  }
+      floorValue30: { length: 3, index: 35450 },
+    },
+  },
 };
 
 function sliceContactProperty(dump: string, startIndex: number, index: number, length: number) {
@@ -154,7 +154,7 @@ function reverse(name: string) {
 
 enum Lang {
   he = "Hebrew",
-  en = "English"
+  en = "English",
 }
 
 export class Panel extends Entity<Panel> {
@@ -168,32 +168,15 @@ export class Panel extends Entity<Panel> {
     for (let i = 0; i < panelPropertiesSetting.contactsLength; i++) {
       const contact: Contact = {
         index: i,
-        name1:
-          sliceContactProperty(dump, panelPropertiesSetting.contacts.name1.index, i, panelPropertiesSetting.contacts.name1.length) ||
-          undefined,
-        name2:
-          sliceContactProperty(dump, panelPropertiesSetting.contacts.name2.index, i, panelPropertiesSetting.contacts.name2.length) ||
-          undefined,
+        name1: sliceContactProperty(dump, panelPropertiesSetting.contacts.name1.index, i, panelPropertiesSetting.contacts.name1.length) || undefined,
+        name2: sliceContactProperty(dump, panelPropertiesSetting.contacts.name2.index, i, panelPropertiesSetting.contacts.name2.length) || undefined,
 
-        tel1:
-          sliceContactProperty(dump, panelPropertiesSetting.contacts.tel1.index, i, panelPropertiesSetting.contacts.tel1.length) ||
-          undefined,
-        tel2:
-          sliceContactProperty(dump, panelPropertiesSetting.contacts.tel2.index, i, panelPropertiesSetting.contacts.tel2.length) ||
-          undefined,
-        tel3:
-          sliceContactProperty(dump, panelPropertiesSetting.contacts.tel3.index, i, panelPropertiesSetting.contacts.tel3.length) ||
-          undefined,
-        code:
-          sliceContactProperty(dump, panelPropertiesSetting.contacts.code.index, i, panelPropertiesSetting.contacts.code.length) ||
-          undefined,
+        tel1: sliceContactProperty(dump, panelPropertiesSetting.contacts.tel1.index, i, panelPropertiesSetting.contacts.tel1.length) || undefined,
+        tel2: sliceContactProperty(dump, panelPropertiesSetting.contacts.tel2.index, i, panelPropertiesSetting.contacts.tel2.length) || undefined,
+        tel3: sliceContactProperty(dump, panelPropertiesSetting.contacts.tel3.index, i, panelPropertiesSetting.contacts.tel3.length) || undefined,
+        code: sliceContactProperty(dump, panelPropertiesSetting.contacts.code.index, i, panelPropertiesSetting.contacts.code.length) || undefined,
         ref: sliceContactProperty(dump, panelPropertiesSetting.contacts.ref.index, i, panelPropertiesSetting.contacts.ref.length),
-        apartment: sliceContactProperty(
-          dump,
-          panelPropertiesSetting.contacts.apartment.index,
-          i,
-          panelPropertiesSetting.contacts.apartment.length
-        )
+        apartment: sliceContactProperty(dump, panelPropertiesSetting.contacts.apartment.index, i, panelPropertiesSetting.contacts.apartment.length),
       } as any;
 
       if (this.details.direction === Lang.he) {
@@ -248,10 +231,10 @@ export class Panel extends Entity<Panel> {
       });
     });
 
-    // settings
     Object.keys(panelPropertiesSetting.settings).forEach(key => {
       Object.keys(panelPropertiesSetting.settings[key]).forEach(prop => {
-        let value = this.settings[key][prop].toString();
+        let value = this.settings[key][prop]?.toString();
+        if (value) return;
         const propS = panelPropertiesSetting.settings[key][prop];
         value = (value + " ".repeat(propS.length)).slice(0, propS.length).split("");
         const jInit = propS.index;
@@ -260,6 +243,8 @@ export class Panel extends Entity<Panel> {
         }
       });
     });
+
+    // settings
 
     return arr.join("");
   }
