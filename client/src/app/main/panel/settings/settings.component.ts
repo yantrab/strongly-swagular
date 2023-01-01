@@ -18,7 +18,7 @@ import {
   YesNoQuestionsSettings,
   YesNoQuestionsSettingsSchema
 } from 'src/app/api/models';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-settings',
@@ -55,7 +55,7 @@ export class SettingsComponent implements OnInit {
       this.cdr.markForCheck();
     });
   }
-  save(formGroup: FormGroup, prop: string) {
+  save(formGroup: UntypedFormGroup, prop: string) {
     Object.keys(formGroup.controls).forEach(key => {
       if (formGroup.controls[key].dirty) {
         this.oldSettings?.changes.push({
