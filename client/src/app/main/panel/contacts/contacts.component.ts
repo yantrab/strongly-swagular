@@ -12,6 +12,7 @@ import { Source } from '../../../api/models/source';
 import { ChangeItem } from '../../../api/models/change-item';
 import { SwagularService } from 'swagular';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
+
 @Component({
   selector: 'app-contacts',
   templateUrl: './contacts.component.html',
@@ -86,12 +87,14 @@ export class ContactsComponent implements OnInit {
         this.api.updateContact(this.panelId!, { contact: result, changes }).subscribe(savedPanel => {
           keys.forEach(key => ((relevant as any)[key] = result[key]));
           this.contacts.list = [...this.contacts.list];
+          this.panelService.addBackup(this.contacts);
           this.snackBar.open('Panel was saved successfully', '', { duration: 2000 });
           this.cdr.markForCheck();
         });
       }
     });
   }
+
   ngOnInit(): void {}
 
   getColor(index: number, key: string) {

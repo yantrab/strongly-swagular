@@ -103,12 +103,22 @@
         "title": "בתוקף עד"
       }
     ],
-    "buttons":{
-      "edit":{"title":"ערוך פרטים כללים"},
-      "delete":{"title":"מחק פנל"},
-      "undoDelete":{"title":"בטל מחיקת פנל"},
-      "editContact":{"title":"ערוך אנשי קשר"},
-      "editSettings":{"title":"ערוך הגדרות"}
+    "buttons": {
+      "edit": {
+        "title": "ערוך פרטים כללים"
+      },
+      "delete": {
+        "title": "מחק פנל"
+      },
+      "undoDelete": {
+        "title": "בטל מחיקת פנל"
+      },
+      "editContact": {
+        "title": "ערוך אנשי קשר"
+      },
+      "editSettings": {
+        "title": "ערוך הגדרות"
+      }
     }
   },
   "contactsTableOptions": {
@@ -218,7 +228,9 @@
     "000": "שולח...",
     "notConnected": "לא מחובר",
     "1": "מעלה נתונים",
-    "2": "מוריד נתונים"
+    "2": "מוריד נתונים",
+    "prevVersion": "גרסה קודמת",
+    "nextVersion": "גרסה הבאה"
   },
   "userFormModel": {
     "firstName": {

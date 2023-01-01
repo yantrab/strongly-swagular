@@ -8,12 +8,14 @@ import { ContactsComponent } from './contacts/contacts.component';
 import { PanelComponent } from './panel.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { PanelService } from './panel.service';
 import { PanelLogsComponent } from './panel-logs/panel-logs.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { ScannerComponent } from './panel-list/scanner/scanner.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 @NgModule({
   declarations: [PanelListComponent, PanelComponent, SettingsComponent, ContactsComponent, PanelLogsComponent, ScannerComponent],
   imports: [
@@ -36,7 +38,8 @@ import { ScannerComponent } from './panel-list/scanner/scanner.component';
     MatSlideToggleModule,
     MatMenuModule,
     MatSnackBarModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatTooltipModule
   ],
   providers: [PanelService]
 })

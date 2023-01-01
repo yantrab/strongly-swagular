@@ -23,6 +23,7 @@ import { Settings } from 'src/app/api/models/settings';
 })
 export class PanelService {
   currentPanel?: PanelDetails;
+  backup: { [id: string]: { data: { contacts?: Contacts; settings?: Settings }[]; index: number } } = {};
   contacts = new BehaviorSubject<Contacts | undefined>(undefined);
   settings = new BehaviorSubject<Settings | undefined>(undefined);
   panelList = new BehaviorSubject<PanelDetails[] | undefined>(undefined);
@@ -62,16 +63,29 @@ export class PanelService {
     });
   }
 
+  get backupIndex() {
+    const backup = this.backup[this.currentPanel!.panelId];
+    return backup.index;
+  }
+
+  get panelBackup() {
+    return this.backup[this.currentPanel!.panelId];
+  }
+
   getContacts(panelId: number) {
+    this.backup[panelId] = this.backup[panelId] || { data: [], index: 0 };
     this.api.contacts(panelId).subscribe((contacts: Contacts) => {
       this.contacts.next(contacts);
+      if (!this.backup[panelId].data.length) this.backup[panelId].data.push({ contacts });
     });
     return this.contacts;
   }
 
   getSettings(panelId: number) {
+    this.backup[panelId] = this.backup[panelId] || { data: [], index: 0 };
     this.api.settings(panelId).subscribe((settings: Settings) => {
       this.settings.next(settings);
+      if (!this.backup[panelId].data.length) this.backup[panelId].data.push({ settings });
     });
     return this.settings;
   }
@@ -84,10 +98,33 @@ export class PanelService {
     this.navigateTo('panel/settings/', panel);
   }
 
+  addBackup(contacts?: Contacts, settings?: Settings) {
+    const backup = this.backup[this.currentPanel!.panelId];
+    backup.data.push({ settings: cloneDeep(settings), contacts: cloneDeep(contacts) });
+    backup.index = backup.data.length - 1;
+  }
+
+  goToBackup(direction: number) {
+    const backup = this.backup[this.currentPanel!.panelId];
+    backup.index += direction;
+    const currentData = backup.data[backup.index];
+    const contacts = currentData.contacts;
+    if (contacts) {
+      this.contacts.next(contacts);
+      this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId).subscribe(() => {});
+    }
+
+    if (currentData.settings) {
+      // TODO save settings
+      this.settings.next(currentData.settings);
+    }
+  }
+
   reDump(dump: string) {
     this.api.reDump({ dump: '_' + dump, panel: this.currentPanel! }).subscribe(result => {
       this.contacts.next(result.contacts);
       this.settings.next(result.settings);
+      this.addBackup(result.contacts, result.settings);
     });
   }
 
@@ -112,7 +149,10 @@ export class PanelService {
           if (c.tel3 && !c.tel3.startsWith('0')) c.tel3 = '0' + c.tel3;
         });
         contacts.changes = contacts.changes.concat(getContactsChanges(contacts.list, this.contacts.value!.list, Source.client));
-        this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId).subscribe(() => this.contacts.next(contacts));
+        this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId).subscribe(() => {
+          this.contacts.next(contacts);
+          this.addBackup(contacts);
+        });
       });
     });
   }
@@ -155,6 +195,7 @@ export class PanelService {
     this.api.reset(this.currentPanel?.panelId!).subscribe(value => {
       this.contacts.next(value.contacts);
       this.settings.next(value.settings);
+      this.addBackup(value.contacts, value.settings);
     });
   }
 

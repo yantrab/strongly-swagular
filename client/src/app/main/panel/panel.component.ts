@@ -95,6 +95,24 @@ import { SerialPort } from './serial';
         </div>
         <div fxFlex fxLayout="row" fxFlex.lt-md="100%" fxLayoutAlign="space-between center">
           <span> {{ ' ' + (currentPanel.address || '') + ' ' }} </span>
+          <div *ngIf="service.panelBackup.data.length > 1">
+            <button
+              mat-icon-button
+              [matTooltip]="locale.prevVersion"
+              (click)="service.goToBackup(-1)"
+              [disabled]="service.backupIndex === 0"
+            >
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              [matTooltip]="locale.nextVersion"
+              (click)="service.goToBackup(1)"
+              [disabled]="service.backupIndex >= service.panelBackup.data.length - 1"
+            >
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+          </div>
           <div fxLayout="row" fxLayoutAlign="end">
             <app-progress
               [fxShow.lt-md]="false"

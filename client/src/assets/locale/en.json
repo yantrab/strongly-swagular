@@ -95,12 +95,22 @@
         "title": "Valid until"
       }
     ],
-    "buttons":{
-      "edit":{"title":"Edit general details"},
-      "delete":{"title":"Delete panel"},
-      "undoDelete":{"title":"Undo delete panel"},
-      "editContact":{"title":"Edit contacts"},
-      "editSettings":{"title":"Edit settings"}
+    "buttons": {
+      "edit": {
+        "title": "Edit general details"
+      },
+      "delete": {
+        "title": "Delete panel"
+      },
+      "undoDelete": {
+        "title": "Undo delete panel"
+      },
+      "editContact": {
+        "title": "Edit contacts"
+      },
+      "editSettings": {
+        "title": "Edit settings"
+      }
     }
   },
   "contactsTableOptions": {
@@ -208,7 +218,9 @@
       "epprom": "Upload from Epprom"
     },
     "1": "מעלה נתונים מההתקן",
-    "2": "מוריד נתונים להתקן"
+    "2": "מוריד נתונים להתקן",
+    "prevVersion": "Previews version",
+    "nextVersion": "Next version"
   },
   "userFormModel": {
     "firstName": {
