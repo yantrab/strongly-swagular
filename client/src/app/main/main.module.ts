@@ -2,9 +2,9 @@ import { Component, NgModule } from '@angular/core';
 import { ComponentModule } from '../components/component.module';
 import { RouterModule } from '@angular/router';
 import { ToolbarComponent } from './toolbar.component';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { LocaleService } from 'swagular/components';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 @Component({
   selector: 'app-root',
   template: `

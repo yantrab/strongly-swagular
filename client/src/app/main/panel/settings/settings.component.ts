@@ -5,7 +5,7 @@ import { PanelService } from '../panel.service';
 import { ActivatedRoute } from '@angular/router';
 import { LocaleService } from 'swagular/components';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import {
   FloorValueSettings,
   FloorValueSettingsSchema,

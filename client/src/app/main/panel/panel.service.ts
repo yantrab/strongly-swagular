@@ -13,7 +13,7 @@ import { Contact } from '../../api/models/contact';
 import { LocaleService } from 'swagular/components';
 import { cloneDeep } from 'lodash';
 import { filter, map } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { AddPanelDetailsDto } from '../../api/models/add-panel-details-dto';
 import { ChangeItem } from '../../api/models/change-item';
 import { Settings } from 'src/app/api/models/settings';

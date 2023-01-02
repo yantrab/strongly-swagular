@@ -1,5 +1,3 @@
-import { EventHandlerVars } from '@angular/compiler/src/compiler_util/expression_converter';
-
 export type SerialOptions = {
   baudRate?: number;
   dataBits?: number;
@@ -49,8 +47,8 @@ declare global {
 
   interface Navigator {
     serial: {
-      onconnect: EventHandlerVars;
-      ondisconnect: EventHandlerVars;
+      onconnect: any;
+      ondisconnect: any;
       requestPort(options: SerialOptions): Promise<SerialPort>;
       getPorts(): Promise<Iterable<SerialPort>>;
     };

@@ -263,8 +263,8 @@ export class PanelComponent {
       // @ts-ignore
       const encoder = new TextEncoder('utf-8');
       let result = '';
-      const read = async () => {
-        return new Promise(async (resolve, reject) => {
+      const read = async () =>
+        new Promise(async (resolve, reject) => {
           let readerData;
           const buffData: number[] = [];
           try {
@@ -341,7 +341,6 @@ export class PanelComponent {
           result += new TextDecoder().decode(b);
           resolve(result);
         });
-      };
       const length = 4095;
       for (let i = 0; i <= length; i++) {
         this.currentPanel.progressPst = (1 / (length / 100)) * i;
@@ -386,8 +385,8 @@ export class PanelComponent {
     this.currentPanel.status = ActionType.downloadEpprom;
     // @ts-ignore
     const encoder = new TextEncoder('utf-8');
-    const read = async (address: string, checkSum: Uint8Array) => {
-      return new Promise(async (resolve, reject) => {
+    const read = async (address: string, checkSum: Uint8Array) =>
+      new Promise(async (resolve, reject) => {
         const readerData = await reader.read();
         const data = readerData.value;
         if (
@@ -400,7 +399,6 @@ export class PanelComponent {
         }
         resolve(undefined);
       });
-    };
     this.api.dump(this.currentPanel).subscribe(async dump => {
       let i = 0;
       const bachSize = 16;

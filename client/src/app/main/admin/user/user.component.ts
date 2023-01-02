@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AdminService } from '../../../api/services/admin.service';
 import { User } from '../../../api/models/user';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { TableOptions, FormComponent, LocaleService } from 'swagular/components';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { IRootObject } from '../../../api/locale.interface';

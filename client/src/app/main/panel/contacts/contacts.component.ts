@@ -3,7 +3,7 @@ import { Contact, ContactSchema } from '../../../api/models/contact';
 import { PanelService as API } from '../../../api/services/panel.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormComponent, LocaleService, TableOptions } from 'swagular/components';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { PanelService } from '../panel.service';
 import { Lang } from '../../../api/models/lang';
 import { Validators } from '@angular/forms';

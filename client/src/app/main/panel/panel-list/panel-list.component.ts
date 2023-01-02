@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormComponent, LocaleService, TableOptions } from 'swagular/components';
 
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { PanelService as Api, SavePanelFormGroupType } from '../../../api/services/panel.service';
 import { PanelDetails } from '../../../api/models/panel-details';
 import { PanelService } from '../panel.service';
