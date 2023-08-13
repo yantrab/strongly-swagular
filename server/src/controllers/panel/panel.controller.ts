@@ -1,4 +1,4 @@
-import { body, get, guard, params, post, put, query } from "strongly";
+import { body, get, guard, params, post, put, query, user } from "strongly";
 import { PanelService } from "../../services/panel/panel.service";
 import { Role, User } from "../../domain/user";
 import { ActionType, AddPanelDetailsDTO, PanelDetails } from "../../domain/panel/panel.details";
@@ -18,7 +18,7 @@ export class PanelController {
     return this.service.reset(id);
   }
 
-  @put(":id/purge") purge(@params("id") id: number) {
+  @post(":id/purge") purge(@params("id") id: number) {
     return this.service.purge(id);
   }
 

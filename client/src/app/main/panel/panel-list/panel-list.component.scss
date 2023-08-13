@@ -5,12 +5,19 @@
 }
 
 ::ng-deep .actions-column {
-  width: 225px !important;
+  // width:225 px !important;
 }
 
 ::ng-deep .deleted {
   opacity: 40%;
 }
+
 ::ng-deep .cdk-column-panelId {
   padding-left: 0 !important;
+}
+
+
+::ng-deep table button {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
 }

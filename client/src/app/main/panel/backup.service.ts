@@ -22,6 +22,10 @@ export class BackupService {
     return this.backup[this.currentPanelId];
   }
 
+  get hasPanelBackup() {
+    return this.panelBackup?.data.length > 1;
+  }
+
   resetSavedIndex() {
     this.panelBackup.savedIndex = this.panelBackup.index;
   }

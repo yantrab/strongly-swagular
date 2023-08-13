@@ -95,7 +95,7 @@ import { SerialPort } from './serial';
         </div>
         <div fxFlex fxLayout="row" fxFlex.lt-md="100%" fxLayoutAlign="space-between center">
           <span> {{ ' ' + (currentPanel.address || '') + ' ' }} </span>
-          <div *ngIf="service.backupService.panelBackup.data.length > 1">
+          <div *ngIf="service.backupService.hasPanelBackup">
             <button
               mat-icon-button
               [matTooltip]="locale.prevVersion"

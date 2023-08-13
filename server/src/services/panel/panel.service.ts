@@ -152,9 +152,15 @@ export class PanelService {
   }
 
   async purge(id: number) {
-    await this.panelContactsRepo.collection.deleteOne({ panelId: id });
-    await this.panelSettingsRepo.collection.deleteOne({ panelId: id });
-    await this.panelDetailsRepo.collection.deleteOne({ panelId: id });
+    try {
+      await this.panelContactsRepo.collection.deleteOne({ panelId: id });
+      await this.panelSettingsRepo.collection.deleteOne({ panelId: id });
+      await this.panelDetailsRepo.collection.deleteOne({ panelId: id });
+
+      return null;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   openPanel(panel: PanelDetails) {

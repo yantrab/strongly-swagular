@@ -141,6 +141,8 @@ export const floorSettingsFormGroupSchema = {
   providedIn: 'root'
 })
 export class PanelService extends BaseService {
+  static readonly purgePath = '/panel/{id}/purge';
+
   /**
    * Path part for operation reset
    */
@@ -217,6 +219,30 @@ export class PanelService extends BaseService {
     settings: Settings;
   }> {
     const rb = new RequestBuilder(this.rootUrl, PanelService.ResetPath, 'put');
+
+    rb.path('id', id, {});
+
+    return this.http
+      .request(
+        rb.build({
+          responseType: 'json',
+          accept: 'application/json'
+        })
+      )
+      .pipe(
+        filter((r: any) => r instanceof HttpResponse),
+        map(
+          r =>
+            r.body as {
+              contacts: Contacts;
+              settings: Settings;
+            }
+        )
+      );
+  }
+
+  purge(id: number): Observable<any> {
+    const rb = new RequestBuilder(this.rootUrl, PanelService.purgePath, 'post');
 
     rb.path('id', id, {});
 

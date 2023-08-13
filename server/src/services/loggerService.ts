@@ -14,14 +14,23 @@ export class LoggerService {
     // this.cacheService = this.cacheService || new CacheService();
     // this.webSocketService = this.webSocketService || new WebSocketService();
     this.logRepo = this.dbService.getRepository({ name: "logs" }, "log");
-    this.logRepo.collection.createIndex({ time: 1 }, { expireAfterSeconds: 3600 * 60 * 24 }).then();
+
+    this.logRepo.collection.indexes().then(indexes => {
+      if (!indexes.find(index => index.name === "time")) {
+        this.logRepo.collection.createIndex({ time: 1 }, { expireAfterSeconds: 3600 * 60 * 24 });
+      }
+    });
   }
 
   async write(log: string) {
-    const logJson = JSON.parse(log);
-    logJson.time = new Date();
-    this.webSocketService?.io.to("logs").emit("log", logJson);
-    return this.logRepo.collection.insertOne(logJson);
+    try {
+      const logJson = JSON.parse(log);
+      logJson.time = new Date();
+      this.webSocketService?.io.to("logs").emit("log", logJson);
+      this.logRepo.collection.insertOne(logJson);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async getLogs(query = {}) {

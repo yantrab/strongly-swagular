@@ -54,14 +54,23 @@ export class PanelListComponent implements OnInit {
         rowActions:
           window.innerWidth > 925
             ? [
-                { icon: 'edit', action: ($event, row) => this.openEditPanelDialog(row), title: options.buttons.edit.title},
+                { icon: 'edit', action: ($event, row) => this.openEditPanelDialog(row), title: options.buttons.edit.title },
                 {
                   icon: row => (row._isDeleted ? 'rotate_right' : 'delete'),
                   action: ($event, row) => this.deletePanel(row, this.needToShowDeletedPanels),
-                  title: row => (row._isDeleted ? options.buttons.undoDelete.title : options.buttons.delete.title), 
+                  title: row => (row._isDeleted ? options.buttons.undoDelete.title : options.buttons.delete.title)
                 },
-                { icon: 'manage_accounts', action: ($event, row) => this.panelService.navigateToContact(row), title: options.buttons.editContact.title },
-                { icon: 'settings', action: ($event, row) => this.panelService.navigateToSettings(row), title: options.buttons.editSettings.title }
+                { icon: 'delete_forever', action: ($event, row) => this.purgePanel(row), title: 'מחק לצמיתות' },
+                {
+                  icon: 'manage_accounts',
+                  action: ($event, row) => this.panelService.navigateToContact(row),
+                  title: options.buttons.editContact.title
+                },
+                {
+                  icon: 'settings',
+                  action: ($event, row) => this.panelService.navigateToSettings(row),
+                  title: options.buttons.editSettings.title
+                }
               ]
             : undefined,
         actions: { rowClick: row => this.panelService.navigateToContact(row) },
@@ -153,6 +162,10 @@ export class PanelListComponent implements OnInit {
         this.openAddPanelDialog(+result.split('IMEI:')[1].split(';')[0]);
       }
     });
+  }
+
+  purgePanel(row: PanelDetails) {
+    this.api.purge(row.panelId).subscribe(() => this.panelService.panelList.next(this.panels.filter(p => p.panelId !== row.panelId)));
   }
 
   deletePanel(row: PanelDetails, showDeleted: boolean) {
