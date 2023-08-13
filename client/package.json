@@ -10,7 +10,7 @@
     "e2e": "ng e2e",
     "gen": "ng-openapi-gen --input http://localhost:3000/api-doc/json --templates node_modules/swagular/templates",
     "lint-api": "eslint src/app/api/** --fix",
-    "push-to-prod": "ssh yaniv@128.199.41.162 'sudo rm -rf ~/tador/strongly-swagular/client/dist/app' && scp -r dist yaniv@128.199.41.162:~/tador/strongly-swagular/client/dist/app && ssh -t yaniv@128.199.41.162 'sudo systemctl reload nginx'",
+    "push-to-prod": "ssh yaniv@128.199.41.162 'sudo rm -rf ~/tador/strongly-swagular/client/dist/app' && scp -r dist yaniv@128.199.41.162:~/tador/strongly-swagular/client/dist/app",
     "build:prod": "ng build -c production && cd dist/app && cd ../../ && npm run push-to-prod",
     "build:dev": "ng build -c dev && cd dist/app && cd ../../ && npm run push-to-dev",
     "cordova:init": "cordova create CordovaMobileApp com.yantrab.app CordovaMobileApp",
