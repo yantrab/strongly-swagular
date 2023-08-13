@@ -15,6 +15,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { ScannerComponent } from './panel-list/scanner/scanner.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { BackupService } from './backup.service';
 
 @NgModule({
   declarations: [PanelListComponent, PanelComponent, SettingsComponent, ContactsComponent, PanelLogsComponent, ScannerComponent],
@@ -41,6 +42,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatExpansionModule,
     MatTooltipModule
   ],
-  providers: [PanelService]
+  providers: [PanelService, BackupService]
 })
 export class PanelModule {}

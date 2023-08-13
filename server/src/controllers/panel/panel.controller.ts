@@ -1,4 +1,4 @@
-import { body, get, guard, params, post, put, query, user } from "strongly";
+import { body, get, guard, params, post, put, query } from "strongly";
 import { PanelService } from "../../services/panel/panel.service";
 import { Role, User } from "../../domain/user";
 import { ActionType, AddPanelDetailsDTO, PanelDetails } from "../../domain/panel/panel.details";
@@ -6,13 +6,7 @@ import { omit } from "lodash";
 import { ChangeItem, Contact } from "../../domain/panel/panel.contacts";
 import { PanelSocketService } from "../../services/panel/panel.socket.service";
 import { LoggerService } from "../../services/loggerService";
-import {
-  FloorValueSettings,
-  GeneralSettings,
-  SettingsChangeItem,
-  TimingSettings,
-  YesNoQuestionsSettings
-} from "../../domain/panel/settings";
+import { FloorValueSettings, GeneralSettings, SettingsChangeItem, TimingSettings, YesNoQuestionsSettings } from "../../domain/panel/settings";
 
 @guard(user => !!user)
 export class PanelController {
@@ -22,6 +16,10 @@ export class PanelController {
 
   @put(":id/reset") reset(@params("id") id: number) {
     return this.service.reset(id);
+  }
+
+  @put(":id/purge") purge(@params("id") id: number) {
+    return this.service.purge(id);
   }
 
   @get(":id/logs") logs(@params("id") id: number) {
@@ -35,8 +33,8 @@ export class PanelController {
   @post addNewPanel(@body panel: AddPanelDetailsDTO, @user user: User) {
     const toSave = (omit(panel, ["id"]) as unknown) as PanelDetails;
     toSave.userId = user._id!;
-    const date =  new Date()
-    toSave.inspiredDate =`${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`
+    const date = new Date();
+    toSave.inspiredDate = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
     return this.service.addNewPanel(toSave);
   }
 
@@ -56,15 +54,11 @@ export class PanelController {
     return this.service.getPanelSettings(id);
   }
 
-  @get(":id/delete") delete (@params("id") id: number) {
+  @get(":id/delete") delete(@params("id") id: number) {
     return this.service.deletePanel(id);
   }
 
-  @post(":id/save-contacts") updateContact(
-    @params("id") panelId: number,
-    @body("contact") contact: Contact,
-    @body("changes") changes: ChangeItem[]
-  ) {
+  @post(":id/save-contacts") updateContact(@params("id") panelId: number, @body("contact") contact: Contact, @body("changes") changes: ChangeItem[]) {
     return this.service.updateContact(panelId, contact, changes);
   }
 

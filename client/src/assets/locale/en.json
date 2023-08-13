@@ -220,7 +220,8 @@
     "1": "מעלה נתונים מההתקן",
     "2": "מוריד נתונים להתקן",
     "prevVersion": "Previews version",
-    "nextVersion": "Next version"
+    "nextVersion": "Next version",
+    "saveBackup": "Save Current Version"
   },
   "userFormModel": {
     "firstName": {

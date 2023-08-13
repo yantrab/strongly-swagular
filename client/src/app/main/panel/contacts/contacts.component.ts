@@ -12,6 +12,7 @@ import { Source } from '../../../api/models/source';
 import { ChangeItem } from '../../../api/models/change-item';
 import { SwagularService } from 'swagular';
 import { NgDialogAnimationService } from 'ng-dialog-animation';
+import { BackupService } from '../backup.service';
 
 @Component({
   selector: 'app-contacts',
@@ -36,7 +37,8 @@ export class ContactsComponent implements OnInit {
     private localeService: LocaleService,
     private cdr: ChangeDetectorRef,
     private dialog: NgDialogAnimationService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private backupService: BackupService
   ) {
     this.localeService.getLocaleItem('contactsTableOptions').then(options => {
       this.contactsTableOptions = {
@@ -84,10 +86,10 @@ export class ContactsComponent implements OnInit {
           }
         });
         this.contacts.changes.push(...changes);
-        this.api.updateContact(this.panelId!, { contact: result, changes }).subscribe(savedPanel => {
+        this.api.updateContact(this.panelId!, { contact: result, changes }).subscribe(_ => {
           keys.forEach(key => ((relevant as any)[key] = result[key]));
           this.contacts.list = [...this.contacts.list];
-          this.panelService.addBackup(this.contacts);
+          this.backupService.addBackup(this.contacts);
           this.snackBar.open('Panel was saved successfully', '', { duration: 2000 });
           this.cdr.markForCheck();
         });

@@ -3,11 +3,10 @@ import { DbService, Repository } from "../db/db.service";
 import { ChangeItem, Contact, Contacts, Source } from "../../domain/panel/panel.contacts";
 import { dumps } from "../../domain/panel/initial-damps";
 import { Panel, panelPropertiesSetting } from "../../domain/panel/panel";
-import { cloneDeep, set } from "lodash";
+import { cloneDeep } from "lodash";
 import { getContactsChanges } from "../../../../shared/panel";
 import { Settings, SettingsChangeItem } from "../../domain/panel/settings";
 import { SmsService } from "../sms.service";
-import { PanelSocketService } from "./panel.socket.service";
 
 export class PanelService {
   private panelDetailsRepo: Repository<PanelDetails>;
@@ -125,7 +124,11 @@ export class PanelService {
         const oldValue = oldPanel.settings[key][prop];
         const newValue = panel.settings[key][prop];
         if (oldValue !== newValue) {
-          panel.settings.changes.push({ path: `${key}.${prop}`, source: Source.client, previewsValue: oldValue });
+          panel.settings.changes.push({
+            path: `${key}.${prop}`,
+            source: Source.client,
+            previewsValue: oldValue,
+          });
         }
       });
     });
@@ -146,6 +149,12 @@ export class PanelService {
     await this.panelSettingsRepo.collection.deleteOne({ panelId: id });
     await this.panelSettingsRepo.saveOrUpdateOne(initialPanel.settings);
     return { contacts: initialPanel.contacts, settings: initialPanel.settings };
+  }
+
+  async purge(id: number) {
+    await this.panelContactsRepo.collection.deleteOne({ panelId: id });
+    await this.panelSettingsRepo.collection.deleteOne({ panelId: id });
+    await this.panelDetailsRepo.collection.deleteOne({ panelId: id });
   }
 
   openPanel(panel: PanelDetails) {

@@ -17,13 +17,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddPanelDetailsDto } from '../../api/models/add-panel-details-dto';
 import { ChangeItem } from '../../api/models/change-item';
 import { Settings } from 'src/app/api/models/settings';
+import { BackupService } from './backup.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PanelService {
   currentPanel?: PanelDetails;
-  backup: { [id: string]: { data: { contacts?: Contacts; settings?: Settings }[]; index: number } } = {};
   contacts = new BehaviorSubject<Contacts | undefined>(undefined);
   settings = new BehaviorSubject<Settings | undefined>(undefined);
   panelList = new BehaviorSubject<PanelDetails[] | undefined>(undefined);
@@ -36,10 +36,12 @@ export class PanelService {
     private api: API,
     private excelService: ExcelService,
     private localeService: LocaleService,
-    private snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    public backupService: BackupService
   ) {
     socket.on('panelUpdate', (panel: PanelDetails) => {
       this.currentPanel = panel;
+      this.backupService.currentPanelId = panel.panelId;
     });
     socket.on('updateContacts', (contacts: Contacts) => this.contacts.next(contacts));
     socket.on('updateSettings', (settings: Settings) => this.settings.next(settings));
@@ -63,29 +65,18 @@ export class PanelService {
     });
   }
 
-  get backupIndex() {
-    const backup = this.backup[this.currentPanel!.panelId];
-    return backup.index;
-  }
-
-  get panelBackup() {
-    return this.backup[this.currentPanel!.panelId];
-  }
-
   getContacts(panelId: number) {
-    this.backup[panelId] = this.backup[panelId] || { data: [], index: 0 };
     this.api.contacts(panelId).subscribe((contacts: Contacts) => {
       this.contacts.next(contacts);
-      if (!this.backup[panelId].data.length) this.backup[panelId].data.push({ contacts });
+      this.backupService.initBackup(contacts);
     });
     return this.contacts;
   }
 
   getSettings(panelId: number) {
-    this.backup[panelId] = this.backup[panelId] || { data: [], index: 0 };
     this.api.settings(panelId).subscribe((settings: Settings) => {
       this.settings.next(settings);
-      if (!this.backup[panelId].data.length) this.backup[panelId].data.push({ settings });
+      this.backupService.initBackup(undefined, settings);
     });
     return this.settings;
   }
@@ -98,33 +89,11 @@ export class PanelService {
     this.navigateTo('panel/settings/', panel);
   }
 
-  addBackup(contacts?: Contacts, settings?: Settings) {
-    const backup = this.backup[this.currentPanel!.panelId];
-    backup.data.push({ settings: cloneDeep(settings), contacts: cloneDeep(contacts) });
-    backup.index = backup.data.length - 1;
-  }
-
-  goToBackup(direction: number) {
-    const backup = this.backup[this.currentPanel!.panelId];
-    backup.index += direction;
-    const currentData = backup.data[backup.index];
-    const contacts = currentData.contacts;
-    if (contacts) {
-      this.contacts.next(contacts);
-      this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId).subscribe(() => {});
-    }
-
-    if (currentData.settings) {
-      // TODO save settings
-      this.settings.next(currentData.settings);
-    }
-  }
-
   reDump(dump: string) {
     this.api.reDump({ dump: '_' + dump, panel: this.currentPanel! }).subscribe(result => {
       this.contacts.next(result.contacts);
       this.settings.next(result.settings);
-      this.addBackup(result.contacts, result.settings);
+      this.backupService.addBackup(result.contacts, result.settings);
     });
   }
 
@@ -151,7 +120,7 @@ export class PanelService {
         contacts.changes = contacts.changes.concat(getContactsChanges(contacts.list, this.contacts.value!.list, Source.client));
         this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId).subscribe(() => {
           this.contacts.next(contacts);
-          this.addBackup(contacts);
+          this.backupService.addBackup(contacts);
         });
       });
     });
@@ -173,6 +142,7 @@ export class PanelService {
 
   setSelectedPanel(panel: PanelDetails) {
     this.currentPanel = panel;
+    this.backupService.currentPanelId = panel.panelId;
     this.showProgressBar = this.currentPanel.status !== ActionType.idle;
     this.socket.emit('registerToPanel', panel.panelId);
   }
@@ -191,12 +161,36 @@ export class PanelService {
     );
   }
 
+  goToBackup(direction: number) {
+    const backupData = this.backupService.goToBackup(direction);
+    const contacts = backupData.contacts;
+    if (contacts) {
+      this.contacts.next(contacts);
+    }
+
+    if (backupData.settings) {
+      this.settings.next(backupData.settings);
+    }
+  }
+
   reset() {
     this.api.reset(this.currentPanel?.panelId!).subscribe(value => {
       this.contacts.next(value.contacts);
       this.settings.next(value.settings);
-      this.addBackup(value.contacts, value.settings);
+      this.backupService.addBackup(value.contacts, value.settings);
     });
+  }
+
+  saveCurrentState() {
+    const { contacts } = this.backupService.panelBackupData;
+    if (contacts)
+      this.updateContacts(contacts.changes, contacts.list, this.currentPanel!.panelId).subscribe(() => {
+        this.snackBar.open('Current version saved successfully', '', { duration: 2000 });
+        this.backupService.resetSavedIndex();
+      });
+
+    // if(settings)
+    //   this.(settings.changes, contacts.list, this.currentPanel!.panelId).subscribe(() => {});
   }
 
   private getLeafRoute(route: ActivatedRoute): ActivatedRoute | undefined {

@@ -229,8 +229,9 @@
     "notConnected": "לא מחובר",
     "1": "מעלה נתונים",
     "2": "מוריד נתונים",
-    "prevVersion": "גרסה קודמת",
-    "nextVersion": "גרסה הבאה"
+    "prevVersion": "נתונים ושמות קודמים",
+    "nextVersion": "גרסה הבאה",
+    "saveBackup": "שמור גרסה נוכחית"
   },
   "userFormModel": {
     "firstName": {

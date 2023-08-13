@@ -95,12 +95,12 @@ import { SerialPort } from './serial';
         </div>
         <div fxFlex fxLayout="row" fxFlex.lt-md="100%" fxLayoutAlign="space-between center">
           <span> {{ ' ' + (currentPanel.address || '') + ' ' }} </span>
-          <div *ngIf="service.panelBackup.data.length > 1">
+          <div *ngIf="service.backupService.panelBackup.data.length > 1">
             <button
               mat-icon-button
               [matTooltip]="locale.prevVersion"
               (click)="service.goToBackup(-1)"
-              [disabled]="service.backupIndex === 0"
+              [disabled]="service.backupService.panelBackupIndex === 0"
             >
               <mat-icon>chevron_right</mat-icon>
             </button>
@@ -108,9 +108,17 @@ import { SerialPort } from './serial';
               mat-icon-button
               [matTooltip]="locale.nextVersion"
               (click)="service.goToBackup(1)"
-              [disabled]="service.backupIndex >= service.panelBackup.data.length - 1"
+              [disabled]="service.backupService.panelBackupIndex >= service.backupService.panelBackup.data.length - 1"
             >
               <mat-icon>chevron_left</mat-icon>
+            </button>
+
+            <button
+              mat-raised-button
+              (click)="service.saveCurrentState()"
+              [disabled]="service.backupService.panelBackup.savedIndex === service.backupService.panelBackup.index"
+            >
+              {{ locale.saveBackup }}
             </button>
           </div>
           <div fxLayout="row" fxLayoutAlign="end">
@@ -154,7 +162,7 @@ export class PanelComponent {
   lastConnect = 0;
   status = ActionType;
   locale?: IPanelToolBar;
-  port?: { port?: SerialPort; reader?: ReadableStreamDefaultReader<any>; writer?: WritableStreamDefaultWriter<any> };
+  port?: { port?: SerialPort; reader?: ReadableStreamDefaultReader; writer?: WritableStreamDefaultWriter };
 
   constructor(
     public service: PanelService,
@@ -202,7 +210,7 @@ export class PanelComponent {
     });
   }
 
-  cancelAction() {
+  async cancelAction() {
     switch (this.currentPanel.status) {
       case ActionType.readAllFromPanelInProgress:
         this.currentPanel.status = ActionType.readAllFromPanelCanceled;
@@ -211,20 +219,17 @@ export class PanelComponent {
       case ActionType.writeAllToPanelInProgress:
         this.currentPanel.status = ActionType.writeToPanelCanceled;
         break;
+      case ActionType.uploadEpprom:
+      case ActionType.downloadEpprom:
+        this.currentPanel.status = ActionType.idle;
+        await this.closeSerialPort();
+        break;
       default:
         this.currentPanel.status = ActionType.idle;
         const contacts = this.service.contacts.value!;
         contacts.changes = contacts.changes.filter(c => c.source === Source.client);
         this.service.updateContacts(contacts.changes, contacts.list, this.currentPanel.panelId);
     }
-    this.api.savePanel(this.currentPanel).subscribe(() => {
-      this.service.showProgressBar = false;
-      this.cd.markForCheck();
-    });
-  }
-
-  doneAction() {
-    this.currentPanel.status = ActionType.idle;
     this.api.savePanel(this.currentPanel).subscribe(() => {
       this.service.showProgressBar = false;
       this.cd.markForCheck();
@@ -243,7 +248,9 @@ export class PanelComponent {
   }
 
   uploadCsv(file: any) {
-    this.service.uploadCsv(file);
+    this.service.uploadCsv(file).then(() => {
+      this.service.snackBar.open('Panel was saved successfully', '', { duration: 2000 });
+    });
   }
 
   downloadCsv() {
@@ -257,6 +264,7 @@ export class PanelComponent {
   async uploadEpprom() {
     try {
       let checkReadThisAdd = '0';
+      // eslint-disable-next-line prefer-const
       let { reader, writer } = await this.openSerialPort();
       this.currentPanel.status = ActionType.uploadEpprom;
       this.service.showProgressBar = true;
@@ -328,8 +336,8 @@ export class PanelComponent {
             hexValue = readerData[i];
             hexString = hexValue.toString(16);
 
-            const b = hexString[1];
-            const n = parseInt(a + b, 16);
+            const bb = hexString[1];
+            const n = parseInt(a + bb, 16);
             if (n < 187 && n > 159) {
               buffData.push(215);
               buffData.push(n - 16);
@@ -344,6 +352,7 @@ export class PanelComponent {
       };
       const length = 4095;
       for (let i = 0; i <= length; i++) {
+        if (this.currentPanel.status !== ActionType.uploadEpprom) break;
         this.currentPanel.progressPst = (1 / (length / 100)) * i;
         const address = ('0000' + i.toString()).slice(-4).toUpperCase();
         let check = 20;
@@ -360,7 +369,6 @@ export class PanelComponent {
         await writer.write(comm);
         try {
           await read();
-          console.log(i);
         } catch (x) {
           if (i - 4000 > 0) {
             await reader?.cancel();
@@ -381,6 +389,7 @@ export class PanelComponent {
   }
 
   async downloadEpprom() {
+    // eslint-disable-next-line prefer-const
     let { reader, writer } = await this.openSerialPort();
     this.service.showProgressBar = true;
     this.currentPanel.status = ActionType.downloadEpprom;
@@ -404,7 +413,7 @@ export class PanelComponent {
     this.api.dump(this.currentPanel).subscribe(async dump => {
       let i = 0;
       const bachSize = 16;
-      while (i < dump.length / bachSize) {
+      while (i < dump.length / bachSize && this.currentPanel.status === ActionType.downloadEpprom) {
         this.currentPanel.progressPst = (1 / (dump.length / bachSize / 100)) * i;
 
         const dumpArray: number[] = [];
@@ -423,13 +432,14 @@ export class PanelComponent {
             dumpArray.push(parseInt(a, 16));
             dumpArray.push(parseInt(b, 16));
           });
-        console.log('i=' + i);
         const dataToSent = dumpArray;
         const address = ('0000' + i.toString()).slice(-4);
         const comm = [...encoder.encode(address), ...dataToSent];
         let check = 12;
         comm.forEach(n => {
+          // eslint-disable-next-line no-bitwise
           check += n & parseInt('f', 16);
+          // eslint-disable-next-line no-bitwise
           if ((n & parseInt('f0', 16)) === parseInt('40', 16)) {
             check += 9;
           }
@@ -467,9 +477,11 @@ export class PanelComponent {
   }
 
   private async closeSerialPort() {
-    console.log('closing serial port');
-    await this.port?.reader?.releaseLock();
-    await this.port?.writer?.releaseLock();
+    try {
+      this.port?.reader?.releaseLock();
+      this.port?.writer?.releaseLock();
+    } catch (e) {}
+
     return this.port?.port?.close();
   }
 }
