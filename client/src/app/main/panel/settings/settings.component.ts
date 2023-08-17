@@ -4,7 +4,6 @@ import { SwagularService } from 'swagular';
 import { PanelService } from '../panel.service';
 import { ActivatedRoute } from '@angular/router';
 import { LocaleService } from 'swagular/components';
-import { NgDialogAnimationService } from 'ng-dialog-animation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   FloorValueSettings,
@@ -33,6 +32,7 @@ export class SettingsComponent implements OnInit {
   floorValueSettingsFormModel = this.swagularService.getFormModel<FloorValueSettings>(FloorValueSettingsSchema, {});
   panelId?: number;
   oldSettings?: Settings;
+
   constructor(
     private api: API,
     private swagularService: SwagularService,
@@ -48,6 +48,7 @@ export class SettingsComponent implements OnInit {
         return;
       }
       this.oldSettings = settings;
+      if (!settings.general.extra) settings.general.extra = '';
       this.generalSettingsFormModel.formGroup.setValue(settings.general);
       this.yesNoSettingsFormModel.formGroup.setValue(settings.yesNo);
       this.timingSettingsFormModel.formGroup.setValue(settings.timing);
@@ -55,6 +56,7 @@ export class SettingsComponent implements OnInit {
       this.cdr.markForCheck();
     });
   }
+
   save(formGroup: FormGroup, prop: string) {
     Object.keys(formGroup.controls).forEach(key => {
       if (formGroup.controls[key].dirty) {

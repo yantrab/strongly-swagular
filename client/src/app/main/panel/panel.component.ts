@@ -227,8 +227,10 @@ export class PanelComponent {
       default:
         this.currentPanel.status = ActionType.idle;
         const contacts = this.service.contacts.value!;
-        contacts.changes = contacts.changes.filter(c => c.source === Source.client);
-        this.service.updateContacts(contacts.changes, contacts.list, this.currentPanel.panelId);
+        if (contacts) {
+          contacts.changes = contacts.changes?.filter(c => c.source === Source.client);
+          this.service.updateContacts(contacts.changes, contacts.list, this.currentPanel.panelId);
+        }
     }
     this.api.savePanel(this.currentPanel).subscribe(() => {
       this.service.showProgressBar = false;

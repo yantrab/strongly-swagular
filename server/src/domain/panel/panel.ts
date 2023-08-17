@@ -234,7 +234,7 @@ export class Panel extends Entity<Panel> {
     Object.keys(panelPropertiesSetting.settings).forEach(key => {
       Object.keys(panelPropertiesSetting.settings[key]).forEach(prop => {
         let value = this.settings[key][prop]?.toString();
-        if (value) return;
+        if (!value) return;
         const propS = panelPropertiesSetting.settings[key][prop];
         value = (value + " ".repeat(propS.length)).slice(0, propS.length).split("");
         const jInit = propS.index;
