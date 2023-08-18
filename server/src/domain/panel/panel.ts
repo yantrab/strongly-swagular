@@ -213,8 +213,7 @@ export class Panel extends Entity<Panel> {
 
           // prefix
           if (key.startsWith("name")) {
-            if (this.details.direction === Lang.he) result = "    " + result;
-            else result = "   " + result;
+            result = "    " + result;
           }
 
           // postfix

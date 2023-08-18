@@ -38,7 +38,7 @@ export class PanelListComponent implements OnInit {
     private authService: AuthService
   ) {
     authService.user$.subscribe(user => {
-      const displayProperties = ['code', 'address', 'phoneNumber', 'contactName', 'contactPhone'];
+      const displayProperties = ['code', 'address', 'phoneNumber', 'contactName', 'contactPhone', 'direction'];
       if (user.role === Role.admin) {
         displayProperties.push('inspiredDate');
       }

@@ -52,10 +52,8 @@ export class ContactsComponent implements OnInit {
       });
     });
 
-    if (this.panelService.currentPanel?.direction === Lang.he) {
-      this.updateContactFormModel.formGroup.controls.name1?.setValidators(Validators.maxLength(12));
-      this.updateContactFormModel.formGroup.controls.name2?.setValidators(Validators.maxLength(12));
-    }
+    this.updateContactFormModel.formGroup.controls.name1?.setValidators(Validators.maxLength(12));
+    this.updateContactFormModel.formGroup.controls.name2?.setValidators(Validators.maxLength(12));
   }
 
   _contacts?: Contacts;
